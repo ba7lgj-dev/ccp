@@ -218,6 +218,33 @@
                 <version>${ruoyi.version}</version>
             </dependency>
 
+
+
+
+
+
+            <dependency>
+                <groupId>org.ba7lgj</groupId>
+                <artifactId>ccp-miniprogram</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ba7lgj</groupId>
+                <artifactId>ccp-common</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ba7lgj</groupId>
+                <artifactId>ccp-admin</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ba7lgj</groupId>
+                <artifactId>ccp-core</artifactId>
+                <version>${ruoyi.version}</version>
+            </dependency>
+
+
         </dependencies>
     </dependencyManagement>
 
@@ -228,6 +255,10 @@
         <module>ruoyi-quartz</module>
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
+        <module>ccp-core</module>
+        <module>ccp-admin</module>
+        <module>ccp-miniprogram</module>
+        <module>ccp-common</module>
     </modules>
     <packaging>pom</packaging>
 
