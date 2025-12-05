@@ -85,11 +85,15 @@ public class MiniUserServiceImpl implements IMiniUserService {
 
     @Override
     public int reviewUser(Long id, Integer targetAuthStatus, String failReason, Long reviewBy, Date reviewTime) {
-        if (!AuthStatusEnum.APPROVED.getCode().equals(targetAuthStatus)
-                && !AuthStatusEnum.REJECTED.getCode().equals(targetAuthStatus)) {
+        if (targetAuthStatus == null) {
+            throw new IllegalArgumentException("targetAuthStatus must be provided");
+        }
+        boolean approved = AuthStatusEnum.APPROVED.getCode() == targetAuthStatus;
+        boolean rejected = AuthStatusEnum.REJECTED.getCode() == targetAuthStatus;
+        if (!approved && !rejected) {
             throw new IllegalArgumentException("targetAuthStatus must be 2 or 3");
         }
-        if (AuthStatusEnum.REJECTED.getCode().equals(targetAuthStatus) && !StringUtils.hasText(failReason)) {
+        if (rejected && !StringUtils.hasText(failReason)) {
             throw new IllegalArgumentException("authFailReason is required when rejected");
         }
         MiniUser user = miniUserMapper.selectMiniUserById(id);

@@ -47,12 +47,12 @@ public class CcpAppLoginController {
         sysUser.setUserId(miniUser.getId());
         sysUser.setUserName("ccp_" + miniUser.getId());
         LoginUser loginUser = new LoginUser(sysUser, Collections.emptySet());
-        Map<String, Object> tokenData = tokenService.createToken(loginUser);
+        String token = tokenService.createToken(loginUser);
 
         MiniUserVO vo = new MiniUserVO();
         BeanUtils.copyProperties(miniUser, vo);
         Map<String, Object> result = new HashMap<>();
-        result.put("token", tokenData.get("token"));
+        result.put("token", token);
         result.put("user", vo);
         return AjaxResult.success(result);
     }

@@ -67,7 +67,8 @@
     </select>
 
     <select id="selectMiniUserExportList" parameterType="org.ba7lgj.ccp.common.dto.MiniUserQueryDTO" resultMap="MiniUserResult">
-        <include refid="selectMiniUserList" />
+        <include refid="selectMiniUserColumns" />
+
     </select>
 
     <insert id="insertMiniUser" parameterType="org.ba7lgj.ccp.common.domain.MiniUser" useGeneratedKeys="true" keyProperty="id">
