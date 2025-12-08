@@ -26,7 +26,7 @@ public interface IMiniUserService {
 
     int changeStatus(Long id, Integer status);
 
-    int reviewUser(Long id, Integer targetAuthStatus, String failReason, Long reviewBy, Date reviewTime);
+    int reviewUser(Long id, Integer targetRealAuthStatus, String failReason, Long reviewBy, Date reviewTime);
 
     int deleteMiniUserById(Long id);
 

@@ -7,12 +7,15 @@
       <el-form-item label="手机号" prop="phone">
         <el-input v-model="queryParams.phone" placeholder="请输入手机号" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="学号" prop="studentNo">
-        <el-input v-model="queryParams.studentNo" placeholder="请输入学号" clearable @keyup.enter.native="handleQuery" />
+      <el-form-item label="证件姓名" prop="idCardName">
+        <el-input v-model="queryParams.idCardName" placeholder="请输入证件姓名" clearable @keyup.enter.native="handleQuery" />
       </el-form-item>
-      <el-form-item label="认证状态" prop="authStatus">
-        <el-select v-model="queryParams.authStatus" placeholder="请选择认证状态" clearable>
-          <el-option v-for="dict in authStatusOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
+      <el-form-item label="证件号码" prop="idCardNumber">
+        <el-input v-model="queryParams.idCardNumber" placeholder="请输入证件号码" clearable @keyup.enter.native="handleQuery" />
+      </el-form-item>
+      <el-form-item label="实名状态" prop="realAuthStatus">
+        <el-select v-model="queryParams.realAuthStatus" placeholder="请选择实名状态" clearable>
+          <el-option v-for="dict in realAuthStatusOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
       </el-form-item>
       <el-form-item label="账号状态" prop="status">
@@ -49,8 +52,15 @@
         </template>
       </el-table-column>
       <el-table-column label="手机号" prop="phone" />
-      <el-table-column label="学号" prop="studentNo" />
+      <el-table-column label="证件姓名" prop="idCardName" />
+      <el-table-column label="证件号码" prop="idCardNumber" />
       <el-table-column label="真实姓名" prop="realName" />
+      <el-table-column label="人脸照片" prop="faceImageUrl" width="120">
+        <template slot-scope="scope">
+          <el-image style="width:60px;height:60px" :src="scope.row.faceImageUrl" fit="cover" />
+        </template>
+      </el-table-column>
+      <el-table-column label="人脸校验结果" prop="faceVerifyResult" />
       <el-table-column label="性别" prop="gender">
         <template slot-scope="scope">
           <dict-tag :options="genderOptions" :value="scope.row.gender" />
@@ -62,16 +72,16 @@
           <el-tag type="danger" v-else>封禁</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="认证状态" prop="authStatus">
+      <el-table-column label="实名状态" prop="realAuthStatus">
         <template slot-scope="scope">
-          <dict-tag :options="authStatusOptions" :value="scope.row.authStatus" />
+          <dict-tag :options="realAuthStatusOptions" :value="scope.row.realAuthStatus" />
         </template>
       </el-table-column>
-      <el-table-column label="审核时间" prop="reviewTime" width="160" />
+      <el-table-column label="实名审核时间" prop="realAuthReviewTime" width="160" />
       <el-table-column label="创建时间" prop="createTime" width="160" />
       <el-table-column label="操作" width="240" fixed="right">
         <template slot-scope="scope">
-          <el-button size="mini" type="primary" plain icon="el-icon-view" v-if="scope.row.authStatus === 1" @click="handleReview(scope.row)" v-hasPermi="['ccp:user:review']">审核</el-button>
+          <el-button size="mini" type="primary" plain icon="el-icon-view" v-if="scope.row.realAuthStatus === 1" @click="handleReview(scope.row)" v-hasPermi="['ccp:user:review']">审核</el-button>
           <el-button size="mini" type="warning" plain icon="el-icon-check" v-if="scope.row.status === 0" @click="handleChangeStatus(scope.row, 1)" v-hasPermi="['ccp:user:changeStatus']">启用</el-button>
           <el-button size="mini" type="danger" plain icon="el-icon-close" v-if="scope.row.status === 1" @click="handleChangeStatus(scope.row, 0)" v-hasPermi="['ccp:user:changeStatus']">禁用</el-button>
           <el-button size="mini" type="text" icon="el-icon-edit" @click="handleUpdate(scope.row)" v-hasPermi="['ccp:user:edit']">编辑</el-button>
@@ -91,11 +101,20 @@
         <el-form-item label="手机号" prop="phone">
           <el-input v-model="form.phone" placeholder="请输入手机号" />
         </el-form-item>
-        <el-form-item label="学号" prop="studentNo">
-          <el-input v-model="form.studentNo" placeholder="请输入学号" />
-        </el-form-item>
         <el-form-item label="真实姓名" prop="realName">
           <el-input v-model="form.realName" placeholder="请输入真实姓名" />
+        </el-form-item>
+        <el-form-item label="证件姓名" prop="idCardName">
+          <el-input v-model="form.idCardName" placeholder="请输入证件姓名" />
+        </el-form-item>
+        <el-form-item label="证件号码" prop="idCardNumber">
+          <el-input v-model="form.idCardNumber" placeholder="请输入证件号码" />
+        </el-form-item>
+        <el-form-item label="人脸照片链接" prop="faceImageUrl">
+          <el-input v-model="form.faceImageUrl" placeholder="请输入人脸照片链接" />
+        </el-form-item>
+        <el-form-item label="人脸校验结果" prop="faceVerifyResult">
+          <el-input v-model="form.faceVerifyResult" placeholder="请输入人脸校验结果" />
         </el-form-item>
         <el-form-item label="管理员备注" prop="adminRemark">
           <el-input type="textarea" v-model="form.adminRemark" placeholder="请输入备注" />
@@ -118,19 +137,28 @@
         <el-form-item label="真实姓名">
           <span>{{ review.realName }}</span>
         </el-form-item>
-        <el-form-item label="学号">
-          <span>{{ review.studentNo }}</span>
+        <el-form-item label="证件姓名">
+          <span>{{ review.idCardName }}</span>
+        </el-form-item>
+        <el-form-item label="证件号码">
+          <span>{{ review.idCardNumber }}</span>
         </el-form-item>
         <el-form-item label="手机号">
           <span>{{ review.phone }}</span>
         </el-form-item>
-        <el-form-item label="审核结果" prop="targetAuthStatus">
-          <el-select v-model="review.targetAuthStatus">
-            <el-option v-for="dict in authStatusOptions" :key="dict.value" :label="dict.label" :value="dict.value" v-if="dict.value === 2 || dict.value === 3" />
+        <el-form-item label="人脸照片">
+          <el-image style="width:120px;height:120px" :src="review.faceImageUrl" fit="cover" />
+        </el-form-item>
+        <el-form-item label="人脸校验结果">
+          <span>{{ review.faceVerifyResult }}</span>
+        </el-form-item>
+        <el-form-item label="审核结果" prop="targetRealAuthStatus">
+          <el-select v-model="review.targetRealAuthStatus">
+            <el-option v-for="dict in realAuthStatusOptions" :key="dict.value" :label="dict.label" :value="dict.value" v-if="dict.value === 2 || dict.value === 3" />
           </el-select>
         </el-form-item>
-        <el-form-item label="拒绝原因" prop="authFailReason" v-if="review.targetAuthStatus === 3">
-          <el-input type="textarea" v-model="review.authFailReason" placeholder="请输入拒绝原因" />
+        <el-form-item label="拒绝原因" prop="realAuthFailReason" v-if="review.targetRealAuthStatus === 3">
+          <el-input type="textarea" v-model="review.realAuthFailReason" placeholder="请输入拒绝原因" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -156,15 +184,16 @@ export default {
       reviewOpen: false,
       dateRange: [],
       genderOptions: [],
-      authStatusOptions: [],
+      realAuthStatusOptions: [],
       queryParams: {
         pageNum: 1,
         pageSize: 10,
         nickName: undefined,
         phone: undefined,
-        studentNo: undefined,
+        idCardName: undefined,
+        idCardNumber: undefined,
         status: undefined,
-        authStatus: undefined
+        realAuthStatus: undefined
       },
       form: {},
       review: {}
@@ -176,7 +205,7 @@ export default {
       this.genderOptions = res.data
     })
     this.getDicts('ccp_auth_status').then(res => {
-      this.authStatusOptions = res.data
+      this.realAuthStatusOptions = res.data
     })
   },
   methods: {
@@ -218,10 +247,13 @@ export default {
       this.review = {
         id: row.id,
         realName: row.realName,
-        studentNo: row.studentNo,
+        idCardName: row.idCardName,
+        idCardNumber: row.idCardNumber,
         phone: row.phone,
-        targetAuthStatus: 2,
-        authFailReason: ''
+        faceImageUrl: row.faceImageUrl,
+        faceVerifyResult: row.faceVerifyResult,
+        targetRealAuthStatus: 2,
+        realAuthFailReason: ''
       }
       this.reviewOpen = true
     },
@@ -255,7 +287,7 @@ export default {
       }
     },
     submitReview() {
-      if (this.review.targetAuthStatus === 3 && !this.review.authFailReason) {
+      if (this.review.targetRealAuthStatus === 3 && !this.review.realAuthFailReason) {
         this.$modal.msgError('请填写拒绝原因')
         return
       }
