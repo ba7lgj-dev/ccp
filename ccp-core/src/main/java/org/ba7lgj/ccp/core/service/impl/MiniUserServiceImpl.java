@@ -2,7 +2,7 @@ package org.ba7lgj.ccp.core.service.impl;
 
 import org.ba7lgj.ccp.common.domain.MiniUser;
 import org.ba7lgj.ccp.common.dto.MiniUserQueryDTO;
-import org.ba7lgj.ccp.common.enums.AuthStatusEnum;
+import org.ba7lgj.ccp.common.enums.RealAuthStatusEnum;
 import org.ba7lgj.ccp.core.mapper.MiniUserMapper;
 import org.ba7lgj.ccp.core.service.IMiniUserService;
 import org.springframework.stereotype.Service;
@@ -52,7 +52,7 @@ public class MiniUserServiceImpl implements IMiniUserService {
         MiniUser newUser = new MiniUser();
         newUser.setOpenId(openId);
         newUser.setStatus(1);
-        newUser.setAuthStatus(AuthStatusEnum.NOT_AUTH.getCode());
+        newUser.setRealAuthStatus(RealAuthStatusEnum.NOT_AUTH.getCode());
         newUser.setCreateTime(new Date());
         miniUserMapper.insertMiniUser(newUser);
         return newUser;
@@ -61,7 +61,7 @@ public class MiniUserServiceImpl implements IMiniUserService {
     @Override
     public int insertMiniUser(MiniUser user) {
         user.setCreateTime(new Date());
-        user.setAuthStatus(user.getAuthStatus() == null ? AuthStatusEnum.NOT_AUTH.getCode() : user.getAuthStatus());
+        user.setRealAuthStatus(user.getRealAuthStatus() == null ? RealAuthStatusEnum.NOT_AUTH.getCode() : user.getRealAuthStatus());
         user.setStatus(user.getStatus() == null ? 1 : user.getStatus());
         return miniUserMapper.insertMiniUser(user);
     }
@@ -84,26 +84,26 @@ public class MiniUserServiceImpl implements IMiniUserService {
     }
 
     @Override
-    public int reviewUser(Long id, Integer targetAuthStatus, String failReason, Long reviewBy, Date reviewTime) {
-        if (targetAuthStatus == null) {
-            throw new IllegalArgumentException("targetAuthStatus must be provided");
+    public int reviewUser(Long id, Integer targetRealAuthStatus, String failReason, Long reviewBy, Date reviewTime) {
+        if (targetRealAuthStatus == null) {
+            throw new IllegalArgumentException("targetRealAuthStatus must be provided");
         }
-        boolean approved = AuthStatusEnum.APPROVED.getCode() == targetAuthStatus;
-        boolean rejected = AuthStatusEnum.REJECTED.getCode() == targetAuthStatus;
+        boolean approved = RealAuthStatusEnum.APPROVED.getCode() == targetRealAuthStatus;
+        boolean rejected = RealAuthStatusEnum.REJECTED.getCode() == targetRealAuthStatus;
         if (!approved && !rejected) {
-            throw new IllegalArgumentException("targetAuthStatus must be 2 or 3");
+            throw new IllegalArgumentException("targetRealAuthStatus must be 2 or 3");
         }
         if (rejected && !StringUtils.hasText(failReason)) {
-            throw new IllegalArgumentException("authFailReason is required when rejected");
+            throw new IllegalArgumentException("realAuthFailReason is required when rejected");
         }
         MiniUser user = miniUserMapper.selectMiniUserById(id);
         if (user == null) {
             return 0;
         }
-        user.setAuthStatus(targetAuthStatus);
-        user.setAuthFailReason(failReason);
-        user.setReviewBy(reviewBy);
-        user.setReviewTime(reviewTime);
+        user.setRealAuthStatus(targetRealAuthStatus);
+        user.setRealAuthFailReason(failReason);
+        user.setRealAuthReviewBy(reviewBy);
+        user.setRealAuthReviewTime(reviewTime);
         user.setUpdateTime(new Date());
         return miniUserMapper.updateMiniUser(user);
     }

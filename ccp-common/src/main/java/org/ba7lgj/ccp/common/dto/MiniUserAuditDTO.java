@@ -9,8 +9,8 @@ public class MiniUserAuditDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
-    private Integer targetAuthStatus;
-    private String authFailReason;
+    private Integer targetRealAuthStatus;
+    private String realAuthFailReason;
 
     public Long getId() {
         return id;
@@ -20,19 +20,19 @@ public class MiniUserAuditDTO implements Serializable {
         this.id = id;
     }
 
-    public Integer getTargetAuthStatus() {
-        return targetAuthStatus;
+    public Integer getTargetRealAuthStatus() {
+        return targetRealAuthStatus;
     }
 
-    public void setTargetAuthStatus(Integer targetAuthStatus) {
-        this.targetAuthStatus = targetAuthStatus;
+    public void setTargetRealAuthStatus(Integer targetRealAuthStatus) {
+        this.targetRealAuthStatus = targetRealAuthStatus;
     }
 
-    public String getAuthFailReason() {
-        return authFailReason;
+    public String getRealAuthFailReason() {
+        return realAuthFailReason;
     }
 
-    public void setAuthFailReason(String authFailReason) {
-        this.authFailReason = authFailReason;
+    public void setRealAuthFailReason(String realAuthFailReason) {
+        this.realAuthFailReason = realAuthFailReason;
     }
 }

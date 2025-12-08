@@ -9,22 +9,26 @@
         <result column="nick_name" property="nickName" />
         <result column="avatar_url" property="avatarUrl" />
         <result column="phone" property="phone" />
-        <result column="student_no" property="studentNo" />
         <result column="real_name" property="realName" />
+        <result column="id_card_name" property="idCardName" />
+        <result column="id_card_number" property="idCardNumber" />
+        <result column="face_image_url" property="faceImageUrl" />
+        <result column="face_verify_result" property="faceVerifyResult" />
         <result column="gender" property="gender" />
         <result column="status" property="status" />
-        <result column="auth_status" property="authStatus" />
-        <result column="auth_fail_reason" property="authFailReason" />
-        <result column="review_by" property="reviewBy" />
-        <result column="review_time" property="reviewTime" />
+        <result column="real_auth_status" property="realAuthStatus" />
+        <result column="real_auth_fail_reason" property="realAuthFailReason" />
+        <result column="real_auth_review_by" property="realAuthReviewBy" />
+        <result column="real_auth_review_time" property="realAuthReviewTime" />
         <result column="admin_remark" property="adminRemark" />
         <result column="create_time" property="createTime" />
         <result column="update_time" property="updateTime" />
     </resultMap>
 
     <sql id="selectMiniUserColumns">
-        select id, open_id, union_id, nick_name, avatar_url, phone, student_no, real_name, gender, status, auth_status,
-               auth_fail_reason, review_by, review_time, admin_remark, create_time, update_time
+        select id, open_id, union_id, nick_name, avatar_url, phone, real_name, id_card_name, id_card_number, face_image_url,
+               face_verify_result, gender, status, real_auth_status, real_auth_fail_reason, real_auth_review_by,
+               real_auth_review_time, admin_remark, create_time, update_time
         from ccp_mini_user
     </sql>
 
@@ -47,14 +51,17 @@
             <if test="phone != null and phone != ''">
                 and phone = #{phone}
             </if>
-            <if test="studentNo != null and studentNo != ''">
-                and student_no = #{studentNo}
+            <if test="idCardName != null and idCardName != ''">
+                and id_card_name like concat('%', #{idCardName}, '%')
+            </if>
+            <if test="idCardNumber != null and idCardNumber != ''">
+                and id_card_number = #{idCardNumber}
             </if>
             <if test="status != null">
                 and status = #{status}
             </if>
-            <if test="authStatus != null">
-                and auth_status = #{authStatus}
+            <if test="realAuthStatus != null">
+                and real_auth_status = #{realAuthStatus}
             </if>
             <if test="createTimeStart != null">
                 and create_time &gt;= #{createTimeStart}
@@ -72,10 +79,12 @@
     </select>
 
     <insert id="insertMiniUser" parameterType="org.ba7lgj.ccp.common.domain.MiniUser" useGeneratedKeys="true" keyProperty="id">
-        insert into ccp_mini_user(open_id, union_id, nick_name, avatar_url, phone, student_no, real_name, gender, status,
-                                  auth_status, auth_fail_reason, review_by, review_time, admin_remark, create_time, update_time)
-        values (#{openId}, #{unionId}, #{nickName}, #{avatarUrl}, #{phone}, #{studentNo}, #{realName}, #{gender}, #{status},
-                #{authStatus}, #{authFailReason}, #{reviewBy}, #{reviewTime}, #{adminRemark}, #{createTime}, #{updateTime})
+        insert into ccp_mini_user(open_id, union_id, nick_name, avatar_url, phone, real_name, id_card_name, id_card_number,
+                                  face_image_url, face_verify_result, gender, status, real_auth_status, real_auth_fail_reason,
+                                  real_auth_review_by, real_auth_review_time, admin_remark, create_time, update_time)
+        values (#{openId}, #{unionId}, #{nickName}, #{avatarUrl}, #{phone}, #{realName}, #{idCardName}, #{idCardNumber},
+                #{faceImageUrl}, #{faceVerifyResult}, #{gender}, #{status}, #{realAuthStatus}, #{realAuthFailReason},
+                #{realAuthReviewBy}, #{realAuthReviewTime}, #{adminRemark}, #{createTime}, #{updateTime})
     </insert>
 
     <update id="updateMiniUser" parameterType="org.ba7lgj.ccp.common.domain.MiniUser">
@@ -85,14 +94,17 @@
             <if test="nickName != null">nick_name = #{nickName},</if>
             <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
             <if test="phone != null">phone = #{phone},</if>
-            <if test="studentNo != null">student_no = #{studentNo},</if>
             <if test="realName != null">real_name = #{realName},</if>
+            <if test="idCardName != null">id_card_name = #{idCardName},</if>
+            <if test="idCardNumber != null">id_card_number = #{idCardNumber},</if>
+            <if test="faceImageUrl != null">face_image_url = #{faceImageUrl},</if>
+            <if test="faceVerifyResult != null">face_verify_result = #{faceVerifyResult},</if>
             <if test="gender != null">gender = #{gender},</if>
             <if test="status != null">status = #{status},</if>
-            <if test="authStatus != null">auth_status = #{authStatus},</if>
-            <if test="authFailReason != null">auth_fail_reason = #{authFailReason},</if>
-            <if test="reviewBy != null">review_by = #{reviewBy},</if>
-            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="realAuthStatus != null">real_auth_status = #{realAuthStatus},</if>
+            <if test="realAuthFailReason != null">real_auth_fail_reason = #{realAuthFailReason},</if>
+            <if test="realAuthReviewBy != null">real_auth_review_by = #{realAuthReviewBy},</if>
+            <if test="realAuthReviewTime != null">real_auth_review_time = #{realAuthReviewTime},</if>
             <if test="adminRemark != null">admin_remark = #{adminRemark},</if>
             <if test="createTime != null">create_time = #{createTime},</if>
             <if test="updateTime != null">update_time = #{updateTime}</if>

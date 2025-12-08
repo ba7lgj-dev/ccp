@@ -85,8 +85,8 @@ public class CcpUserController extends BaseController {
     public AjaxResult review(@RequestBody MiniUserAuditDTO auditDTO) {
         Long reviewer = SecurityUtils.getUserId();
         Date now = new Date();
-        return toAjax(miniUserService.reviewUser(auditDTO.getId(), auditDTO.getTargetAuthStatus(),
-                auditDTO.getAuthFailReason(), reviewer, now));
+        return toAjax(miniUserService.reviewUser(auditDTO.getId(), auditDTO.getTargetRealAuthStatus(),
+                auditDTO.getRealAuthFailReason(), reviewer, now));
     }
 
     @PreAuthorize("@ss.hasPermi('ccp:user:export')")
