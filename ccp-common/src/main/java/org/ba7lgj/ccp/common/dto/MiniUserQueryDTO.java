@@ -11,9 +11,10 @@ public class MiniUserQueryDTO implements Serializable {
 
     private String nickName;
     private String phone;
-    private String studentNo;
+    private String idCardName;
+    private String idCardNumber;
     private Integer status;
-    private Integer authStatus;
+    private Integer realAuthStatus;
     private Date createTimeStart;
     private Date createTimeEnd;
 
@@ -33,14 +34,6 @@ public class MiniUserQueryDTO implements Serializable {
         this.phone = phone;
     }
 
-    public String getStudentNo() {
-        return studentNo;
-    }
-
-    public void setStudentNo(String studentNo) {
-        this.studentNo = studentNo;
-    }
-
     public Integer getStatus() {
         return status;
     }
@@ -49,12 +42,28 @@ public class MiniUserQueryDTO implements Serializable {
         this.status = status;
     }
 
-    public Integer getAuthStatus() {
-        return authStatus;
+    public Integer getRealAuthStatus() {
+        return realAuthStatus;
     }
 
-    public void setAuthStatus(Integer authStatus) {
-        this.authStatus = authStatus;
+    public void setRealAuthStatus(Integer realAuthStatus) {
+        this.realAuthStatus = realAuthStatus;
+    }
+
+    public String getIdCardName() {
+        return idCardName;
+    }
+
+    public void setIdCardName(String idCardName) {
+        this.idCardName = idCardName;
+    }
+
+    public String getIdCardNumber() {
+        return idCardNumber;
+    }
+
+    public void setIdCardNumber(String idCardNumber) {
+        this.idCardNumber = idCardNumber;
     }
 
     public Date getCreateTimeStart() {
