@@ -16,10 +16,10 @@ import org.springframework.web.client.RestTemplate;
 public class WeChatApiService {
     private static final Logger log = LoggerFactory.getLogger(WeChatApiService.class);
 
-    @Value("${ccp.wx.appid:}")
+    @Value("${ccp.wx.appid}")
     private String appId;
 
-    @Value("${ccp.wx.secret:}")
+    @Value("${ccp.wx.secret}")
     private String appSecret;
 
     private final RestTemplate restTemplate = new RestTemplate();
