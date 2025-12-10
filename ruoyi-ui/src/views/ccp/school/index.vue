@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item label="城市" prop="cityId">
         <el-select v-model="queryParams.cityId" placeholder="请选择城市" clearable filterable>
-          <el-option v-for="item in cityOptions" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in cityOptions" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="status">
@@ -38,7 +38,7 @@
       </el-table-column>
       <el-table-column label="Logo" prop="logoUrl" width="100">
         <template slot-scope="scope">
-          <el-image v-if="scope.row.logoUrl" style="width:60px;height:60px" :src="scope.row.logoUrl" fit="cover" />
+          <ImagePreview v-if="scope.row.logoUrl" style="width:60px;height:60px" :src="scope.row.logoUrl" fit="cover" />
         </template>
       </el-table-column>
       <el-table-column label="地址" prop="address" />
@@ -69,6 +69,7 @@ import SchoolForm from './form'
 export default {
   name: 'SchoolIndex',
   components: { SchoolForm },
+  dicts: ['ccp_city'],
   data() {
     return {
       loading: false,

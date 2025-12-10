@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="100px">
       <el-form-item label="城市" prop="cityId">
         <el-select v-model="form.cityId" placeholder="请选择城市" filterable clearable>
-          <el-option v-for="item in cityOptions" :key="item.value" :label="item.label" :value="item.value" />
+          <el-option v-for="item in cityOptions" :key="item.dictValue" :label="item.dictLabel" :value="item.dictValue" />
         </el-select>
       </el-form-item>
       <el-form-item label="学校名称" prop="schoolName">
@@ -37,6 +37,7 @@ import { addSchool, updateSchool, getSchool } from '@/api/ccp/school'
 
 export default {
   name: 'SchoolForm',
+   dicts: ['ccp_city'],
   props: {
     cityOptions: {
       type: Array,
