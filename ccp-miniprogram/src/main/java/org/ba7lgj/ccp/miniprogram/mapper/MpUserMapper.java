@@ -4,7 +4,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.ba7lgj.ccp.miniprogram.domain.MpUser;
 
 @Mapper
-public interface UserMapper {
+public interface MpUserMapper {
     MpUser selectByOpenId(String openId);
 
     int insertUser(MpUser user);
