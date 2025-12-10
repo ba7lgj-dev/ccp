@@ -1,6 +1,6 @@
 const auth = require('./auth.js')
 
-const BASE_URL = 'http://localhost:8080/ccp-miniprogram'
+const BASE_URL = 'http://localhost:8080/mp'
 
 function request(options) {
   const opts = options || {}
