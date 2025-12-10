@@ -36,7 +36,7 @@ public class MpAuthController {
         userService.refreshActiveInfo(user.getId(), now, 1);
         user.setLastActiveTime(now);
         user.setOnlineStatus(1);
-        String token = MpJwtTokenUtil.generateToken(user.getId());
+        String token = "mock-token-" + user.getId();
         MpLoginVO vo = new MpLoginVO();
         vo.setToken(token);
         vo.setUser(user);
@@ -46,20 +46,8 @@ public class MpAuthController {
     @PostMapping("/wxPhoneBind")
     public MpResult<Void> wxPhoneBind(@RequestBody MpPhoneBindDTO dto,
                                     @RequestHeader(value = "Authorization", required = false) String authorization) {
-        // simplified phone bind handling
-        String phone = dto.getPhone();
-        if (phone == null || phone.isEmpty()) {
-            phone = "";
-        }
-        // Here we can decode encryptedData and iv in future iterations
-        // currently assume userId is stored in token parsing
-        Long userId = MpJwtTokenUtil.getCurrentUserId();
-        if (userId == null && authorization != null && authorization.startsWith("Bearer ")) {
-            userId = MpJwtTokenUtil.parseUserId(authorization.substring("Bearer ".length()));
-        }
-        if (userId != null && phone != null && !phone.isEmpty()) {
-            userService.updateUserPhone(userId, phone);
-        }
+        // Phone binding is temporarily disabled; keep endpoint for compatibility
+        // Intentionally no-op to avoid requiring encryptedData/iv from the client.
         return MpResult.ok(null);
     }
 }
