@@ -1,0 +1,14 @@
+<view class="school-page">
+  <view class="search-bar">
+    <input placeholder="搜索学校名称" bindinput="onSearchInput" value="{{searchKeyword}}" confirm-type="search"></input>
+  </view>
+  <scroll-view class="school-list" scroll-y="true">
+    <view wx:for="{{filteredSchools}}" wx:key="id" class="school-item" bindtap="onSelectSchool" data-id="{{item.id}}">
+      <image class="school-logo" src="{{item.logoUrl || '/assets/default-school.png'}}"></image>
+      <view class="school-info">
+        <text class="school-name">{{item.schoolName}}</text>
+        <text class="school-city">{{item.cityName}}</text>
+      </view>
+    </view>
+  </scroll-view>
+</view>
