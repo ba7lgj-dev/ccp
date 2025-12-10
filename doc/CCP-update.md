@@ -338,3 +338,27 @@ ccp-core/src/main/java/com/ccp/
 - 登录按钮点击即自动获取 token、保存用户信息并跳转后续流程。
 - 模拟 token 解析逻辑补充，保证现有接口在 mock 登录下仍可获取用户上下文。
 - 已验证 Spring Boot 配置能正常启动所需 Bean，管理端与小程序端启动路径互不影响。
+
+────────────────────────────────
+## Update-0006 重构小程序登录体系（2025-xx-xx）
+
+### 登录控制器扫描结果
+- 路由重复：`/mp/auth/wxLogin` 与 `/mp/app/login` 同时提供登录能力，返回结构分别是 `MpResult` 与 `AjaxResult`，前端无法唯一确定入口。
+- 登录逻辑重复且冲突：`MpAuthController` 使用 `MpWxAuthService` 的 mock openId 与 `mock-token-*`，`MpCcpAppLoginController` 走 `TokenService`；两个流程都会写 `lastActiveTime/onlineStatus` 但更新口径不一致。
+- 参数处理不规范：`MpAuthController` 未校验 `jsCode` 为空，`MpCcpAppLoginController` 直接从 `Map` 取 `code` 未判空，均缺少错误码返回。
+- 旧 token 体系残留：`MpCcpAppLoginController` 依赖 `TokenService` 生成自定义 token，拦截器 `MpAuthTokenInterceptor` 兼容 `mock-token-*`，与 JWT 目标冲突。
+- 模拟登录/临时逻辑：`MpWxAuthServiceImpl` 使用硬编码 appId/secret 并在异常时返回 `mock-openid-*`；`MpAuthController` 返回 `mock-token-*`，未真实调用微信。
+- 手机号登录遗留：`/mp/auth/wxPhoneBind` 仍暴露在白名单里，DTO/Service 保留手机号更新接口但为空实现。
+- 不符合 code2session 规范：`MpCcpAppLoginController` 仅提取 openId，无 session_key/unionId 校验；`MpWxAuthServiceImpl` 未读取配置，也未处理微信错误码。
+- 数据写入问题：重复创建/更新逻辑分散在两个 Controller，不统一去重；更新用户时未确保只写入活跃时间/在线状态，存在覆盖风险。
+
+### 本次调整
+- 废弃 `MpAuthController` 与 `MpCcpAppLoginController`，统一登录入口为 `POST /mp/login`。
+- 登录流程严格按照微信 `code2session`，从 `application.yml` 读取 appid/secret，解析 `openid/session_key` 并校验空值。
+- 新增 JWT 认证体系：`JwtUtil` 负责生成/解析，`JwtInterceptor` 拦截校验，`MpWebMvcConfig` 注册并配置白名单。
+- 登录成功返回 `{code:0,msg:'success',data:{token,userInfo}}`，使用 `MiniUser` 数据模型，登录后刷新 `last_active_time` 与 `online_status`。
+- 同步数据库模型与服务：`MiniUser` 字段保持与 `ccp_mini_user` 一致，`CoreMiniUserService` 登录写入仅更新活跃时间/在线状态，避免覆盖其他字段。
+- 前端依赖同步：`/mp/login` 新入口、响应字段 `userInfo`、去除手机号绑定调用（保留空实现）。
+- 手机号登录停用：相关绑定接口暂不开放，仅 code 登录。
+- 旧 token 体系彻底移除，统一返回 JWT，拦截器不再接受 `mock-token-*`。
+- 已验证模块能编译通过，启动及登录流程可正常跑通。

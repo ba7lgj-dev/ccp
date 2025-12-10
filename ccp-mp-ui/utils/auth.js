@@ -31,7 +31,7 @@ function login() {
             return
           }
           setToken(data.token)
-          const userInfo = data.user || {}
+          const userInfo = data.userInfo || {}
           wx.setStorageSync('userInfo', userInfo)
           const app = getApp()
           if (app && app.globalData) {
