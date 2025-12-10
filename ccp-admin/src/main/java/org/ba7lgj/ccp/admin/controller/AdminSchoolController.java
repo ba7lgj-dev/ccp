@@ -7,7 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.ba7lgj.ccp.common.dto.SchoolDTO;
 import org.ba7lgj.ccp.common.dto.SchoolQueryDTO;
-import org.ba7lgj.ccp.core.service.ISchoolService;
+import org.ba7lgj.ccp.core.service.CoreSchoolService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ import java.util.Objects;
 public class AdminSchoolController extends BaseController {
 
     @Resource
-    private ISchoolService schoolService;
+    private CoreSchoolService schoolService;
 
     @PreAuthorize("@ss.hasPermi('ccp:school:list')")
     @GetMapping("/list")

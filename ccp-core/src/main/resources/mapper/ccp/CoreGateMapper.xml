@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.core.mapper.CoreGateMapper">
+
+    <resultMap id="GateResult" type="org.ba7lgj.ccp.common.vo.GateVO">
+        <id column="id" property="id" />
+        <result column="campus_id" property="campusId" />
+        <result column="campus_name" property="campusName" />
+        <result column="gate_name" property="gateName" />
+        <result column="latitude" property="latitude" />
+        <result column="longitude" property="longitude" />
+        <result column="sort" property="sort" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        g.id, g.campus_id, c.campus_name, g.gate_name, g.latitude, g.longitude, g.sort, g.status, g.remark, g.create_time, g.update_time
+    </sql>
+
+    <select id="selectGateById" parameterType="java.lang.Long" resultMap="GateResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_school_gate g
+                 LEFT JOIN ccp_school_campus c ON g.campus_id = c.id
+        WHERE g.id = #{id}
+    </select>
+
+    <select id="selectGateList" parameterType="org.ba7lgj.ccp.common.dto.GateQueryDTO" resultMap="GateResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_school_gate g
+                 LEFT JOIN ccp_school_campus c ON g.campus_id = c.id
+        <where>
+            <if test="campusId != null">
+                AND g.campus_id = #{campusId}
+            </if>
+            <if test="gateName != null and gateName != ''">
+                AND g.gate_name LIKE CONCAT('%', #{gateName}, '%')
+            </if>
+            <if test="status != null">
+                AND g.status = #{status}
+            </if>
+        </where>
+        ORDER BY g.create_time DESC
+    </select>
+
+    <select id="selectGateByName" resultType="org.ba7lgj.ccp.common.domain.Gate">
+        SELECT id, campus_id, gate_name, latitude, longitude, sort, status, remark, create_time, update_time
+        FROM ccp_school_gate
+        WHERE campus_id = #{campusId} AND gate_name = #{gateName}
+        LIMIT 1
+    </select>
+
+    <insert id="insertGate" parameterType="org.ba7lgj.ccp.common.domain.Gate" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ccp_school_gate (campus_id, gate_name, latitude, longitude, sort, status, remark, create_time)
+        VALUES (#{campusId}, #{gateName}, #{latitude}, #{longitude}, #{sort}, #{status}, #{remark}, #{createTime})
+    </insert>
+
+    <update id="updateGate" parameterType="org.ba7lgj.ccp.common.domain.Gate">
+        UPDATE ccp_school_gate
+        SET campus_id = #{campusId},
+            gate_name = #{gateName},
+            latitude = #{latitude},
+            longitude = #{longitude},
+            sort = #{sort},
+            status = #{status},
+            remark = #{remark},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeStatus">
+        UPDATE ccp_school_gate SET status = #{status}, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <delete id="deleteGateByIds" parameterType="Long">
+        DELETE FROM ccp_school_gate WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+</mapper>

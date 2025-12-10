@@ -1,9 +1,9 @@
 package org.ba7lgj.ccp.miniprogram.controller;
 
 import java.util.List;
-import org.ba7lgj.ccp.miniprogram.service.GateService;
-import org.ba7lgj.ccp.miniprogram.vo.GateVO;
-import org.ba7lgj.ccp.miniprogram.vo.Result;
+import org.ba7lgj.ccp.miniprogram.service.MpGateService;
+import org.ba7lgj.ccp.miniprogram.vo.MpGateVO;
+import org.ba7lgj.ccp.miniprogram.vo.MpResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/mp/gate")
 public class MpGateController {
     @Autowired
-    private GateService gateService;
+    private MpGateService gateService;
 
     @GetMapping("/listByCampus")
-    public Result<List<GateVO>> listByCampus(@RequestParam("campusId") Long campusId) {
-        List<GateVO> list = gateService.listEnabledGatesByCampus(campusId);
-        return Result.ok(list);
+    public MpResult<List<MpGateVO>> listByCampus(@RequestParam("campusId") Long campusId) {
+        List<MpGateVO> list = gateService.listEnabledGatesByCampus(campusId);
+        return MpResult.ok(list);
     }
 }
