@@ -73,6 +73,12 @@ public class R<T> implements Serializable
         return apiResult;
     }
 
+
+    public static <T> R<T> error(String msg)
+    {
+        return restResult(null, FAIL, msg);
+    }
+
     public int getCode()
     {
         return code;
