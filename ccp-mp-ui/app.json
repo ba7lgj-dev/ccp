@@ -1,11 +1,13 @@
 {
   "pages": [
-    "pages/index/index",
-    "pages/logs/logs"
+    "pages/login/index",
+    "pages/school/select/index",
+    "pages/campus/select/index",
+    "pages/trip/publish/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
-    "navigationBarTitleText": "Weixin",
+    "navigationBarTitleText": "校园拼车 CCP",
     "navigationBarBackgroundColor": "#ffffff"
   },
   "style": "v2",

@@ -1,0 +1,22 @@
+<view class="publish-page">
+  <view class="campus-info">
+    <text>当前校区：{{selectedCampus.campusName}}</text>
+  </view>
+  <view class="picker-block">
+    <picker mode="selector" range="{{gateNames}}" bindchange="onStartGateChange">
+      <view class="picker-display">
+        <text class="picker-label">起点校门</text>
+        <text class="picker-value">{{startGateIndex >= 0 ? gateNames[startGateIndex] : '请选择'}}</text>
+      </view>
+    </picker>
+  </view>
+  <view class="picker-block">
+    <picker mode="selector" range="{{gateNames}}" bindchange="onEndGateChange">
+      <view class="picker-display">
+        <text class="picker-label">终点校门</text>
+        <text class="picker-value">{{endGateIndex >= 0 ? gateNames[endGateIndex] : '请选择'}}</text>
+      </view>
+    </picker>
+  </view>
+  <button class="next-button" bindtap="onNextStep">下一步</button>
+</view>
