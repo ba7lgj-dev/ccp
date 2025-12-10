@@ -19,9 +19,9 @@ public class AuthTokenInterceptor implements HandlerInterceptor {
     private static final Set<String> WHITE_LIST = new HashSet<>(Arrays.asList(
             "/auth/wxLogin",
             "/auth/wxPhoneBind",
-            "/school/list",
-            "/campus/listBySchool",
-            "/gate/listByCampus"
+            "/mp/school/list",
+            "/mp/campus/listBySchool",
+            "/mp/gate/listByCampus"
     ));
 
     @Override

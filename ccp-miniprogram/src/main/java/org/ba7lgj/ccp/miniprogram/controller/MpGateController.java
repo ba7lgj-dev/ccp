@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/gate")
-public class GateController {
+@RequestMapping("/mp/gate")
+public class MpGateController {
     @Autowired
     private GateService gateService;
 

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/school")
-public class SchoolController {
+@RequestMapping("/mp/school")
+public class MpSchoolController {
     @Autowired
     private SchoolService schoolService;
 

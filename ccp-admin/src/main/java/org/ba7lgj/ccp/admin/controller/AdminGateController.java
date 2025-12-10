@@ -20,8 +20,8 @@ import java.util.Objects;
  * 校门管理接口。
  */
 @RestController
-@RequestMapping("/gate")
-public class GateController extends BaseController {
+@RequestMapping("/admin/gate")
+public class AdminGateController extends BaseController {
 
     @Resource
     private IGateService gateService;

@@ -20,8 +20,8 @@ import java.util.Objects;
  * 学校管理接口。
  */
 @RestController
-@RequestMapping("/school")
-public class SchoolController extends BaseController {
+@RequestMapping("/admin/school")
+public class AdminSchoolController extends BaseController {
 
     @Resource
     private ISchoolService schoolService;

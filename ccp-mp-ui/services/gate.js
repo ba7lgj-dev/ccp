@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function getGateList(campusId) {
   return request({
-    url: `/gate/listByCampus`,
+    url: `/mp/gate/listByCampus`,
     method: 'GET',
     data: { campusId }
   })

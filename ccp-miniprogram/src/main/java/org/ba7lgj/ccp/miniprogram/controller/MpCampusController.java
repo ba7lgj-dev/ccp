@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/campus")
-public class CampusController {
+@RequestMapping("/mp/campus")
+public class MpCampusController {
     @Autowired
     private CampusService campusService;
 
