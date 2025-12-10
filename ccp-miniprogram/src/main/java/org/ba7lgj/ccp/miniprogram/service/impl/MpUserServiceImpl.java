@@ -34,11 +34,8 @@ public class MpUserServiceImpl implements MpUserService {
 
     @Override
     public void updateUserPhone(Long userId, String phone) {
-        MpUser user = new MpUser();
-        user.setId(userId);
-        user.setPhone(phone);
-        user.setUpdateTime(new Date());
-        userMapper.updateUser(user);
+        // Phone binding is temporarily disabled.
+        // Intentionally left blank to avoid persisting phone numbers during mock login.
     }
 
     @Override

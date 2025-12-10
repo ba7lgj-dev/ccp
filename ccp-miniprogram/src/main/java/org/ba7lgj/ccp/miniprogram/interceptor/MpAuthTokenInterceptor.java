@@ -16,6 +16,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
 public class MpAuthTokenInterceptor implements HandlerInterceptor {
+    private static final String MOCK_TOKEN_PREFIX = "mock-token-";
     private static final Set<String> WHITE_LIST = new HashSet<>(Arrays.asList(
             "/mp/auth/wxLogin",
             "/mp/auth/wxPhoneBind",
@@ -36,7 +37,7 @@ public class MpAuthTokenInterceptor implements HandlerInterceptor {
             return false;
         }
         String token = authHeader.substring("Bearer ".length());
-        Long userId = MpJwtTokenUtil.parseUserId(token);
+        Long userId = parseUserId(token);
         if (userId == null) {
             writeInvalidToken(response);
             return false;
@@ -48,6 +49,17 @@ public class MpAuthTokenInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         MpUserContextHolder.clear();
+    }
+
+    private Long parseUserId(String token) {
+        if (token.startsWith(MOCK_TOKEN_PREFIX)) {
+            try {
+                return Long.parseLong(token.substring(MOCK_TOKEN_PREFIX.length()));
+            } catch (NumberFormatException ex) {
+                return null;
+            }
+        }
+        return MpJwtTokenUtil.parseUserId(token);
     }
 
     private void writeInvalidToken(HttpServletResponse response) throws Exception {

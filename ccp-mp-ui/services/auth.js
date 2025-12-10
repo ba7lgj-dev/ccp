@@ -9,11 +9,8 @@ function login(jsCode) {
 }
 
 function bindPhone(encryptedData, iv) {
-  return request({
-    url: '/auth/wxPhoneBind',
-    method: 'POST',
-    data: { encryptedData, iv }
-  })
+  // Phone binding is disabled; keep a resolved promise for compatibility.
+  return Promise.resolve()
 }
 
 module.exports = { login, bindPhone }

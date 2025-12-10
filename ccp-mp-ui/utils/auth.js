@@ -58,11 +58,8 @@ function reLogin() {
 }
 
 function bindPhone(encryptedData, iv) {
-  return request({
-    url: '/auth/wxPhoneBind',
-    method: 'POST',
-    data: { encryptedData, iv }
-  })
+  // Phone binding is currently disabled.
+  return Promise.resolve()
 }
 
 module.exports = { setToken, getToken, clearToken, login, reLogin, bindPhone }

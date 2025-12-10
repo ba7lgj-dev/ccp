@@ -14,8 +14,15 @@ public class MpWebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authTokenInterceptor)
-                .addPathPatterns("/**")
+                .addPathPatterns("/mp/**", "/miniprogram/**")
                 .excludePathPatterns(
+                        "/login",
+                        "/ruoyi/login",
+                        "/admin/login",
+                        "/captcha",
+                        "/captchaImage",
+                        "/swagger-ui/**",
+                        "/druid/**",
                         "/mp/auth/wxLogin",
                         "/mp/auth/wxPhoneBind",
                         "/mp/school/list",
