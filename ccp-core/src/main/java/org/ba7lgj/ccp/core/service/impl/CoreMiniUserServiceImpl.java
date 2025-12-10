@@ -53,14 +53,26 @@ public class CoreMiniUserServiceImpl implements CoreMiniUserService {
         newUser.setOpenId(openId);
         newUser.setStatus(1);
         newUser.setRealAuthStatus(RealAuthStatusEnum.NOT_AUTH.getCode());
-        newUser.setCreateTime(new Date());
+        Date now = new Date();
+        newUser.setCreateTime(now);
+        newUser.setUpdateTime(now);
+        newUser.setLastActiveTime(now);
+        newUser.setOnlineStatus(1);
         miniUserMapper.insertMiniUser(newUser);
         return newUser;
     }
 
     @Override
     public int insertMiniUser(MiniUser user) {
-        user.setCreateTime(new Date());
+        Date now = new Date();
+        user.setCreateTime(now);
+        user.setUpdateTime(now);
+        if (user.getLastActiveTime() == null) {
+            user.setLastActiveTime(now);
+        }
+        if (user.getOnlineStatus() == null) {
+            user.setOnlineStatus(1);
+        }
         user.setRealAuthStatus(user.getRealAuthStatus() == null ? RealAuthStatusEnum.NOT_AUTH.getCode() : user.getRealAuthStatus());
         user.setStatus(user.getStatus() == null ? 1 : user.getStatus());
         return miniUserMapper.insertMiniUser(user);

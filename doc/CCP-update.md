@@ -312,3 +312,20 @@ ccp-core/src/main/java/com/ccp/
 - `mvn -q -DskipTests -pl ccp-core,ccp-admin,ccp-miniprogram -am compile`（因外部仓库 403 无法下载依赖，启动测试未能完成）。
 
 重构完成：所有 BeanName 冲突已消除，所有类名与 namespace 已全部重命名，所有依赖已修复，Spring Boot 能正常启动。详见 doc/CCP-update.md。
+
+────────────────────────────────
+## （八）ccp_mini_user 表结构同步 Update-0003（2025-02-05T00:00:00Z）
+
+- 修改原因：ccp_mini_user 数据库结构更新。
+- 更新日期：2025-02-05。
+- 修改内容：
+  - Entity 字段更新：MiniUser/MpUser 对象字段按最新表结构（含 last_active_time、online_status）全量同步，补充 getter/setter、equals/hashCode/toString 注释。
+  - Mapper XML 更新：CoreMiniUserMapper.xml、MpUserMapper.xml resultMap、Base_Column_List、增删改查语句同步新增字段并移除不存在列。
+  - ServiceImpl 字段使用修复：注册、登录、手机号更新时补齐 lastActiveTime/onlineStatus 赋值与更新时间写回。
+  - Controller 返回结构更新：小程序登录接口返回最新用户字段并实时刷新活跃状态。
+  - 小程序端 userInfo 字段同步：前端登录缓存与跳转逻辑更新，确保包含 last_active_time、online_status 并去除已删除字段依赖。
+  - 删除字段列表：selected_school_id、selected_campus_id 及相关前端引用。
+  - 新增字段列表：last_active_time、online_status。
+  - 风险点说明：前端缓存的旧字段可能导致跳转异常，已调整登录缓存与跳转判定；数据库旧数据 online_status 可能为空，插入/登录逻辑已补默认值。
+  - 已验证 Spring Boot 是否正常启动：未执行启动验证，建议在合入后运行核心模块启动自测。
+  - 建议后续实体类自动生成策略：建议在数据库变更时通过代码生成器统一覆盖实体/Mapper/VO，减少手工同步遗漏。

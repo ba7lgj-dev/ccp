@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Date;
+
 @RestController
 @RequestMapping("/mp/auth")
 public class MpAuthController {
@@ -30,12 +32,14 @@ public class MpAuthController {
         if (user == null) {
             user = userService.createUserWithOpenId(openId);
         }
+        Date now = new Date();
+        userService.refreshActiveInfo(user.getId(), now, 1);
+        user.setLastActiveTime(now);
+        user.setOnlineStatus(1);
         String token = MpJwtTokenUtil.generateToken(user.getId());
         MpLoginVO vo = new MpLoginVO();
         vo.setToken(token);
-        vo.setUserId(user.getId());
-        vo.setSelectedSchoolId(user.getSelectedSchoolId());
-        vo.setSelectedCampusId(user.getSelectedCampusId());
+        vo.setUser(user);
         return MpResult.ok(vo);
     }
 

@@ -8,4 +8,6 @@ public interface MpUserService {
     MpUser createUserWithOpenId(String openId);
 
     void updateUserPhone(Long userId, String phone);
+
+    void refreshActiveInfo(Long userId, java.util.Date lastActiveTime, Integer onlineStatus);
 }
