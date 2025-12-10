@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询校区列表
 export function listCampus(query) {
   return request({
-    url: '/campus/list',
+    url: '/admin/campus/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listCampus(query) {
 // 查询校区详情
 export function getCampus(id) {
   return request({
-    url: '/campus/' + id,
+    url: '/admin/campus/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getCampus(id) {
 // 新增校区
 export function addCampus(data) {
   return request({
-    url: '/campus',
+    url: '/admin/campus',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addCampus(data) {
 // 修改校区
 export function updateCampus(data) {
   return request({
-    url: '/campus',
+    url: '/admin/campus',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateCampus(data) {
 // 删除校区
 export function delCampus(ids) {
   return request({
-    url: '/campus/' + ids,
+    url: '/admin/campus/' + ids,
     method: 'delete'
   })
 }
@@ -46,7 +46,7 @@ export function delCampus(ids) {
 // 修改校区状态
 export function changeCampusStatus(data) {
   return request({
-    url: '/campus/status',
+    url: '/admin/campus/status',
     method: 'put',
     data: data
   })

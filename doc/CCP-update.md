@@ -60,7 +60,7 @@ ccp-miniprogram/
 ### 工程结构规范（示例）
 ```
 ccp-core/src/main/java/com/ccp/
-├─ controller/        # AuthController、SchoolController、CampusController、GateController
+├─ controller/        # AuthController、MpSchoolController、MpCampusController、MpGateController
 ├─ service/
 │   ├─ impl/
 ├─ mapper/
@@ -90,7 +90,7 @@ ccp-core/src/main/java/com/ccp/
 ### Token 鉴权规范
 - 拦截器解析 `Authorization: Bearer <token>`，校验后将 `userId` 注入 `ThreadLocal`（如 `UserContext`）。
 - 在 AOP 或拦截器中清理 ThreadLocal，避免泄露。
-- 白名单接口配置在 `TokenInterceptor`，如 `/auth/wxLogin`, `/school/list`, `/campus/listBySchool`, `/gate/listByCampus`。
+- 白名单接口配置在 `TokenInterceptor`，如 `/auth/wxLogin`, `/mp/school/list`, `/mp/campus/listBySchool`, `/mp/gate/listByCampus`。
 
 ### 错误码规范
 - `Bxxxx` 业务错误（如 B1001 学校不存在）。
@@ -152,9 +152,9 @@ ccp-core/src/main/java/com/ccp/
 
 ### 控制器与职责
 - **AuthController**：`/auth/wxLogin`，处理 wxCode 换 token，返回用户基础信息和 token。
-- **SchoolController**：`/school/list`，分页/条件查询学校列表，支持名称/城市过滤，白名单接口。
-- **CampusController**：`/campus/listBySchool`，根据 schoolId 查询校区列表，白名单接口。
-- **GateController**：`/gate/listByCampus`，根据 campusId 查询校门列表，白名单接口。
+- **MpSchoolController**：`/mp/school/list`，分页/条件查询学校列表，支持名称/城市过滤，白名单接口。
+- **MpCampusController**：`/mp/campus/listBySchool`，根据 schoolId 查询校区列表，白名单接口。
+- **MpGateController**：`/mp/gate/listByCampus`，根据 campusId 查询校门列表，白名单接口。
 
 ### 接口规范（示例）
 1. **POST /auth/wxLogin**
@@ -163,19 +163,19 @@ ccp-core/src/main/java/com/ccp/
     - 错误码：P1001 缺少 code；B1001 登录失败；S0001 系统异常。
     - 缓存：服务端可缓存会话校验结果，前端持久化 token。
 
-2. **GET /school/list**
+2. **GET /mp/school/list**
     - 参数：keyword、city、pageNum、pageSize
     - 返回：{ code:0, data:{ list:[{id,name,city,logo}], total } }
     - 错误码：P1002 参数错误；S0001 系统异常。
     - 缓存：服务端可加本地缓存，前端 10 分钟缓存。
 
-3. **GET /campus/listBySchool**
+3. **GET /mp/campus/listBySchool**
     - 参数：schoolId(required)
     - 返回：{ code:0, data:[{id,name,address}] }
     - 错误码：P1003 缺少 schoolId；B1002 学校不存在。
     - 缓存：前端 10 分钟缓存，切换学校清空。
 
-4. **GET /gate/listByCampus**
+4. **GET /mp/gate/listByCampus**
     - 参数：campusId(required)
     - 返回：{ code:0, data:[{id,name,sort}] }
     - 错误码：P1004 缺少 campusId；B1003 校区不存在。
@@ -224,9 +224,9 @@ ccp-core/src/main/java/com/ccp/
 
 ### services 约定
 - `services/auth.js`：封装 `/auth/wxLogin`。
-- `services/school.js`：`fetchSchoolList(params)` 调用 `/school/list`。
-- `services/campus.js`：`fetchCampusList(schoolId)` 调用 `/campus/listBySchool`。
-- `services/gate.js`：`fetchGateList(campusId)` 调用 `/gate/listByCampus`。
+- `services/school.js`：`fetchSchoolList(params)` 调用 `/mp/school/list`。
+- `services/campus.js`：`fetchCampusList(schoolId)` 调用 `/mp/campus/listBySchool`。
+- `services/gate.js`：`fetchGateList(campusId)` 调用 `/mp/gate/listByCampus`。
 - 所有 services 依赖 `utils/http.js`，不直接使用 wx.request。
 
 
@@ -257,3 +257,22 @@ ccp-core/src/main/java/com/ccp/
 - 构建后端认证、学校、校区、校门查询接口，提供统一 Result 返回格式。
 - 新增 JWT 生成/解析、拦截器白名单校验，并在控制器中返回 LoginVO 结构。
 - 搭建 MyBatis 映射与实体，支持用户创建、手机号更新及基础数据查询。
+
+────────────────────────────────
+## （六）Bean 冲突重构记录（2025-12-10T07:38:54+00:00）
+
+- 检测到的重复类名（admin/miniprogram 双模块）：CampusController、GateController、SchoolController。
+- 重命名规则执行：
+    - org.ba7lgj.ccp.admin.controller.CampusController → AdminCampusController，对应映射 `/admin/campus/**`。
+    - org.ba7lgj.ccp.admin.controller.GateController → AdminGateController，对应映射 `/admin/gate/**`。
+    - org.ba7lgj.ccp.admin.controller.SchoolController → AdminSchoolController，对应映射 `/admin/school/**`。
+    - org.ba7lgj.ccp.miniprogram.controller.CampusController → MpCampusController，对应映射 `/mp/campus/**`。
+    - org.ba7lgj.ccp.miniprogram.controller.GateController → MpGateController，对应映射 `/mp/gate/**`。
+    - org.ba7lgj.ccp.miniprogram.controller.SchoolController → MpSchoolController，对应映射 `/mp/school/**`。
+- 引用修复：
+    - 小程序拦截器与 WebMvcConfig 白名单路径同步切换到 `/mp/...` 前缀。
+    - ccp-mp-ui 服务层 API 路径同步更新，确保前端调用新路由。
+    - ruoyi-ui 管理端 API 调用统一加 `/admin/` 前缀，与新 Controller 路由保持一致。
+- BeanName 冲突处理：类名与文件名均已添加模块前缀，避免 Spring 扫描重复 Bean。
+- Mapper/Service 注入：本次改动未涉及重命名 Mapper/Service，原有依赖注入保持不变。
+- 后续建议：新增模块时沿用 Admin/Mp 前缀命名约定，并在 CI 中添加重复 Bean 名检测脚本，防止再出现命名冲突。

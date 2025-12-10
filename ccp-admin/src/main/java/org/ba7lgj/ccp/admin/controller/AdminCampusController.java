@@ -20,8 +20,8 @@ import java.util.Objects;
  * 校区管理接口。
  */
 @RestController
-@RequestMapping("/campus")
-public class CampusController extends BaseController {
+@RequestMapping("/admin/campus")
+public class AdminCampusController extends BaseController {
 
     @Resource
     private ICampusService campusService;

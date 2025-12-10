@@ -3,7 +3,7 @@ import request from '@/utils/request'
 // 查询学校列表
 export function listSchool(query) {
   return request({
-    url: '/school/list',
+    url: '/admin/school/list',
     method: 'get',
     params: query
   })
@@ -12,7 +12,7 @@ export function listSchool(query) {
 // 查询学校详情
 export function getSchool(id) {
   return request({
-    url: '/school/' + id,
+    url: '/admin/school/' + id,
     method: 'get'
   })
 }
@@ -20,7 +20,7 @@ export function getSchool(id) {
 // 新增学校
 export function addSchool(data) {
   return request({
-    url: '/school',
+    url: '/admin/school',
     method: 'post',
     data: data
   })
@@ -29,7 +29,7 @@ export function addSchool(data) {
 // 修改学校
 export function updateSchool(data) {
   return request({
-    url: '/school',
+    url: '/admin/school',
     method: 'put',
     data: data
   })
@@ -38,7 +38,7 @@ export function updateSchool(data) {
 // 删除学校
 export function delSchool(ids) {
   return request({
-    url: '/school/' + ids,
+    url: '/admin/school/' + ids,
     method: 'delete'
   })
 }
@@ -46,7 +46,7 @@ export function delSchool(ids) {
 // 修改学校状态
 export function changeSchoolStatus(data) {
   return request({
-    url: '/school/status',
+    url: '/admin/school/status',
     method: 'put',
     data: data
   })
