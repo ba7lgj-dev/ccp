@@ -7,7 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.ba7lgj.ccp.common.dto.CampusDTO;
 import org.ba7lgj.ccp.common.dto.CampusQueryDTO;
-import org.ba7lgj.ccp.core.service.ICampusService;
+import org.ba7lgj.ccp.core.service.CoreCampusService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ import java.util.Objects;
 public class AdminCampusController extends BaseController {
 
     @Resource
-    private ICampusService campusService;
+    private CoreCampusService campusService;
 
     @PreAuthorize("@ss.hasPermi('ccp:campus:list')")
     @GetMapping("/list")

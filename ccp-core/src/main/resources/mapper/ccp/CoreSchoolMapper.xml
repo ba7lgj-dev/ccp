@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.core.mapper.CoreSchoolMapper">
+
+    <resultMap id="SchoolResult" type="org.ba7lgj.ccp.common.vo.SchoolVO">
+        <id column="id" property="id" />
+        <result column="city_id" property="cityId" />
+        <result column="city_name" property="cityName" />
+        <result column="school_name" property="schoolName" />
+        <result column="school_short_name" property="schoolShortName" />
+        <result column="logo_url" property="logoUrl" />
+        <result column="address" property="address" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, city_id, NULL AS city_name, school_name, school_short_name, logo_url, address, status, remark, create_time, update_time
+    </sql>
+
+    <select id="selectSchoolById" parameterType="java.lang.Long" resultMap="SchoolResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_school
+        WHERE id = #{id}
+    </select>
+
+    <select id="selectSchoolList" parameterType="org.ba7lgj.ccp.common.dto.SchoolQueryDTO" resultMap="SchoolResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_school
+        <where>
+            <if test="schoolName != null and schoolName != ''">
+                AND school_name LIKE CONCAT('%', #{schoolName}, '%')
+            </if>
+            <if test="cityId != null">
+                AND city_id = #{cityId}
+            </if>
+            <if test="status != null">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="selectSchoolByName" resultType="org.ba7lgj.ccp.common.domain.School">
+        SELECT id, city_id, school_name, school_short_name, logo_url, address, status, remark, create_time, update_time
+        FROM ccp_school
+        WHERE city_id = #{cityId} AND school_name = #{schoolName}
+        LIMIT 1
+    </select>
+
+    <insert id="insertSchool" parameterType="org.ba7lgj.ccp.common.domain.School" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ccp_school (city_id, school_name, school_short_name, logo_url, address, status, remark, create_time)
+        VALUES (#{cityId}, #{schoolName}, #{schoolShortName}, #{logoUrl}, #{address}, #{status}, #{remark}, #{createTime})
+    </insert>
+
+    <update id="updateSchool" parameterType="org.ba7lgj.ccp.common.domain.School">
+        UPDATE ccp_school
+        SET city_id = #{cityId},
+            school_name = #{schoolName},
+            school_short_name = #{schoolShortName},
+            logo_url = #{logoUrl},
+            address = #{address},
+            status = #{status},
+            remark = #{remark},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeStatus">
+        UPDATE ccp_school SET status = #{status}, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <delete id="deleteSchoolByIds" parameterType="Long">
+        DELETE FROM ccp_school WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+
+    <select id="countCampusBySchoolIds" parameterType="Long" resultType="int">
+        SELECT COUNT(1) FROM ccp_school_campus WHERE school_id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+</mapper>

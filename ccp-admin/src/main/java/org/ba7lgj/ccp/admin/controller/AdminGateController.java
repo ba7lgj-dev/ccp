@@ -7,7 +7,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import org.ba7lgj.ccp.common.dto.GateDTO;
 import org.ba7lgj.ccp.common.dto.GateQueryDTO;
-import org.ba7lgj.ccp.core.service.IGateService;
+import org.ba7lgj.ccp.core.service.CoreGateService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ import java.util.Objects;
 public class AdminGateController extends BaseController {
 
     @Resource
-    private IGateService gateService;
+    private CoreGateService gateService;
 
     @PreAuthorize("@ss.hasPermi('ccp:gate:list')")
     @GetMapping("/list")
