@@ -9,25 +9,49 @@ import java.util.Date;
 public class MiniUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    /** 主键 */
     private Long id;
+    /** openId */
     private String openId;
+    /** unionId */
     private String unionId;
+    /** 昵称 */
     private String nickName;
+    /** 头像 */
     private String avatarUrl;
+    /** 手机号 */
     private String phone;
+    /** 真实姓名 */
     private String realName;
+    /** 证件姓名 */
     private String idCardName;
+    /** 证件号码 */
     private String idCardNumber;
+    /** 人脸图片地址 */
     private String faceImageUrl;
+    /** 人脸识别结果 */
     private String faceVerifyResult;
+    /** 性别 */
     private Integer gender;
+    /** 账号状态 */
     private Integer status;
+    /** 实名认证状态 */
     private Integer realAuthStatus;
+    /** 认证失败原因 */
     private String realAuthFailReason;
+    /** 认证审核人 */
     private Long realAuthReviewBy;
+    /** 认证审核时间 */
     private Date realAuthReviewTime;
+    /** 管理员备注 */
     private String adminRemark;
+    /** 最近活跃时间 */
+    private Date lastActiveTime;
+    /** 在线状态 */
+    private Integer onlineStatus;
+    /** 创建时间 */
     private Date createTime;
+    /** 更新时间 */
     private Date updateTime;
 
     public Long getId() {
@@ -174,6 +198,22 @@ public class MiniUser implements Serializable {
         this.adminRemark = adminRemark;
     }
 
+    public Date getLastActiveTime() {
+        return lastActiveTime;
+    }
+
+    public void setLastActiveTime(Date lastActiveTime) {
+        this.lastActiveTime = lastActiveTime;
+    }
+
+    public Integer getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(Integer onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -188,5 +228,69 @@ public class MiniUser implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MiniUser miniUser = (MiniUser) o;
+        return java.util.Objects.equals(id, miniUser.id)
+                && java.util.Objects.equals(openId, miniUser.openId)
+                && java.util.Objects.equals(unionId, miniUser.unionId)
+                && java.util.Objects.equals(nickName, miniUser.nickName)
+                && java.util.Objects.equals(avatarUrl, miniUser.avatarUrl)
+                && java.util.Objects.equals(phone, miniUser.phone)
+                && java.util.Objects.equals(realName, miniUser.realName)
+                && java.util.Objects.equals(idCardName, miniUser.idCardName)
+                && java.util.Objects.equals(idCardNumber, miniUser.idCardNumber)
+                && java.util.Objects.equals(faceImageUrl, miniUser.faceImageUrl)
+                && java.util.Objects.equals(faceVerifyResult, miniUser.faceVerifyResult)
+                && java.util.Objects.equals(gender, miniUser.gender)
+                && java.util.Objects.equals(status, miniUser.status)
+                && java.util.Objects.equals(realAuthStatus, miniUser.realAuthStatus)
+                && java.util.Objects.equals(realAuthFailReason, miniUser.realAuthFailReason)
+                && java.util.Objects.equals(realAuthReviewBy, miniUser.realAuthReviewBy)
+                && java.util.Objects.equals(realAuthReviewTime, miniUser.realAuthReviewTime)
+                && java.util.Objects.equals(adminRemark, miniUser.adminRemark)
+                && java.util.Objects.equals(lastActiveTime, miniUser.lastActiveTime)
+                && java.util.Objects.equals(onlineStatus, miniUser.onlineStatus)
+                && java.util.Objects.equals(createTime, miniUser.createTime)
+                && java.util.Objects.equals(updateTime, miniUser.updateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return java.util.Objects.hash(id, openId, unionId, nickName, avatarUrl, phone, realName, idCardName, idCardNumber,
+                faceImageUrl, faceVerifyResult, gender, status, realAuthStatus, realAuthFailReason, realAuthReviewBy,
+                realAuthReviewTime, adminRemark, lastActiveTime, onlineStatus, createTime, updateTime);
+    }
+
+    @Override
+    public String toString() {
+        return "MiniUser{" +
+                "id=" + id +
+                ", openId='" + openId + '\'' +
+                ", unionId='" + unionId + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", avatarUrl='" + avatarUrl + '\'' +
+                ", phone='" + phone + '\'' +
+                ", realName='" + realName + '\'' +
+                ", idCardName='" + idCardName + '\'' +
+                ", idCardNumber='" + idCardNumber + '\'' +
+                ", faceImageUrl='" + faceImageUrl + '\'' +
+                ", faceVerifyResult='" + faceVerifyResult + '\'' +
+                ", gender=" + gender +
+                ", status=" + status +
+                ", realAuthStatus=" + realAuthStatus +
+                ", realAuthFailReason='" + realAuthFailReason + '\'' +
+                ", realAuthReviewBy=" + realAuthReviewBy +
+                ", realAuthReviewTime=" + realAuthReviewTime +
+                ", adminRemark='" + adminRemark + '\'' +
+                ", lastActiveTime=" + lastActiveTime +
+                ", onlineStatus=" + onlineStatus +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                '}';
     }
 }

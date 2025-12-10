@@ -4,28 +4,76 @@
     <resultMap id="UserResult" type="org.ba7lgj.ccp.miniprogram.domain.MpUser">
         <id property="id" column="id" />
         <result property="openId" column="open_id" />
+        <result property="unionId" column="union_id" />
+        <result property="nickName" column="nick_name" />
+        <result property="avatarUrl" column="avatar_url" />
         <result property="phone" column="phone" />
-        <result property="selectedSchoolId" column="selected_school_id" />
-        <result property="selectedCampusId" column="selected_campus_id" />
+        <result property="realName" column="real_name" />
+        <result property="idCardName" column="id_card_name" />
+        <result property="idCardNumber" column="id_card_number" />
+        <result property="faceImageUrl" column="face_image_url" />
+        <result property="faceVerifyResult" column="face_verify_result" />
+        <result property="gender" column="gender" />
+        <result property="status" column="status" />
+        <result property="realAuthStatus" column="real_auth_status" />
+        <result property="realAuthFailReason" column="real_auth_fail_reason" />
+        <result property="realAuthReviewBy" column="real_auth_review_by" />
+        <result property="realAuthReviewTime" column="real_auth_review_time" />
+        <result property="adminRemark" column="admin_remark" />
+        <result property="lastActiveTime" column="last_active_time" />
+        <result property="onlineStatus" column="online_status" />
         <result property="createTime" column="create_time" />
         <result property="updateTime" column="update_time" />
     </resultMap>
 
+    <sql id="Base_Column_List">
+        id, open_id, union_id, nick_name, avatar_url, phone, real_name, id_card_name, id_card_number, face_image_url,
+        face_verify_result, gender, status, real_auth_status, real_auth_fail_reason, real_auth_review_by, real_auth_review_time,
+        admin_remark, last_active_time, online_status, create_time, update_time
+    </sql>
+
     <select id="selectByOpenId" parameterType="string" resultMap="UserResult">
-        SELECT id, open_id, phone, selected_school_id, selected_campus_id, create_time, update_time
+        SELECT <include refid="Base_Column_List" />
         FROM ccp_mini_user
         WHERE open_id = #{openId}
         LIMIT 1
     </select>
 
     <insert id="insertUser" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUser" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO ccp_mini_user(open_id, phone, selected_school_id, selected_campus_id, create_time, update_time)
-        VALUES(#{openId}, #{phone}, #{selectedSchoolId}, #{selectedCampusId}, NOW(), NOW())
+        INSERT INTO ccp_mini_user(open_id, union_id, nick_name, avatar_url, phone, real_name, id_card_name, id_card_number,
+                                  face_image_url, face_verify_result, gender, status, real_auth_status, real_auth_fail_reason,
+                                  real_auth_review_by, real_auth_review_time, admin_remark, last_active_time, online_status,
+                                  create_time, update_time)
+        VALUES(#{openId}, #{unionId}, #{nickName}, #{avatarUrl}, #{phone}, #{realName}, #{idCardName}, #{idCardNumber},
+               #{faceImageUrl}, #{faceVerifyResult}, #{gender}, #{status}, #{realAuthStatus}, #{realAuthFailReason},
+               #{realAuthReviewBy}, #{realAuthReviewTime}, #{adminRemark}, #{lastActiveTime}, #{onlineStatus},
+               #{createTime}, #{updateTime})
     </insert>
 
-    <update id="updateUserPhone" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUser">
+    <update id="updateUser" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUser">
         UPDATE ccp_mini_user
-        SET phone = #{phone}, update_time = NOW()
+        <set>
+            <if test="unionId != null">union_id = #{unionId},</if>
+            <if test="nickName != null">nick_name = #{nickName},</if>
+            <if test="avatarUrl != null">avatar_url = #{avatarUrl},</if>
+            <if test="phone != null">phone = #{phone},</if>
+            <if test="realName != null">real_name = #{realName},</if>
+            <if test="idCardName != null">id_card_name = #{idCardName},</if>
+            <if test="idCardNumber != null">id_card_number = #{idCardNumber},</if>
+            <if test="faceImageUrl != null">face_image_url = #{faceImageUrl},</if>
+            <if test="faceVerifyResult != null">face_verify_result = #{faceVerifyResult},</if>
+            <if test="gender != null">gender = #{gender},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="realAuthStatus != null">real_auth_status = #{realAuthStatus},</if>
+            <if test="realAuthFailReason != null">real_auth_fail_reason = #{realAuthFailReason},</if>
+            <if test="realAuthReviewBy != null">real_auth_review_by = #{realAuthReviewBy},</if>
+            <if test="realAuthReviewTime != null">real_auth_review_time = #{realAuthReviewTime},</if>
+            <if test="adminRemark != null">admin_remark = #{adminRemark},</if>
+            <if test="lastActiveTime != null">last_active_time = #{lastActiveTime},</if>
+            <if test="onlineStatus != null">online_status = #{onlineStatus},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime}</if>
+        </set>
         WHERE id = #{id}
     </update>
 </mapper>
