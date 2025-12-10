@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function login(jsCode) {
   return request({
-    url: '/auth/wxLogin',
+    url: '/login',
     method: 'POST',
     data: { jsCode }
   })

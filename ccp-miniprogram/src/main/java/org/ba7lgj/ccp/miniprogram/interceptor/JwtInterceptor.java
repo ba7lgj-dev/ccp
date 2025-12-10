@@ -9,21 +9,26 @@ import java.util.Set;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.ba7lgj.ccp.miniprogram.context.MpUserContextHolder;
-import org.ba7lgj.ccp.miniprogram.util.MpJwtTokenUtil;
+import org.ba7lgj.ccp.miniprogram.util.JwtUtil;
 import org.ba7lgj.ccp.miniprogram.vo.MpResult;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 @Component
-public class MpAuthTokenInterceptor implements HandlerInterceptor {
-    private static final String MOCK_TOKEN_PREFIX = "mock-token-";
+public class JwtInterceptor implements HandlerInterceptor {
     private static final Set<String> WHITE_LIST = new HashSet<>(Arrays.asList(
-            "/mp/auth/wxLogin",
-            "/mp/auth/wxPhoneBind",
+            "/mp/login",
             "/mp/school/list",
             "/mp/campus/listBySchool",
             "/mp/gate/listByCampus"
     ));
+
+    private final JwtUtil jwtUtil;
+
+    public JwtInterceptor(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -32,12 +37,12 @@ public class MpAuthTokenInterceptor implements HandlerInterceptor {
             return true;
         }
         String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (!StringUtils.hasText(authHeader) || !authHeader.startsWith("Bearer ")) {
             writeInvalidToken(response);
             return false;
         }
         String token = authHeader.substring("Bearer ".length());
-        Long userId = parseUserId(token);
+        Long userId = jwtUtil.parseUserId(token);
         if (userId == null) {
             writeInvalidToken(response);
             return false;
@@ -49,17 +54,6 @@ public class MpAuthTokenInterceptor implements HandlerInterceptor {
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         MpUserContextHolder.clear();
-    }
-
-    private Long parseUserId(String token) {
-        if (token.startsWith(MOCK_TOKEN_PREFIX)) {
-            try {
-                return Long.parseLong(token.substring(MOCK_TOKEN_PREFIX.length()));
-            } catch (NumberFormatException ex) {
-                return null;
-            }
-        }
-        return MpJwtTokenUtil.parseUserId(token);
     }
 
     private void writeInvalidToken(HttpServletResponse response) throws Exception {
