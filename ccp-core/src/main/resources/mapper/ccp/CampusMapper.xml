@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.core.mapper.CampusMapper">
+
+    <resultMap id="CampusResult" type="org.ba7lgj.ccp.common.vo.CampusVO">
+        <id column="id" property="id" />
+        <result column="school_id" property="schoolId" />
+        <result column="school_name" property="schoolName" />
+        <result column="campus_name" property="campusName" />
+        <result column="address" property="address" />
+        <result column="latitude" property="latitude" />
+        <result column="longitude" property="longitude" />
+        <result column="manager_user_id" property="managerUserId" />
+        <result column="manager_user_name" property="managerUserName" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        c.id, c.school_id, s.school_name, c.campus_name, c.address, c.latitude, c.longitude, c.manager_user_id,
+        su.nick_name AS manager_user_name, c.status, c.remark, c.create_time, c.update_time
+    </sql>
+
+    <select id="selectCampusById" parameterType="java.lang.Long" resultMap="CampusResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_school_campus c
+        LEFT JOIN ccp_school s ON c.school_id = s.id
+        LEFT JOIN sys_user su ON c.manager_user_id = su.user_id
+        WHERE c.id = #{id}
+    </select>
+
+    <select id="selectCampusList" parameterType="org.ba7lgj.ccp.common.dto.CampusQueryDTO" resultMap="CampusResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_school_campus c
+                 LEFT JOIN ccp_school s ON c.school_id = s.id
+                 LEFT JOIN sys_user su ON c.manager_user_id = su.user_id
+        <where>
+            <if test="schoolId != null">
+                AND c.school_id = #{schoolId}
+            </if>
+            <if test="campusName != null and campusName != ''">
+                AND c.campus_name LIKE CONCAT('%', #{campusName}, '%')
+            </if>
+            <if test="status != null">
+                AND c.status = #{status}
+            </if>
+        </where>
+        ORDER BY c.create_time DESC
+    </select>
+
+    <select id="selectCampusByName" resultType="org.ba7lgj.ccp.common.domain.Campus">
+        SELECT id, school_id, campus_name, address, latitude, longitude, manager_user_id, status, remark, create_time, update_time
+        FROM ccp_school_campus
+        WHERE school_id = #{schoolId} AND campus_name = #{campusName}
+        LIMIT 1
+    </select>
+
+    <insert id="insertCampus" parameterType="org.ba7lgj.ccp.common.domain.Campus" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ccp_school_campus (school_id, campus_name, address, latitude, longitude, manager_user_id, status, remark, create_time)
+        VALUES (#{schoolId}, #{campusName}, #{address}, #{latitude}, #{longitude}, #{managerUserId}, #{status}, #{remark}, #{createTime})
+    </insert>
+
+    <update id="updateCampus" parameterType="org.ba7lgj.ccp.common.domain.Campus">
+        UPDATE ccp_school_campus
+        SET school_id = #{schoolId},
+            campus_name = #{campusName},
+            address = #{address},
+            latitude = #{latitude},
+            longitude = #{longitude},
+            manager_user_id = #{managerUserId},
+            status = #{status},
+            remark = #{remark},
+            update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <update id="changeStatus">
+        UPDATE ccp_school_campus SET status = #{status}, update_time = NOW() WHERE id = #{id}
+    </update>
+
+    <delete id="deleteCampusByIds" parameterType="Long">
+        DELETE FROM ccp_school_campus WHERE id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </delete>
+
+    <select id="countGateByCampusIds" parameterType="Long" resultType="int">
+        SELECT COUNT(1) FROM ccp_school_gate WHERE campus_id IN
+        <foreach collection="array" item="id" open="(" separator="," close=")">#{id}</foreach>
+    </select>
+</mapper>

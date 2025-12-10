@@ -260,6 +260,24 @@ insert into sys_menu values('1058', '导入代码', '116', '4', '#', '', '', '',
 insert into sys_menu values('1059', '预览代码', '116', '5', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:preview',           '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('1060', '生成代码', '116', '6', '#', '', '', '', 1, 0, 'F', '0', '0', 'tool:gen:code',              '#', 'admin', sysdate(), '', null, '');
 
+-- 校园管理
+insert into sys_menu values('2000', '校园管理', '0',   '5', 'ccp',          null,                        '', '', 1, 0, 'M', '0', '0', '',                  'education', 'admin', sysdate(), '', null, '校园管理目录');
+insert into sys_menu values('2001', '学校管理', '2000','1', 'school',       'ccp/school/index',          '', '', 1, 0, 'C', '0', '0', 'ccp:school:list',   'school',    'admin', sysdate(), '', null, '学校管理菜单');
+insert into sys_menu values('2002', '校区管理', '2000','2', 'campus',       'ccp/campus/index',          '', '', 1, 0, 'C', '0', '0', 'ccp:campus:list',   'tree',      'admin', sysdate(), '', null, '校区管理菜单');
+insert into sys_menu values('2003', '校门管理', '2000','3', 'gate',         'ccp/gate/index',            '', '', 1, 0, 'C', '0', '0', 'ccp:gate:list',     'door',      'admin', sysdate(), '', null, '校门管理菜单');
+-- 学校管理按钮
+insert into sys_menu values('20010', '学校新增', '2001', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:school:add',   '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('20011', '学校修改', '2001', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:school:edit',  '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('20012', '学校删除', '2001', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:school:remove','#', 'admin', sysdate(), '', null, '');
+-- 校区管理按钮
+insert into sys_menu values('20020', '校区新增', '2002', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:campus:add',   '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('20021', '校区修改', '2002', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:campus:edit',  '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('20022', '校区删除', '2002', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:campus:remove','#', 'admin', sysdate(), '', null, '');
+-- 校门管理按钮
+insert into sys_menu values('20030', '校门新增', '2003', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:gate:add',     '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('20031', '校门修改', '2003', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:gate:edit',    '#', 'admin', sysdate(), '', null, '');
+insert into sys_menu values('20032', '校门删除', '2003', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'ccp:gate:remove',  '#', 'admin', sysdate(), '', null, '');
+
 
 -- ----------------------------
 -- 6、用户和角色关联表  用户N-1角色
@@ -376,6 +394,20 @@ insert into sys_role_menu values ('2', '1057');
 insert into sys_role_menu values ('2', '1058');
 insert into sys_role_menu values ('2', '1059');
 insert into sys_role_menu values ('2', '1060');
+insert into sys_role_menu values ('2', '2000');
+insert into sys_role_menu values ('2', '2001');
+insert into sys_role_menu values ('2', '2002');
+insert into sys_role_menu values ('2', '2003');
+insert into sys_role_menu values ('2', '20010');
+insert into sys_role_menu values ('2', '20011');
+insert into sys_role_menu values ('2', '20012');
+insert into sys_role_menu values ('2', '20020');
+insert into sys_role_menu values ('2', '20021');
+insert into sys_role_menu values ('2', '20022');
+insert into sys_role_menu values ('2', '20030');
+insert into sys_role_menu values ('2', '20031');
+insert into sys_role_menu values ('2', '20032');
+
 
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门
