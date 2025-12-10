@@ -9,5 +9,5 @@ public interface MpUserMapper {
 
     int insertUser(MpUser user);
 
-    int updateUserPhone(MpUser user);
+    int updateUser(MpUser user);
 }

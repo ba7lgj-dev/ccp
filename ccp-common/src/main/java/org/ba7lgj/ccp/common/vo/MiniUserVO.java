@@ -11,6 +11,7 @@ public class MiniUserVO implements Serializable {
 
     private Long id;
     private String openId;
+    private String unionId;
     private String nickName;
     private String avatarUrl;
     private String phone;
@@ -23,9 +24,13 @@ public class MiniUserVO implements Serializable {
     private Integer status;
     private Integer realAuthStatus;
     private String realAuthFailReason;
+    private Long realAuthReviewBy;
     private String adminRemark;
     private Date realAuthReviewTime;
+    private Date lastActiveTime;
+    private Integer onlineStatus;
     private Date createTime;
+    private Date updateTime;
 
     public Long getId() {
         return id;
@@ -41,6 +46,14 @@ public class MiniUserVO implements Serializable {
 
     public void setOpenId(String openId) {
         this.openId = openId;
+    }
+
+    public String getUnionId() {
+        return unionId;
+    }
+
+    public void setUnionId(String unionId) {
+        this.unionId = unionId;
     }
 
     public String getNickName() {
@@ -139,6 +152,14 @@ public class MiniUserVO implements Serializable {
         this.realAuthFailReason = realAuthFailReason;
     }
 
+    public Long getRealAuthReviewBy() {
+        return realAuthReviewBy;
+    }
+
+    public void setRealAuthReviewBy(Long realAuthReviewBy) {
+        this.realAuthReviewBy = realAuthReviewBy;
+    }
+
     public String getAdminRemark() {
         return adminRemark;
     }
@@ -155,11 +176,35 @@ public class MiniUserVO implements Serializable {
         this.realAuthReviewTime = realAuthReviewTime;
     }
 
+    public Date getLastActiveTime() {
+        return lastActiveTime;
+    }
+
+    public void setLastActiveTime(Date lastActiveTime) {
+        this.lastActiveTime = lastActiveTime;
+    }
+
+    public Integer getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(Integer onlineStatus) {
+        this.onlineStatus = onlineStatus;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
     }
 }

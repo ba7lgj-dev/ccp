@@ -15,6 +15,7 @@ public class MiniUserQueryDTO implements Serializable {
     private String idCardNumber;
     private Integer status;
     private Integer realAuthStatus;
+    private Integer onlineStatus;
     private Date createTimeStart;
     private Date createTimeEnd;
 
@@ -48,6 +49,14 @@ public class MiniUserQueryDTO implements Serializable {
 
     public void setRealAuthStatus(Integer realAuthStatus) {
         this.realAuthStatus = realAuthStatus;
+    }
+
+    public Integer getOnlineStatus() {
+        return onlineStatus;
+    }
+
+    public void setOnlineStatus(Integer onlineStatus) {
+        this.onlineStatus = onlineStatus;
     }
 
     public String getIdCardName() {

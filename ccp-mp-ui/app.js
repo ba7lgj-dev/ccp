@@ -18,17 +18,11 @@ App({
     this.redirectByUser(userInfo || {})
   },
   redirectByUser(userInfo) {
-    const selectedSchoolId = userInfo ? userInfo.selectedSchoolId : null
-    const selectedCampusId = userInfo ? userInfo.selectedCampusId : null
-    if (!selectedSchoolId) {
-      wx.redirectTo({ url: '/pages/school/select/index' })
+    if (!userInfo || !userInfo.id) {
+      wx.redirectTo({ url: '/pages/login/index' })
       return
     }
-    if (!selectedCampusId) {
-      wx.redirectTo({ url: '/pages/campus/select/index' })
-      return
-    }
-    wx.redirectTo({ url: '/pages/trip/publish/index' })
+    wx.redirectTo({ url: '/pages/index/index' })
   },
   setGlobalUser(userInfo) {
     this.globalData.userInfo = userInfo

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +43,10 @@ public class MpCcpAppLoginController {
         MiniUser miniUser = miniUserService.selectMiniUserByOpenId(openId);
         if (miniUser == null) {
             miniUser = miniUserService.autoRegisterByOpenId(openId);
+        } else {
+            miniUser.setLastActiveTime(new Date());
+            miniUser.setOnlineStatus(1);
+            miniUserService.updateMiniUser(miniUser);
         }
         SysUser sysUser = new SysUser();
         sysUser.setUserId(miniUser.getId());
