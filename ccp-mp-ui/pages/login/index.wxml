@@ -1,0 +1,10 @@
+<view class="login-page">
+  <view class="login-content">
+    <image class="logo" src="/assets/logo.png"></image>
+    <text class="title">校园拼车 CCP</text>
+    <button class="login-button" type="primary" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber">手机号快捷登录</button>
+  </view>
+  <view class="bottom-area">
+    <text class="agreement" bindtap="onTapAgreement">登录即代表同意《隐私协议》</text>
+  </view>
+</view>
