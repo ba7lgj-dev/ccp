@@ -52,9 +52,9 @@ public class MpTripController {
             try {
                 Date dep = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(vo.getDepartureTime());
                 Date now = new Date();
-                if (dep.before(now)) {
-                    return MpResult.error(400, "出发时间不能早于当前时间");
-                }
+                //if (dep.before(now)) {
+                //    return MpResult.error(400, "出发时间不能早于当前时间");
+                //}
                 long diffMinutes = (dep.getTime() - now.getTime()) / (60 * 1000);
                 if (diffMinutes <= 5) {
                     vo.setImmediate(true);
