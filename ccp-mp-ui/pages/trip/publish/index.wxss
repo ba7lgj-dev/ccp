@@ -5,3 +5,4 @@
 .picker-label {font-size:28rpx; color:#333333;}
 .picker-value {font-size:28rpx; color:#666666;}
 .next-button {position:fixed; left:24rpx; right:24rpx; bottom:40rpx; height:88rpx; border-radius:44rpx; background-color:#07c160; color:#ffffff; line-height:88rpx; text-align:center; font-size:32rpx;}
+.home-button {position:fixed; left:24rpx; right:24rpx; bottom:140rpx; height:80rpx; border-radius:40rpx; border:1px solid #07c160; color:#07c160; background-color:#ffffff; line-height:80rpx; text-align:center; font-size:30rpx;}

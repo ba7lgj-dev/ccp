@@ -22,7 +22,17 @@ App({
       wx.redirectTo({ url: '/pages/login/index' })
       return
     }
-    wx.redirectTo({ url: '/pages/index/index' })
+    const selectedSchool = wx.getStorageSync('selectedSchool')
+    const selectedCampus = wx.getStorageSync('selectedCampus')
+    if (!selectedSchool) {
+      wx.redirectTo({ url: '/pages/school/select/index' })
+      return
+    }
+    if (!selectedCampus) {
+      wx.redirectTo({ url: '/pages/campus/select/index' })
+      return
+    }
+    wx.switchTab({ url: '/pages/index/index' })
   },
   setGlobalUser(userInfo) {
     this.globalData.userInfo = userInfo

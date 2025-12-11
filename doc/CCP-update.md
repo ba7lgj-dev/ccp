@@ -1,5 +1,11 @@
 校园拼车小程序 CCP 基础工程规范与阶段一功能提示
 
+### 2025-12-11 导航与登录流程调整
+- 修改页面：app.json、app.js、pages/login/index、pages/index/index、pages/me/index、pages/trip/hall/index、pages/trip/publish/index
+- 登录成功后的跳转：先写入 token 与 userInfo 后，按本地 selectedSchool/selectedCampus 判断；缺学校跳转 /pages/school/select/index，缺校区跳转 /pages/campus/select/index，均已选择则 switchTab 到首页 /pages/index/index。
+- 主流程：登录 → 选择学校（缓存优先）→ 选择校区（缓存优先，未选学校则守卫重定向）→ 返回首页 tab（如仍在发布页可通过首页入口或“返回首页”按钮切换）→ 我的页可查看/变更学校校区。
+- tabBar：新增首页、订单（大厅占位）、我的三大入口，配置于 app.json，tab 之间使用 switchTab 互跳，非 tab 页面保持 navigateTo/redirectTo。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 

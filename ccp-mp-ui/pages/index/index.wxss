@@ -1,62 +1,116 @@
-/**index.wxss**/
 page {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-.scrollarea {
-  flex: 1;
-  overflow-y: hidden;
+  background: #f6f7fb;
+  min-height: 100vh;
+  padding: 24rpx;
+  box-sizing: border-box;
 }
 
-.userinfo {
+.hero {
+  margin-bottom: 24rpx;
+}
+
+.title {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #111;
+  display: block;
+}
+
+.subtitle {
+  font-size: 26rpx;
+  color: #666;
+  margin-top: 8rpx;
+  display: block;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-shadow: 0 8rpx 24rpx rgba(17, 31, 44, 0.05);
+  margin-bottom: 24rpx;
+}
+
+.card-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #111;
+  display: block;
+}
+
+.card-desc {
+  font-size: 26rpx;
+  color: #666;
+  margin: 16rpx 0;
+  display: block;
+}
+
+.user-row {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  color: #aaa;
-  width: 80%;
-}
-
-.userinfo-avatar {
-  overflow: hidden;
-  width: 128rpx;
-  height: 128rpx;
-  margin: 20rpx;
-  border-radius: 50%;
-}
-
-.usermotto {
-  margin-top: 200px;
-}
-
-.avatar-wrapper {
-  padding: 0;
-  width: 56px !important;
-  border-radius: 8px;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  margin-top: 16rpx;
 }
 
 .avatar {
-  display: block;
-  width: 56px;
-  height: 56px;
+  width: 96rpx;
+  height: 96rpx;
+  border-radius: 50%;
+  background: #f2f2f2;
+  margin-right: 16rpx;
 }
 
-.nickname-wrapper {
+.user-info {
   display: flex;
-  width: 100%;
-  padding: 16px;
-  box-sizing: border-box;
-  border-top: .5px solid rgba(0, 0, 0, 0.1);
-  border-bottom: .5px solid rgba(0, 0, 0, 0.1);
-  color: black;
+  flex-direction: column;
+  gap: 6rpx;
 }
 
-.nickname-label {
-  width: 105px;
+.nickname {
+  font-size: 28rpx;
+  color: #111;
 }
 
-.nickname-input {
-  flex: 1;
+.uid {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.selection-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12rpx 0;
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.selection-row:last-child {
+  border-bottom: none;
+}
+
+.label {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.value {
+  font-size: 28rpx;
+  color: #111;
+  font-weight: 500;
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.primary-btn {
+  background: #07c160;
+  color: #fff;
+}
+
+.ghost-btn {
+  background: #fff;
+  color: #07c160;
+  border: 1px solid #07c160;
 }

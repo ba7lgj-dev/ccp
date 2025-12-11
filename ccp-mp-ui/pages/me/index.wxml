@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="card profile">
+    <image class="avatar" src="{{(userInfo && userInfo.avatarUrl) || '/assets/logo.png'}}" mode="aspectFill"></image>
+    <view class="info">
+      <text class="name">{{loggedIn ? ((userInfo && userInfo.nickName) || '未设置昵称') : '未登录'}}</text>
+      <text class="desc">{{loggedIn ? '欢迎回来，开始拼车吧' : '登录后可同步行程信息'}}</text>
+    </view>
+  </view>
+
+  <block wx:if="{{!loggedIn}}">
+    <view class="card">
+      <text class="card-title">当前未登录</text>
+      <text class="card-desc">登录后可查看已选学校/校区，使用拼车功能</text>
+      <button type="primary" bindtap="onGoLogin">去登录</button>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="card">
+      <text class="card-title">学校与校区</text>
+      <view class="row">
+        <text class="label">学校</text>
+        <text class="value">{{(selectedSchool && selectedSchool.schoolName) || '未设置'}}</text>
+        <button class="link" size="mini" bindtap="onSelectSchool">重新选择</button>
+      </view>
+      <view class="row">
+        <text class="label">校区</text>
+        <text class="value">{{(selectedCampus && selectedCampus.campusName) || '未设置'}}</text>
+        <button class="link" size="mini" bindtap="onSelectCampus">去设置</button>
+      </view>
+    </view>
+
+    <view class="card">
+      <text class="card-title">更多功能</text>
+      <text class="card-desc">实名认证、行程记录等功能开发中</text>
+    </view>
+
+    <button class="danger" type="warn" bindtap="onLogout">退出登录</button>
+  </block>
+</view>

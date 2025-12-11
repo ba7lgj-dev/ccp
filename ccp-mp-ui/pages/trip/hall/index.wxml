@@ -1,0 +1,21 @@
+<view class="page">
+  <view class="header">
+    <text class="title">订单 / 拼车大厅</text>
+    <text class="desc">功能开发中，敬请期待。</text>
+  </view>
+
+  <block wx:if="{{!hasToken}}">
+    <view class="card">
+      <text class="card-title">未登录</text>
+      <text class="card-desc">登录后才能查看行程或发布拼车</text>
+      <button type="primary" bindtap="onGoLogin">去登录</button>
+    </view>
+  </block>
+  <block wx:else>
+    <view class="card">
+      <text class="placeholder">功能开发中</text>
+      <text class="card-desc">后续将在此展示我的订单或拼车大厅</text>
+      <button class="ghost" bindtap="onGoPublish">去发布拼车</button>
+    </view>
+  </block>
+</view>
