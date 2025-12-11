@@ -23,5 +23,7 @@ public interface MpTripMapper {
     int countActiveTripByUser(@Param("userId") Long userId);
 
     int countActiveTripByUserExcludeTrip(@Param("userId") Long userId, @Param("tripId") Long tripId);
+
+    List<MpTrip> selectHistoryTripsByUser(@Param("userId") Long userId, @Param("now") Date now, @Param("limit") int limit);
 }
 
