@@ -17,8 +17,8 @@ App({
     const currentPages = getCurrentPages()
     const currentRoute = currentPages && currentPages.length ? currentPages[currentPages.length - 1].route : ''
     const isLoginPage = currentRoute === 'pages/login/index'
-    const isRealAuthPage = currentRoute === 'pages/auth/realname/index' || currentRoute === 'pages/me/realAuth/index'
-    const isSchoolAuthPage = currentRoute === 'pages/auth/school/index'
+    const isRealAuthPage = currentRoute === 'pages/verify/realname/index' || currentRoute === 'pages/me/realAuth/index'
+    const isSchoolAuthPage = currentRoute === 'pages/verify/school/index'
 
     if (!token) {
       wx.reLaunch({ url: '/pages/login/index' })
@@ -60,7 +60,7 @@ App({
       if (isRealAuthPage && opts.allowAuthPages) {
         return
       }
-      wx.reLaunch({ url: '/pages/auth/realname/index' })
+      wx.reLaunch({ url: '/pages/verify/realname/index' })
       this.globalData.authRedirectFrom = opts.from || ''
       return
     }
@@ -68,7 +68,7 @@ App({
       if (isSchoolAuthPage && opts.allowAuthPages) {
         return
       }
-      wx.reLaunch({ url: '/pages/auth/school/index' })
+      wx.reLaunch({ url: '/pages/verify/school/index' })
       return
     }
   },
