@@ -1,10 +1,8 @@
 package org.ba7lgj.ccp.miniprogram.vo;
 
-import org.ba7lgj.ccp.common.domain.MiniUser;
-
 public class MpLoginVO {
     private String token;
-    private MiniUser userInfo;
+    private MpLoginUserInfoVO userInfo;
 
     public String getToken() {
         return token;
@@ -14,11 +12,11 @@ public class MpLoginVO {
         this.token = token;
     }
 
-    public MiniUser getUserInfo() {
+    public MpLoginUserInfoVO getUserInfo() {
         return userInfo;
     }
 
-    public void setUserInfo(MiniUser userInfo) {
+    public void setUserInfo(MpLoginUserInfoVO userInfo) {
         this.userInfo = userInfo;
     }
 }

@@ -4,12 +4,18 @@ function normalizeUserInfo(userInfo) {
   if (!userInfo || typeof userInfo !== 'object') {
     return {}
   }
+  const id = userInfo.userId || userInfo.id || null
   return {
     ...userInfo,
+    id,
+    userId: id,
     avatarUrl: buildImageUrl(userInfo.avatarUrl),
     faceImageUrl: buildImageUrl(userInfo.faceImageUrl),
     studentCardImageUrl: buildImageUrl(userInfo.studentCardImageUrl),
-    personalImageUrl: buildImageUrl(userInfo.personalImageUrl)
+    personalImageUrl: buildImageUrl(userInfo.personalImageUrl),
+    realAuthStatus: typeof userInfo.realAuthStatus === 'number' ? userInfo.realAuthStatus : 0,
+    realAuthFailReason: userInfo.realAuthFailReason || '',
+    realName: userInfo.realName || ''
   }
 }
 
