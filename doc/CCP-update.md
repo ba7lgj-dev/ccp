@@ -421,3 +421,9 @@ ccp-core/src/main/java/com/ccp/
 - 修改后端：MpTripController 发布/加入接口增加 4002 校验提示；MpTripService 新增 hasActiveTrip/hasActiveTripExcludeCurrent，MpTripServiceImpl 发布、加入及详情可加判定；MpTripMapper 及 XML 新增 active 计数查询。
 - 前端提示：发布页、订单详情页加入按钮针对 4002 错误码展示“已有进行中拼车”提示；首页快捷入口逻辑可直接依赖唯一进行中订单。
 - 数据库：未改动表结构，仅增加业务校验逻辑。
+
+### Update-Mini-User-Admin
+- 新增后台“微信小程序用户管理”页面（ruoyi-ui/src/views/ccp/miniUser/index.vue），支持列表筛选、详情查看、备注编辑、状态切换、实名审核及导出。
+- 后端新增 CcpMiniUserController、ICcpMiniUserService、CcpMiniUserServiceImpl，并补充 CcpMiniUserMapper 及 XML 列表、详情、更新、实名审核方法，复用 MiniUser 实体并扩展创建时间查询字段。
+- 前端新增 api/ccp/miniUser.js 与页面逻辑，完成用户信息展示、审核通过/拒绝、状态管理、备注保存和导出文件下载。
+- SQL 增加 sys_menu “小程序管理/微信用户管理” 目录和按钮权限（ccp_mini_user_menu.sql，menu_id 建议 20060-20065，可按需上调避免冲突）。
