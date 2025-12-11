@@ -13,5 +13,7 @@ public interface CcpTripMemberAdminMapper {
 
     List<CcpTripMemberVO> selectMemberList(CcpTripMemberQuery query);
 
+    List<CcpTripMemberVO> selectMemberListByTrip(CcpTripMemberQuery query);
+
     int markNoShow(@Param("memberId") Long memberId, @Param("remark") String remark);
 }

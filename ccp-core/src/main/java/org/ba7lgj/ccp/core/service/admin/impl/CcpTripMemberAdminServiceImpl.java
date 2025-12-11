@@ -25,6 +25,11 @@ public class CcpTripMemberAdminServiceImpl implements CcpTripMemberAdminService 
     }
 
     @Override
+    public List<CcpTripMemberVO> selectMemberListByTrip(CcpTripMemberQuery query) {
+        return ccpTripMemberAdminMapper.selectMemberListByTrip(query);
+    }
+
+    @Override
     public int markNoShow(CcpTripMemberNoShowDTO dto) {
         return ccpTripMemberAdminMapper.markNoShow(dto.getMemberId(), dto.getRemark());
     }

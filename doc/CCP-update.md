@@ -25,6 +25,13 @@
 - 立即订单自动过期机制：departureTime+10 分钟失效并标记 status=5，过期判断在 service 内封装。
 - 不新增数据库字段，全部变更在业务逻辑层完成。
 
+### Update-AdminTrip-MemberIntegration
+- 后台拼车列表新增学校/校区下拉联动筛选，调用 /admin/school/list 与 /admin/campus/list 接口加载选项，查询参数透传至 /ccp/trip/trip/list 以支持 schoolId、campusId 过滤。
+- 拼车成员列表功能收纳为订单列表页内的“查看成员”抽屉，复用成员表格列与字典展示，按需点击时调用 /ccp/trip/member/listByTrip 获取指定 tripId 的成员数据。
+- 后端新增 /ccp/trip/member/listByTrip 接口，仅按 tripId（可选 status）查询成员，SQL 精简为成员与 ccp_mini_user、ccp_user_reputation 基础字段，命中 idx_member_trip，避免全表扫描。
+- 前端修改文件：ruoyi-ui/src/views/ccp/trip/trip/index.vue（筛选与抽屉）、ruoyi-ui/src/views/ccp/trip/member/index.vue（改为可复用的子组件）、ruoyi-ui/src/api/ccp/trip/member.js（新增 listByTrip 调用）。
+- 列表查询字段精简：trip 列表仅携带学校/校区名称、人数与状态摘要；成员列表仅包含角色、昵称、手机号、人数、状态、加入时间及信誉度（avgRating、totalNoShow）。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 

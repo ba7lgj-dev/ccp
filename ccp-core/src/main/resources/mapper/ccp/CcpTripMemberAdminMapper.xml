@@ -9,8 +9,12 @@
                m.user_id     AS userId,
                u.nick_name   AS nickName,
                u.phone       AS phone,
+               u.real_name   AS realName,
+               u.gender      AS gender,
+               m.role        AS role,
                CASE m.role WHEN 1 THEN '发起人' ELSE '成员' END AS roleLabel,
                m.join_people_count AS joinPeopleCount,
+               m.status      AS memberStatus,
                CASE m.status
                    WHEN 1 THEN '已加入'
                    WHEN 2 THEN '已退出'
@@ -50,6 +54,39 @@
             </if>
         </where>
         ORDER BY m.join_time DESC
+    </select>
+
+    <select id="selectMemberListByTrip" parameterType="org.ba7lgj.ccp.common.dto.trip.CcpTripMemberQuery"
+            resultType="org.ba7lgj.ccp.common.vo.trip.CcpTripMemberVO">
+        SELECT m.id          AS memberId,
+               m.trip_id     AS tripId,
+               m.user_id     AS userId,
+               m.role        AS role,
+               CASE m.role WHEN 1 THEN '发起人' ELSE '成员' END AS roleLabel,
+               m.join_people_count AS joinPeopleCount,
+               m.status      AS memberStatus,
+               CASE m.status
+                   WHEN 1 THEN '已加入'
+                   WHEN 2 THEN '已退出'
+                   WHEN 3 THEN '被踢'
+                   WHEN 4 THEN '已完成'
+                   WHEN 5 THEN '爽约'
+                   ELSE '' END AS memberStatusLabel,
+               DATE_FORMAT(m.join_time, '%Y-%m-%d %H:%i:%s') AS joinTime,
+               u.nick_name   AS nickName,
+               u.real_name   AS realName,
+               u.gender      AS gender,
+               u.phone       AS phone,
+               r.avg_rating  AS avgRating,
+               r.total_no_show AS totalNoShow
+        FROM ccp_trip_member m
+                 LEFT JOIN ccp_mini_user u ON u.id = m.user_id
+                 LEFT JOIN ccp_user_reputation r ON r.user_id = m.user_id
+        WHERE m.trip_id = #{tripId}
+        <if test="memberStatus != null">
+            AND m.status = #{memberStatus}
+        </if>
+        ORDER BY m.role ASC, m.join_time ASC
     </select>
 
     <update id="markNoShow">

@@ -19,14 +19,22 @@ public class CcpTripMemberVO {
     @Excel(name = "昵称")
     private String nickName;
 
+    private String realName;
+
+    private Integer gender;
+
     @Excel(name = "手机号")
     private String phone;
+
+    private Integer role;
 
     @Excel(name = "角色")
     private String roleLabel;
 
     @Excel(name = "人数")
     private Integer joinPeopleCount;
+
+    private Integer memberStatus;
 
     @Excel(name = "状态")
     private String memberStatusLabel;
@@ -39,6 +47,10 @@ public class CcpTripMemberVO {
 
     @Excel(name = "退出时间")
     private String quitTime;
+
+    private Double avgRating;
+
+    private Integer totalNoShow;
 
     public Long getMemberId() {
         return memberId;
@@ -72,12 +84,36 @@ public class CcpTripMemberVO {
         this.nickName = nickName;
     }
 
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
+    public Integer getGender() {
+        return gender;
+    }
+
+    public void setGender(Integer gender) {
+        this.gender = gender;
+    }
+
     public String getPhone() {
         return phone;
     }
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public Integer getRole() {
+        return role;
+    }
+
+    public void setRole(Integer role) {
+        this.role = role;
     }
 
     public String getRoleLabel() {
@@ -94,6 +130,14 @@ public class CcpTripMemberVO {
 
     public void setJoinPeopleCount(Integer joinPeopleCount) {
         this.joinPeopleCount = joinPeopleCount;
+    }
+
+    public Integer getMemberStatus() {
+        return memberStatus;
+    }
+
+    public void setMemberStatus(Integer memberStatus) {
+        this.memberStatus = memberStatus;
     }
 
     public String getMemberStatusLabel() {
@@ -126,5 +170,21 @@ public class CcpTripMemberVO {
 
     public void setQuitTime(String quitTime) {
         this.quitTime = quitTime;
+    }
+
+    public Double getAvgRating() {
+        return avgRating;
+    }
+
+    public void setAvgRating(Double avgRating) {
+        this.avgRating = avgRating;
+    }
+
+    public Integer getTotalNoShow() {
+        return totalNoShow;
+    }
+
+    public void setTotalNoShow(Integer totalNoShow) {
+        this.totalNoShow = totalNoShow;
     }
 }
