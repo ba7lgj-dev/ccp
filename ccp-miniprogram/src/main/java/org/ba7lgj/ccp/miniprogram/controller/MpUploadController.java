@@ -46,4 +46,23 @@ public class MpUploadController {
             return MpResult.error(500, "上传失败：" + ex.getMessage());
         }
     }
+
+    @PostMapping("/image")
+    public MpResult<Map<String, String>> uploadImage(@RequestParam("file") MultipartFile file) {
+        Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            return MpResult.error(4001, "token invalid");
+        }
+        if (file == null || file.isEmpty()) {
+            return MpResult.error(400, "文件不能为空");
+        }
+        try {
+            String url = FileUploadUtils.upload(RuoYiConfig.getUploadPath(), file, MimeTypeUtils.IMAGE_EXTENSION, true);
+            Map<String, String> data = new HashMap<>();
+            data.put("url", url);
+            return MpResult.ok(data);
+        } catch (Exception ex) {
+            return MpResult.error(500, "上传失败：" + ex.getMessage());
+        }
+    }
 }

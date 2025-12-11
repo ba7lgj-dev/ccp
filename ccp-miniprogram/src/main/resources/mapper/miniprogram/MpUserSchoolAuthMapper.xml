@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ba7lgj.ccp.miniprogram.mapper.MpUserSchoolAuthMapper">
+    <resultMap id="BaseResult" type="org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth">
+        <id property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="schoolId" column="school_id" />
+        <result property="campusId" column="campus_id" />
+        <result property="studentNo" column="student_no" />
+        <result property="studentName" column="student_name" />
+        <result property="studentCardImageUrl" column="student_card_image_url" />
+        <result property="extraImageUrl" column="extra_image_url" />
+        <result property="status" column="status" />
+        <result property="failReason" column="fail_reason" />
+        <result property="reviewBy" column="review_by" />
+        <result property="reviewTime" column="review_time" />
+        <result property="submitTime" column="submit_time" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <resultMap id="DetailResult" type="org.ba7lgj.ccp.miniprogram.vo.MpUserSchoolAuthVO">
+        <id property="id" column="id" />
+        <result property="schoolId" column="school_id" />
+        <result property="schoolName" column="school_name" />
+        <result property="schoolShortName" column="school_short_name" />
+        <result property="cityName" column="city_name" />
+        <result property="campusId" column="campus_id" />
+        <result property="campusName" column="campus_name" />
+        <result property="studentNo" column="student_no" />
+        <result property="studentName" column="student_name" />
+        <result property="studentCardImageUrl" column="student_card_image_url" />
+        <result property="extraImageUrl" column="extra_image_url" />
+        <result property="status" column="status" />
+        <result property="failReason" column="fail_reason" />
+        <result property="submitTime" column="submit_time" />
+        <result property="reviewTime" column="review_time" />
+    </resultMap>
+
+    <sql id="BaseColumns">
+        id, user_id, school_id, campus_id, student_no, student_name, student_card_image_url, extra_image_url, status,
+        fail_reason, review_by, review_time, submit_time, create_time, update_time
+    </sql>
+
+    <select id="selectByUserAndSchool" resultMap="BaseResult">
+        SELECT <include refid="BaseColumns" />
+        FROM ccp_user_school_auth
+        WHERE user_id = #{userId}
+          AND school_id = #{schoolId}
+        LIMIT 1
+    </select>
+
+    <select id="selectApprovedByUser" resultMap="BaseResult">
+        SELECT <include refid="BaseColumns" />
+        FROM ccp_user_school_auth
+        WHERE user_id = #{userId}
+          AND status = 2
+    </select>
+
+    <select id="selectDetailListByUser" resultMap="DetailResult">
+        SELECT a.id, a.school_id, s.school_name, s.short_name AS school_short_name, s.city_name, a.campus_id,
+               c.campus_name, a.student_no, a.student_name, a.student_card_image_url, a.extra_image_url,
+               a.status, a.fail_reason, a.submit_time, a.review_time
+        FROM ccp_user_school_auth a
+                 LEFT JOIN ccp_school s ON a.school_id = s.id
+                 LEFT JOIN ccp_school_campus c ON a.campus_id = c.id
+        WHERE a.user_id = #{userId}
+        ORDER BY a.submit_time DESC, a.id DESC
+    </select>
+
+    <select id="selectDetailByUserAndSchool" resultMap="DetailResult">
+        SELECT a.id, a.school_id, s.school_name, s.short_name AS school_short_name, s.city_name, a.campus_id,
+               c.campus_name, a.student_no, a.student_name, a.student_card_image_url, a.extra_image_url,
+               a.status, a.fail_reason, a.submit_time, a.review_time
+        FROM ccp_user_school_auth a
+                 LEFT JOIN ccp_school s ON a.school_id = s.id
+                 LEFT JOIN ccp_school_campus c ON a.campus_id = c.id
+        WHERE a.user_id = #{userId}
+          AND a.school_id = #{schoolId}
+        LIMIT 1
+    </select>
+
+    <insert id="insertAuth" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO ccp_user_school_auth(user_id, school_id, campus_id, student_no, student_name, student_card_image_url,
+                                         extra_image_url, status, fail_reason, review_by, review_time, submit_time, create_time,
+                                         update_time)
+        VALUES (#{userId}, #{schoolId}, #{campusId}, #{studentNo}, #{studentName}, #{studentCardImageUrl}, #{extraImageUrl},
+                #{status}, #{failReason}, #{reviewBy}, #{reviewTime}, #{submitTime}, #{createTime}, #{updateTime})
+    </insert>
+
+    <update id="updateAuth" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth">
+        UPDATE ccp_user_school_auth
+        <set>
+            <if test="campusId != null">campus_id = #{campusId},</if>
+            <if test="studentNo != null">student_no = #{studentNo},</if>
+            <if test="studentName != null">student_name = #{studentName},</if>
+            <if test="studentCardImageUrl != null">student_card_image_url = #{studentCardImageUrl},</if>
+            <if test="extraImageUrl != null">extra_image_url = #{extraImageUrl},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="failReason != null">fail_reason = #{failReason},</if>
+            <if test="reviewBy != null">review_by = #{reviewBy},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="submitTime != null">submit_time = #{submitTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime}</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>

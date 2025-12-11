@@ -41,6 +41,13 @@
         LIMIT 1
     </select>
 
+    <select id="selectById" parameterType="long" resultMap="UserResult">
+        SELECT <include refid="Base_Column_List" />
+        FROM ccp_mini_user
+        WHERE id = #{id}
+        LIMIT 1
+    </select>
+
     <insert id="insertUser" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUser" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO ccp_mini_user(open_id, union_id, nick_name, avatar_url, phone, real_name, id_card_name, id_card_number,
                                   face_image_url, face_verify_result, gender, status, real_auth_status, real_auth_fail_reason,

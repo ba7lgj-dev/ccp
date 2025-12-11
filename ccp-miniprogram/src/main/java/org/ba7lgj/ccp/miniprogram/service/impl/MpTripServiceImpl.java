@@ -15,12 +15,12 @@ import org.ba7lgj.ccp.miniprogram.domain.MpCampus;
 import org.ba7lgj.ccp.miniprogram.domain.MpTrip;
 import org.ba7lgj.ccp.miniprogram.domain.MpTripMember;
 import org.ba7lgj.ccp.miniprogram.domain.MpUser;
-import org.ba7lgj.ccp.miniprogram.domain.MpUserCampusAuth;
+import org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth;
 import org.ba7lgj.ccp.miniprogram.mapper.MpTripMemberMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpCampusMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpTripMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpUserMapper;
-import org.ba7lgj.ccp.miniprogram.mapper.MpUserCampusAuthMapper;
+import org.ba7lgj.ccp.miniprogram.mapper.MpUserSchoolAuthMapper;
 import org.ba7lgj.ccp.miniprogram.service.MpTripService;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailCurrentUserInfo;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
@@ -62,7 +62,7 @@ public class MpTripServiceImpl implements MpTripService {
     private MpUserMapper userMapper;
 
     @Autowired
-    private MpUserCampusAuthMapper userCampusAuthMapper;
+    private MpUserSchoolAuthMapper userSchoolAuthMapper;
 
     @Override
     public void publishTrip(MpTripVO vo) {
@@ -74,7 +74,7 @@ public class MpTripServiceImpl implements MpTripService {
         if (userId == null) {
             throw new IllegalStateException("未获取到用户信息");
         }
-        ensureCampusAuth(userId, vo.getCampusId());
+        ensureAuthChain(userId, campus);
         if (hasActiveTrip(userId)) {
             throw new IllegalStateException("你当前已有进行中的拼车，请先完成或退出后再发起新的拼车");
         }
@@ -269,11 +269,15 @@ public class MpTripServiceImpl implements MpTripService {
         if (trip == null) {
             throw new IllegalArgumentException("拼单不存在");
         }
+        MpCampus campus = campusMapper.selectCampusById(trip.getCampusId());
+        if (campus == null) {
+            throw new IllegalStateException("校区不存在");
+        }
         checkExpireIfNeeded(trip);
         if (!Objects.equals(trip.getStatus(), 0)) {
             throw new IllegalStateException("当前状态不可加入");
         }
-        ensureCampusAuth(userId, trip.getCampusId());
+        ensureAuthChain(userId, campus);
         if (isExpiredImmediateTrip(trip)) {
             tripMapper.updateTripStatus(trip.getId(), 5, new Date());
             throw new IllegalStateException("订单已过期");
@@ -461,13 +465,20 @@ public class MpTripServiceImpl implements MpTripService {
         }
     }
 
-    private void ensureCampusAuth(Long userId, Long campusId) {
-        if (campusId == null) {
+    private void ensureAuthChain(Long userId, MpCampus campus) {
+        if (campus == null) {
             throw new IllegalStateException("校区信息缺失");
         }
-        MpUserCampusAuth auth = userCampusAuthMapper.selectByUserAndCampus(userId, campusId);
+        MpUser user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new IllegalStateException("用户不存在");
+        }
+        if (!Objects.equals(user.getRealAuthStatus(), 2)) {
+            throw new IllegalStateException("请先完成实名认证");
+        }
+        MpUserSchoolAuth auth = userSchoolAuthMapper.selectByUserAndSchool(userId, campus.getSchoolId());
         if (auth == null || auth.getStatus() == null || auth.getStatus() != 2) {
-            throw new IllegalStateException("该校区尚未通过学生认证，无法发布拼车");
+            throw new IllegalStateException("请先完成该学校的学生认证");
         }
     }
 

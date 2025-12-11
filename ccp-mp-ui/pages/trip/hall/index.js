@@ -12,13 +12,16 @@ Page({
     refresherTriggered: false
   },
   onShow() {
-    const campus = wx.getStorageSync('selectedCampus')
-    if (!campus) {
-      wx.redirectTo({ url: '/pages/campus/select/index' })
-      return
-    }
-    this.setData({ selectedCampus: campus })
-    this.loadTripHall()
+    const app = getApp()
+    app.checkAuthChain({ from: 'tripHall' }).then(() => {
+      const campus = wx.getStorageSync('selectedCampus')
+      if (!campus) {
+        wx.redirectTo({ url: '/pages/campus/select/index' })
+        return
+      }
+      this.setData({ selectedCampus: campus })
+      this.loadTripHall()
+    }).catch(() => {})
   },
   onPullDownRefresh() {
     this.loadTripHall()

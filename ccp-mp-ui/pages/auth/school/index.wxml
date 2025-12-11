@@ -1,0 +1,76 @@
+<view class="container">
+  <view class="tabs">
+    <view class="tab {{tabActive==='list'?'active':''}}" data-tab="list" bindtap="switchTab">我的认证</view>
+    <view class="tab {{tabActive==='apply'?'active':''}}" data-tab="apply" bindtap="switchTab">申请认证</view>
+  </view>
+
+  <block wx:if="{{tabActive==='list'}}">
+    <scroll-view scroll-y class="list">
+      <block wx:for="{{mySchoolAuthList}}" wx:key="id">
+        <view class="item">
+          <view class="title">{{item.schoolName}} {{item.cityName}}</view>
+          <view class="sub">校区：{{item.campusName || '未选择'}}</view>
+          <view class="sub">学号：{{item.studentNo}}</view>
+          <view class="sub">姓名：{{item.studentName}}</view>
+          <view class="status status-{{item.status}}">
+            <text wx:if="{{item.status===1}}">待审核</text>
+            <text wx:elif="{{item.status===2}}">已通过</text>
+            <text wx:elif="{{item.status===3}}">不通过</text>
+            <text wx:elif="{{item.status===4}}">已失效</text>
+          </view>
+          <view class="fail" wx:if="{{item.status===3 && item.failReason}}">原因：{{item.failReason}}</view>
+        </view>
+      </block>
+      <view class="empty" wx:if="{{!mySchoolAuthList || mySchoolAuthList.length===0}}">暂无认证记录</view>
+    </scroll-view>
+  </block>
+
+  <block wx:elif="{{tabActive==='apply'}}">
+    <view class="form">
+      <view class="form-item">
+        <text class="label">学校</text>
+        <picker mode="selector" range="{{schoolOptions}}" range-key="schoolName" bindchange="onSelectSchool">
+          <view class="picker">{{applyForm.schoolName || '请选择学校'}}</view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <text class="label">校区</text>
+        <picker mode="selector" range="{{campusOptions}}" range-key="campusName" bindchange="onSelectCampus">
+          <view class="picker">{{applyForm.campusName || '请选择校区'}} </view>
+        </picker>
+      </view>
+      <view class="form-item">
+        <text class="label">学号</text>
+        <input class="input" data-field="studentNo" value="{{applyForm.studentNo}}" placeholder="请输入学号" bindinput="onInput" />
+      </view>
+      <view class="form-item">
+        <text class="label">姓名</text>
+        <input class="input" data-field="studentName" value="{{applyForm.studentName}}" placeholder="请输入姓名" bindinput="onInput" />
+      </view>
+      <view class="form-item upload">
+        <text class="label">学生证照片</text>
+        <view class="upload-box">
+          <block wx:if="{{applyForm.studentCardImageUrl}}">
+            <image class="upload-preview" src="{{applyForm.studentCardImageFullUrl}}" bindtap="previewImage" data-url="{{applyForm.studentCardImageFullUrl}}"></image>
+          </block>
+          <block wx:else>
+            <button class="upload-btn" size="mini" bindtap="uploadImage" data-field="studentCardImageUrl">上传照片</button>
+          </block>
+        </view>
+      </view>
+      <view class="form-item upload">
+        <text class="label">附加照片</text>
+        <view class="upload-box">
+          <block wx:if="{{applyForm.extraImageUrl}}">
+            <image class="upload-preview" src="{{applyForm.extraImageFullUrl}}" bindtap="previewImage" data-url="{{applyForm.extraImageFullUrl}}"></image>
+          </block>
+          <block wx:else>
+            <button class="upload-btn" size="mini" bindtap="uploadImage" data-field="extraImageUrl">可选上传</button>
+          </block>
+        </view>
+      </view>
+      <view class="tips">提交后需等待审核，通过后才能在该学校发布拼车。</view>
+      <button class="primary" type="primary" loading="{{submitLoading}}" bindtap="submitSchoolAuth">提交认证申请</button>
+    </view>
+  </block>
+</view>

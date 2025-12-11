@@ -9,6 +9,8 @@ import org.ba7lgj.ccp.miniprogram.domain.MpUser;
 public interface MpUserMapper {
     MpUser selectByOpenId(String openId);
 
+    MpUser selectById(Long id);
+
     int insertUser(MpUser user);
 
     int updateUser(MpUser user);

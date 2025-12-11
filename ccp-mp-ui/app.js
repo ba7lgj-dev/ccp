@@ -1,40 +1,44 @@
-const auth = require('./utils/auth.js')
+const realAuthService = require('./services/realAuth.js')
+const schoolAuthService = require('./services/schoolAuth.js')
 const { buildImageUrl } = require('./utils/url.js')
 
 App({
   onLaunch() {
+    this.checkAuthChain({ from: 'appLaunch' }).catch(() => {})
+  },
+  async checkAuthChain(options = {}) {
     const token = wx.getStorageSync('token') || null
     const userInfo = wx.getStorageSync('userInfo') || null
-    const normalizedUser = userInfo ? { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) } : null
-    if (!token) {
-      auth.login().then((info) => {
-        this.setGlobalUser(info)
-        this.redirectByUser(info)
-      }).catch(() => {
-        wx.showToast({ title: '登录失败，请重试', icon: 'none' })
-      })
-      return
+    if (!token || !userInfo) {
+      wx.redirectTo({ url: '/pages/login/index' })
+      return Promise.reject(new Error('not login'))
     }
+    const normalizedUser = { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) }
     this.globalData.token = token
     this.globalData.userInfo = normalizedUser
-    this.redirectByUser(normalizedUser || {})
-  },
-  redirectByUser(userInfo) {
-    if (!userInfo || !userInfo.id) {
-      wx.redirectTo({ url: '/pages/login/index' })
-      return
+    wx.setStorageSync('userInfo', normalizedUser)
+    try {
+      const [realInfo, schoolAuthList] = await Promise.all([
+        realAuthService.getInfo({ hideLoading: true }),
+        schoolAuthService.listMine({ hideLoading: true })
+      ])
+      this.globalData.auth = {
+        realAuthStatus: realInfo ? realInfo.realAuthStatus : null,
+        schoolAuthList: schoolAuthList || []
+      }
+      if (!realInfo || realInfo.realAuthStatus !== 2) {
+        wx.reLaunch({ url: '/pages/auth/realname/index' })
+        return Promise.reject(new Error('real auth required'))
+      }
+      const approvedSchools = (schoolAuthList || []).filter(item => item.status === 2)
+      if (!approvedSchools.length) {
+        wx.reLaunch({ url: '/pages/auth/school/index' })
+        return Promise.reject(new Error('school auth required'))
+      }
+      return { realInfo, schoolAuthList }
+    } catch (err) {
+      return Promise.reject(err)
     }
-    const selectedSchool = wx.getStorageSync('selectedSchool')
-    const selectedCampus = wx.getStorageSync('selectedCampus')
-    if (!selectedSchool) {
-      wx.redirectTo({ url: '/pages/school/select/index' })
-      return
-    }
-    if (!selectedCampus) {
-      wx.redirectTo({ url: '/pages/campus/select/index' })
-      return
-    }
-    wx.switchTab({ url: '/pages/index/index' })
   },
   setGlobalUser(userInfo) {
     this.globalData.userInfo = userInfo
@@ -47,6 +51,10 @@ App({
     token: null,
     userInfo: null,
     selectedSchool: null,
-    selectedCampus: null
+    selectedCampus: null,
+    auth: {
+      realAuthStatus: null,
+      schoolAuthList: []
+    }
   }
 })

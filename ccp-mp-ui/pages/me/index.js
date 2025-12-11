@@ -18,21 +18,21 @@ Page({
     hasToken: false
   },
   onShow() {
-    const token = wx.getStorageSync('token') || ''
-    const storedUser = normalizeUserInfo(wx.getStorageSync('userInfo') || {})
-    if (!token) {
+    const app = getApp()
+    app.checkAuthChain({ from: 'me' }).then(() => {
+      const storedUser = normalizeUserInfo((app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || {})
+      const selectedSchool = wx.getStorageSync('selectedSchool') || null
+      const selectedCampus = wx.getStorageSync('selectedCampus') || null
+      this.setData({
+        hasToken: true,
+        userInfo: storedUser,
+        schoolName: (selectedSchool && selectedSchool.schoolName) || '',
+        campusName: (selectedCampus && selectedCampus.campusName) || ''
+      })
+      this.fetchProfile()
+    }).catch(() => {
       this.handleNotLogin()
-      return
-    }
-    const selectedSchool = wx.getStorageSync('selectedSchool') || null
-    const selectedCampus = wx.getStorageSync('selectedCampus') || null
-    this.setData({
-      hasToken: true,
-      userInfo: storedUser,
-      schoolName: (selectedSchool && selectedSchool.schoolName) || '',
-      campusName: (selectedCampus && selectedCampus.campusName) || ''
     })
-    this.fetchProfile()
   },
   handleNotLogin() {
     this.setData({

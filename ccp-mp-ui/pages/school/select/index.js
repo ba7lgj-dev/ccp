@@ -1,4 +1,4 @@
-const schoolService = require('../../../services/school.js')
+const schoolAuthService = require('../../../services/schoolAuth.js')
 const cache = require('../../../utils/cache.js')
 const { buildImageUrl } = require('../../../utils/url.js')
 
@@ -17,8 +17,15 @@ Page({
     }
   },
   loadSchoolList() {
-    schoolService.getSchoolList().then((list) => {
-      const sorted = (list || []).slice().sort((a, b) => {
+    schoolAuthService.listApproved().then((list) => {
+      if (!list || list.length === 0) {
+        wx.showToast({ title: '你还没有通过任何学校认证，请先完成学校认证。', icon: 'none' })
+        setTimeout(() => {
+          wx.redirectTo({ url: '/pages/auth/school/index' })
+        }, 800)
+        return
+      }
+      const sorted = list.slice().sort((a, b) => {
         return (a.schoolName || '').localeCompare(b.schoolName || '')
       }).map(item => ({ ...item, logoUrl: buildImageUrl(item.logoUrl) }))
       this.setData({ schools: sorted, filteredSchools: sorted })

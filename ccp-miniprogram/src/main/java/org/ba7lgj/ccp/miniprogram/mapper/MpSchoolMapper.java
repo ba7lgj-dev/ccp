@@ -7,4 +7,6 @@ import org.ba7lgj.ccp.miniprogram.domain.MpSchool;
 @Mapper
 public interface MpSchoolMapper {
     List<MpSchool> selectEnabledSchools();
+
+    MpSchool selectById(Long id);
 }

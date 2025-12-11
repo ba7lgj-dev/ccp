@@ -18,38 +18,33 @@ Page({
     activeTrip: null
   },
   onShow() {
-    const token = wx.getStorageSync('token') || null
-    if (!token) {
+    const appInstance = getApp()
+    appInstance.checkAuthChain({ from: 'index' }).then(() => {
+      const selectedSchool = wx.getStorageSync('selectedSchool') || null
+      const selectedCampus = wx.getStorageSync('selectedCampus') || null
+      if (!selectedSchool) {
+        wx.redirectTo({ url: '/pages/school/select/index' })
+        return
+      }
+      if (!selectedCampus) {
+        wx.redirectTo({ url: '/pages/campus/select/index' })
+        return
+      }
+      const userInfo = normalizeUserInfo((appInstance && appInstance.globalData && appInstance.globalData.userInfo) || wx.getStorageSync('userInfo') || null)
+      if (appInstance && appInstance.globalData) {
+        appInstance.globalData.selectedSchool = selectedSchool
+        appInstance.globalData.selectedCampus = selectedCampus
+      }
       this.setData({
-        loginRequired: true,
-        userInfo: null,
-        selectedSchool: null,
-        selectedCampus: null
+        loginRequired: false,
+        userInfo,
+        selectedSchool,
+        selectedCampus
       })
-      return
-    }
-    const selectedSchool = wx.getStorageSync('selectedSchool') || null
-    const selectedCampus = wx.getStorageSync('selectedCampus') || null
-    if (!selectedSchool) {
-      wx.redirectTo({ url: '/pages/school/select/index' })
-      return
-    }
-    if (!selectedCampus) {
-      wx.redirectTo({ url: '/pages/campus/select/index' })
-      return
-    }
-    const userInfo = normalizeUserInfo((app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || null)
-    if (app && app.globalData) {
-      app.globalData.selectedSchool = selectedSchool
-      app.globalData.selectedCampus = selectedCampus
-    }
-    this.setData({
-      loginRequired: false,
-      userInfo,
-      selectedSchool,
-      selectedCampus
+      this.loadActiveTrip()
+    }).catch(() => {
+      this.setData({ loginRequired: true })
     })
-    this.loadActiveTrip()
   },
   onGoLogin() {
     wx.navigateTo({ url: '/pages/login/index' })

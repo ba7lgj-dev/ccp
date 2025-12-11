@@ -16,4 +16,8 @@
     <select id="selectEnabledSchools" resultMap="SchoolResult">
         SELECT * FROM ccp_school WHERE status = 1 ORDER BY school_name ASC
     </select>
+
+    <select id="selectById" parameterType="long" resultMap="SchoolResult">
+        SELECT * FROM ccp_school WHERE id = #{id} LIMIT 1
+    </select>
 </mapper>

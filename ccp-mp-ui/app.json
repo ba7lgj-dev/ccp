@@ -9,6 +9,8 @@
     "pages/me/emergency-contact/index",
     "pages/me/routes/index",
     "pages/order/list/index",
+    "pages/auth/realname/index",
+    "pages/auth/school/index",
     "pages/school/select/index",
     "pages/login/index",
     "pages/campus/select/index",
