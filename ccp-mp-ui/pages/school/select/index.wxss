@@ -1,9 +1,48 @@
-.school-page {background-color:#f7f7f7; min-height:100vh;}
-.search-bar {position:fixed; top:0; left:0; right:0; padding:16rpx 24rpx; background-color:#ffffff; z-index:10; box-shadow:0 2rpx 4rpx rgba(0,0,0,0.04);}
-.search-bar input {width:100%; height:64rpx; background-color:#f2f2f2; border-radius:32rpx; padding:0 24rpx; font-size:28rpx;}
-.school-list {margin-top:96rpx; padding-bottom:20rpx;}
-.school-item {display:flex; flex-direction:row; align-items:center; padding:20rpx 24rpx; background-color:#ffffff; border-bottom:1rpx solid #f0f0f0;}
-.school-logo {width:96rpx; height:96rpx; border-radius:8rpx; margin-right:20rpx; background-color:#eaeaea;}
-.school-info {flex:1;}
-.school-name {font-size:32rpx; color:#333333; font-weight:600;}
-.school-city {font-size:24rpx; color:#999999; margin-top:6rpx;}
+.school-page {
+  padding: 20rpx 24rpx;
+}
+
+.search-bar input {
+  background: #fff;
+  padding: 16rpx 20rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 4rpx 10rpx rgba(0, 0, 0, 0.04);
+}
+
+.school-list {
+  max-height: 80vh;
+  margin-top: 20rpx;
+}
+
+.school-item {
+  background: #fff;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.school-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.school-city {
+  font-size: 24rpx;
+  color: #6b778c;
+  margin-top: 4rpx;
+}
+
+.empty {
+  margin: 120rpx 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20rpx;
+  color: #6b778c;
+}
+
+.empty-text {
+  font-size: 26rpx;
+  text-align: center;
+}

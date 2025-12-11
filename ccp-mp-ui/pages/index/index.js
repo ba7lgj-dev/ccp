@@ -42,10 +42,14 @@ Page({
     historyLastLoadTime: 0,
     historyLoading: false
   },
-  onShow() {
+  async onShow() {
     const appInstance = getApp()
     if (appInstance && typeof appInstance.checkAuthChain === 'function') {
-      appInstance.checkAuthChain({ from: 'index', allowAuthPages: false })
+      const passed = await appInstance.checkAuthChain({ from: 'index', allowAuthPages: false })
+      if (!passed) {
+        this.setData({ loginRequired: true })
+        return
+      }
     }
     const token = wx.getStorageSync('token') || null
     if (!token || (appInstance && appInstance.globalData && (appInstance.globalData.auth.realAuthStatus !== 2 || !appInstance.globalData.auth.hasApprovedSchool))) {
@@ -57,8 +61,8 @@ Page({
       })
       return
     }
-    const selectedSchool = wx.getStorageSync('selectedSchool') || null
-    const selectedCampus = wx.getStorageSync('selectedCampus') || null
+    const selectedSchool = wx.getStorageSync('selectedSchool') || appInstance.globalData.school || null
+    const selectedCampus = wx.getStorageSync('selectedCampus') || appInstance.globalData.campus || null
     if (!selectedSchool) {
       wx.redirectTo({ url: '/pages/school/select/index' })
       return
@@ -69,8 +73,8 @@ Page({
     }
     const userInfo = normalizeUserInfo((app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || null)
     if (app && app.globalData) {
-      app.globalData.selectedSchool = selectedSchool
-      app.globalData.selectedCampus = selectedCampus
+      app.globalData.school = selectedSchool
+      app.globalData.campus = selectedCampus
     }
     this.setData({
       loginRequired: false,

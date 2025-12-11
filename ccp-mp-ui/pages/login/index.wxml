@@ -1,10 +1,21 @@
 <view class="login-page">
-  <view class="login-content">
-    <image class="logo" src="/assets/logo.png"></image>
-    <text class="title">校园拼车 CCP</text>
-    <button class="login-button" type="primary" bindtap="onLoginTap">一键登录</button>
+  <view class="hero">
+    <image class="logo" src="/assets/logo.png" mode="aspectFill"></image>
+    <text class="app-name">校园拼车 CCP</text>
+    <text class="subtitle">校园拼车 · 安全便捷 · 同校同路</text>
+    <text class="hint">使用前需完成实名认证和学生认证</text>
   </view>
-  <view class="bottom-area">
-    <text class="agreement" bindtap="onTapAgreement">登录即代表同意《隐私协议》</text>
+
+  <view class="card card--flat intro">
+    <text class="intro-title">便捷出行</text>
+    <text class="intro-desc">同学拼车更安全，授权登录后选择学校与校区即可发布行程。</text>
+  </view>
+
+  <button class="btn-primary login-btn" type="primary" loading="{{loading}}" disabled="{{loading}}" bindtap="onLoginTap">
+    一键登录
+  </button>
+
+  <view class="agreements">
+    <text class="link" bindtap="onTapAgreement">隐私政策</text>
   </view>
 </view>

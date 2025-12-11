@@ -1,4 +1,5 @@
 const auth = require('../../utils/auth.js')
+const { buildImageUrl } = require('../../utils/url.js')
 
 Page({
   data: {
@@ -6,18 +7,23 @@ Page({
   },
   onLoad() {},
   onLoginTap() {
-    wx.showLoading({ title: '登录中', mask: true })
+    if (this.data.loading) return
+    this.setData({ loading: true })
     auth.login().then((userInfo) => {
       const info = wx.getStorageSync('userInfo') || userInfo || {}
       const app = getApp()
       if (app && app.globalData) {
-        app.globalData.userInfo = info
+        app.globalData.userInfo = { ...info, avatarUrl: buildImageUrl(info.avatarUrl) }
       }
-      this.redirectByUser(info)
-    }).catch(() => {
-      wx.showToast({ title: '登录失败', icon: 'none' })
+      if (app && typeof app.checkAuthChain === 'function') {
+        app.checkAuthChain({ from: 'login', forceRefresh: true, allowAuthPages: true })
+      } else {
+        this.redirectByUser(info)
+      }
+    }).catch((err) => {
+      wx.showToast({ title: err.message || '登录失败', icon: 'none' })
     }).finally(() => {
-      wx.hideLoading()
+      this.setData({ loading: false })
     })
   },
   redirectByUser(userInfo) {
