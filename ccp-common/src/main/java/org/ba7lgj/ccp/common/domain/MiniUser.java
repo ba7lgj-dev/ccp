@@ -57,6 +57,10 @@ public class MiniUser implements Serializable {
     private Date createTime;
     /** 更新时间 */
     private Date updateTime;
+    /** 创建时间起（查询用） */
+    private Date createTimeBegin;
+    /** 创建时间止（查询用） */
+    private Date createTimeEnd;
 
     public Long getId() {
         return id;
@@ -248,6 +252,22 @@ public class MiniUser implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public Date getCreateTimeBegin() {
+        return createTimeBegin;
+    }
+
+    public void setCreateTimeBegin(Date createTimeBegin) {
+        this.createTimeBegin = createTimeBegin;
+    }
+
+    public Date getCreateTimeEnd() {
+        return createTimeEnd;
+    }
+
+    public void setCreateTimeEnd(Date createTimeEnd) {
+        this.createTimeEnd = createTimeEnd;
     }
 
     @Override

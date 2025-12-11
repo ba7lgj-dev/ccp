@@ -426,3 +426,8 @@ ccp-core/src/main/java/com/ccp/
 - 数据结构：`ccp_mini_user` 新增 `current_school_id/current_campus_id` 字段映射到 MiniUser/MpUser 领域模型与 MyBatis Mapper。
 - 新增表：`ccp_user_campus_auth` 领域模型与 Mapper（MpUserCampusAuthMapper/MpUserCampusAuthMapper.xml），用于记录用户在校区的认证状态与审核信息。
 - 业务约束：MpTripServiceImpl 发布与加入拼车时调用 `ensureCampusAuth`，要求对应校区认证状态为通过（status=2）后才允许操作。
+### Update-Mini-User-Admin
+- 新增后台“微信小程序用户管理”页面（ruoyi-ui/src/views/ccp/miniUser/index.vue），支持列表筛选、详情查看、备注编辑、状态切换、实名审核及导出。
+- 后端新增 CcpMiniUserController、ICcpMiniUserService、CcpMiniUserServiceImpl，并补充 CcpMiniUserMapper 及 XML 列表、详情、更新、实名审核方法，复用 MiniUser 实体并扩展创建时间查询字段。
+- 前端新增 api/ccp/miniUser.js 与页面逻辑，完成用户信息展示、审核通过/拒绝、状态管理、备注保存和导出文件下载。
+- SQL 增加 sys_menu “小程序管理/微信用户管理” 目录和按钮权限（ccp_mini_user_menu.sql，menu_id 建议 20060-20065，可按需上调避免冲突）。
