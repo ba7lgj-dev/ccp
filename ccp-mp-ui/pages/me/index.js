@@ -1,61 +1,105 @@
 const auth = require('../../utils/auth.js')
+const userService = require('../../services/user.js')
 
 Page({
   data: {
-    loggedIn: false,
-    userInfo: null,
-    selectedSchool: null,
-    selectedCampus: null
+    userInfo: {},
+    schoolName: '',
+    campusName: '',
+    loading: false,
+    hasToken: false
   },
   onShow() {
-    const token = wx.getStorageSync('token') || null
+    const token = wx.getStorageSync('token') || ''
+    const storedUser = wx.getStorageSync('userInfo') || {}
     if (!token) {
-      this.setData({
-        loggedIn: false,
-        userInfo: null,
-        selectedSchool: null,
-        selectedCampus: null
-      })
+      this.handleNotLogin()
       return
     }
     const selectedSchool = wx.getStorageSync('selectedSchool') || null
     const selectedCampus = wx.getStorageSync('selectedCampus') || null
-    const app = getApp()
-    const userInfo = (app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || null
-    if (app && app.globalData) {
-      app.globalData.selectedSchool = selectedSchool
-      app.globalData.selectedCampus = selectedCampus
-    }
     this.setData({
-      loggedIn: true,
-      userInfo,
-      selectedSchool,
-      selectedCampus
+      hasToken: true,
+      userInfo: storedUser,
+      schoolName: (selectedSchool && selectedSchool.schoolName) || '',
+      campusName: (selectedCampus && selectedCampus.campusName) || ''
+    })
+    this.fetchProfile()
+  },
+  handleNotLogin() {
+    this.setData({
+      hasToken: false,
+      userInfo: {},
+      schoolName: '',
+      campusName: ''
+    })
+    wx.reLaunch({ url: '/pages/login/index' })
+  },
+  fetchProfile() {
+    this.setData({ loading: true })
+    userService.getProfile().then((data) => {
+      if (!data) {
+        return
+      }
+      const profile = data
+      wx.setStorageSync('userInfo', profile)
+      const app = getApp()
+      if (app && app.globalData) {
+        app.globalData.userInfo = profile
+      }
+      const selectedSchool = wx.getStorageSync('selectedSchool') || null
+      const selectedCampus = wx.getStorageSync('selectedCampus') || null
+      this.setData({
+        userInfo: profile,
+        schoolName: profile.schoolName || (selectedSchool && selectedSchool.schoolName) || '',
+        campusName: profile.campusName || (selectedCampus && selectedCampus.campusName) || ''
+      })
+    }).catch((err) => {
+      if (err && err.code === 4001) {
+        auth.clearToken()
+        wx.clearStorageSync()
+        wx.showToast({ title: '登录已失效，请重新登录', icon: 'none' })
+        wx.reLaunch({ url: '/pages/login/index' })
+        return
+      }
+      wx.showToast({ title: '加载个人信息失败', icon: 'none' })
+    }).finally(() => {
+      this.setData({ loading: false })
     })
   },
-  onGoLogin() {
-    wx.navigateTo({ url: '/pages/login/index' })
+  goEditProfile() {
+    wx.navigateTo({ url: '/pages/me/profile/edit/index' })
   },
-  onSelectSchool() {
-    wx.navigateTo({ url: '/pages/school/select/index' })
-  },
-  onSelectCampus() {
+  handleSchoolTap() {
     const selectedSchool = wx.getStorageSync('selectedSchool') || null
+    const selectedCampus = wx.getStorageSync('selectedCampus') || null
     if (!selectedSchool) {
       wx.navigateTo({ url: '/pages/school/select/index' })
       return
     }
+    if (!selectedCampus) {
+      wx.navigateTo({ url: '/pages/campus/select/index' })
+      return
+    }
     wx.navigateTo({ url: '/pages/campus/select/index' })
+  },
+  goEmergencyContact() {
+    wx.navigateTo({ url: '/pages/me/emergency-contact/index' })
+  },
+  goRoutes() {
+    wx.navigateTo({ url: '/pages/me/routes/index' })
+  },
+  goOrders() {
+    wx.navigateTo({ url: '/pages/order/list/index' })
   },
   onLogout() {
     wx.showModal({
       title: '退出登录',
-      content: '退出后需要重新登录才能使用拼车服务',
+      content: '确认要退出登录吗？',
       success: (res) => {
         if (res.confirm) {
           auth.clearToken()
-          wx.removeStorageSync('selectedSchool')
-          wx.removeStorageSync('selectedCampus')
+          wx.clearStorageSync()
           const app = getApp()
           if (app && app.globalData) {
             app.globalData.token = null
@@ -64,12 +108,12 @@ Page({
             app.globalData.selectedCampus = null
           }
           this.setData({
-            loggedIn: false,
-            userInfo: null,
-            selectedSchool: null,
-            selectedCampus: null
+            hasToken: false,
+            userInfo: {},
+            schoolName: '',
+            campusName: ''
           })
-          wx.redirectTo({ url: '/pages/login/index' })
+          wx.reLaunch({ url: '/pages/login/index' })
         }
       }
     })

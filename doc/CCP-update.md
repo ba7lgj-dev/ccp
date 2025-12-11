@@ -31,6 +31,11 @@
 - 后端新增 /ccp/trip/member/listByTrip 接口，仅按 tripId（可选 status）查询成员，SQL 精简为成员与 ccp_mini_user、ccp_user_reputation 基础字段，命中 idx_member_trip，避免全表扫描。
 - 前端修改文件：ruoyi-ui/src/views/ccp/trip/trip/index.vue（筛选与抽屉）、ruoyi-ui/src/views/ccp/trip/member/index.vue（改为可复用的子组件）、ruoyi-ui/src/api/ccp/trip/member.js（新增 listByTrip 调用）。
 - 列表查询字段精简：trip 列表仅携带学校/校区名称、人数与状态摘要；成员列表仅包含角色、昵称、手机号、人数、状态、加入时间及信誉度（avgRating、totalNoShow）。
+### Update-0009 小程序个人资料与头像上传（2025-12-12）
+- 新增小程序端用户资料查询与修改接口（/mp/user/profile、/mp/user/avatar），新增小程序上传头像接口（/mp/upload/avatar）。
+- 调整或新增后端文件：MpUserProfileController、MpUploadController、MpUserProfileService、MpUserProfileServiceImpl，以及 ccp_mini_user 对应 Mapper 与实体复用更新。
+- 调整或新增前端文件：pages/me/index.* 重构、“编辑个人资料”页面 pages/me/profile/edit/*，占位页面 pages/me/emergency-contact、pages/me/routes、pages/order/list 等。
+- “我的”页面现可展示用户资料、跳转到资料编辑、支持更换头像与退出登录，未对数据库结构做出调整，继续使用现有表 ccp_mini_user。
 
 ────────────────────────────────
 ## （一）小程序基础规范（全局）

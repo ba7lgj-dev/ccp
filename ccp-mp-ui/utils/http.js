@@ -64,4 +64,4 @@ function request(options) {
   })
 }
 
-module.exports = { request }
+module.exports = { request, BASE_URL }

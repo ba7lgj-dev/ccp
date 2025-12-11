@@ -1,39 +1,57 @@
 <view class="page">
-  <view class="card profile">
-    <image class="avatar" src="{{(userInfo && userInfo.avatarUrl) || '/assets/logo.png'}}" mode="aspectFill"></image>
-    <view class="info">
-      <text class="name">{{loggedIn ? ((userInfo && userInfo.nickName) || '未设置昵称') : '未登录'}}</text>
-      <text class="desc">{{loggedIn ? '欢迎回来，开始拼车吧' : '登录后可同步行程信息'}}</text>
-    </view>
-  </view>
-
-  <block wx:if="{{!loggedIn}}">
-    <view class="card">
-      <text class="card-title">当前未登录</text>
-      <text class="card-desc">登录后可查看已选学校/校区，使用拼车功能</text>
-      <button type="primary" bindtap="onGoLogin">去登录</button>
-    </view>
-  </block>
-  <block wx:else>
-    <view class="card">
-      <text class="card-title">学校与校区</text>
-      <view class="row">
-        <text class="label">学校</text>
-        <text class="value">{{(selectedSchool && selectedSchool.schoolName) || '未设置'}}</text>
-        <button class="link" size="mini" bindtap="onSelectSchool">重新选择</button>
-      </view>
-      <view class="row">
-        <text class="label">校区</text>
-        <text class="value">{{(selectedCampus && selectedCampus.campusName) || '未设置'}}</text>
-        <button class="link" size="mini" bindtap="onSelectCampus">去设置</button>
+  <scroll-view scroll-y="true" class="scroll">
+    <view class="header">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/assets/default-school.png'}}" mode="aspectFill" bindtap="goEditProfile"></image>
+      <view class="header-info">
+        <view class="nick">{{userInfo.nickName || '未设置昵称'}}</view>
+        <view class="status-line">
+          <text class="status">实名：{{userInfo.realAuthStatus == 2 ? '已认证' : '未认证'}}</text>
+          <text class="status">手机号：{{userInfo.phone ? '已绑定' : '未绑定'}} </text>
+          <text class="link" bindtap="goEditProfile">查看资料 ></text>
+        </view>
       </view>
     </view>
 
     <view class="card">
-      <text class="card-title">更多功能</text>
-      <text class="card-desc">实名认证、行程记录等功能开发中</text>
+      <view class="menu-item" bindtap="handleSchoolTap">
+        <view class="menu-text">
+          <view class="title">当前学校</view>
+          <view class="sub">{{schoolName ? schoolName : '未选择'}}{{campusName ? ' / ' + campusName : ''}}</view>
+        </view>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bindtap="goEditProfile">
+        <view class="menu-text">
+          <view class="title">编辑个人资料</view>
+          <view class="sub">头像、昵称、性别等</view>
+        </view>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bindtap="goEmergencyContact">
+        <view class="menu-text">
+          <view class="title">紧急联系人</view>
+          <view class="sub">添加家人或朋友电话，提升出行安全</view>
+        </view>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bindtap="goRoutes">
+        <view class="menu-text">
+          <view class="title">我的常用路线</view>
+          <view class="sub">快速选择经常拼车的路线</view>
+        </view>
+        <text class="arrow">></text>
+      </view>
+      <view class="menu-item" bindtap="goOrders">
+        <view class="menu-text">
+          <view class="title">我的订单</view>
+          <view class="sub">查看历史拼车记录与评价</view>
+        </view>
+        <text class="arrow">></text>
+      </view>
     </view>
 
-    <button class="danger" type="warn" bindtap="onLogout">退出登录</button>
-  </block>
+    <view class="footer">
+      <button class="logout" type="warn" bindtap="onLogout">退出登录</button>
+    </view>
+  </scroll-view>
 </view>
