@@ -81,9 +81,9 @@ public class MpLoginController {
         vo.setNickName(user.getNickName());
         vo.setAvatarUrl(buildFullUrl(user.getAvatarUrl()));
         vo.setPhone(user.getPhone());
-        vo.setRealAuthStatus(user.getRealAuthStatus());
+        vo.setRealAuthStatus(user.getRealAuthStatus() == null ? 0 : user.getRealAuthStatus());
         vo.setRealName(user.getRealName());
-        vo.setRealAuthFailReason(user.getRealAuthFailReason());
+        vo.setRealAuthFailReason(StringUtils.hasText(user.getRealAuthFailReason()) ? user.getRealAuthFailReason() : "");
         return vo;
     }
 

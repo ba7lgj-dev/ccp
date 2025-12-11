@@ -37,8 +37,8 @@ public class MpUserRealAuthServiceImpl implements MpUserRealAuthService {
         vo.setRealName(user.getRealName());
         vo.setIdCardMasked(maskIdCard(user.getIdCardNumber()));
         vo.setFaceImageUrl(buildFullUrl(user.getFaceImageUrl()));
-        vo.setRealAuthStatus(user.getRealAuthStatus());
-        vo.setRealAuthFailReason(user.getRealAuthFailReason());
+        vo.setRealAuthStatus(user.getRealAuthStatus() == null ? RealAuthStatusEnum.NOT_AUTH.getCode() : user.getRealAuthStatus());
+        vo.setRealAuthFailReason(StringUtils.hasText(user.getRealAuthFailReason()) ? user.getRealAuthFailReason() : "");
         return vo;
     }
 
