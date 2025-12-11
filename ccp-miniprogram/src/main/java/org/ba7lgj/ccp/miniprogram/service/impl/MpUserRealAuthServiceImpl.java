@@ -29,7 +29,7 @@ public class MpUserRealAuthServiceImpl implements MpUserRealAuthService {
         if (userId == null) {
             return null;
         }
-        MiniUser user = coreMiniUserService.selectMiniUserById(userId);
+         MiniUser user = coreMiniUserService.selectMiniUserById(userId);
         if (user == null) {
             return null;
         }
