@@ -84,6 +84,7 @@ App({
     userInfo: null,
     selectedSchool: null,
     selectedCampus: null,
+    indexCache: {},
     auth: {
       realAuthStatus: 0,
       schoolAuthList: [],

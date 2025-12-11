@@ -10,6 +10,7 @@ import org.ba7lgj.ccp.miniprogram.service.MpUserRealAuthService;
 import org.ba7lgj.ccp.miniprogram.vo.MpResult;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripMyActiveVO;
+import org.ba7lgj.ccp.miniprogram.vo.MpTripHistoryVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -163,6 +164,16 @@ public class MpTripController {
     public MpResult<MpTripMyActiveVO> myActive() {
         MpTripMyActiveVO vo = tripService.getMyActiveTrip();
         return MpResult.ok(vo);
+    }
+
+    @GetMapping("/myHistory")
+    public MpResult<List<MpTripHistoryVO>> myHistory() {
+        Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            return MpResult.error(4001, "未登录或token无效");
+        }
+        List<MpTripHistoryVO> list = tripService.getMyHistoryTrips(userId);
+        return MpResult.ok(list);
     }
 
     private boolean isValidEndpoint(Long gateId, Long locationId, String address) {

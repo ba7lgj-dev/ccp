@@ -51,7 +51,30 @@
 
     <view class="actions">
       <button class="primary-btn" type="primary" bindtap="onGoPublish">去发布拼车</button>
-      <button class="ghost-btn" bindtap="onGoHall">前往订单/大厅</button>
+      <button class="ghost-btn" bindtap="onGoHall">前往拼单大厅</button>
+    </view>
+
+    <view class="card history-card">
+      <view class="section-header">
+        <text class="card-title">我的历史订单</text>
+      </view>
+      <block wx:if="{{myHistoryTrips.length}}">
+        <view class="history-list">
+          <view class="trip-item" wx:for="{{myHistoryTrips}}" wx:key="tripId" data-tripid="{{item.tripId}}" bindtap="onTapHistoryTrip">
+            <view class="trip-row">
+              <text class="address">{{item.startAddress}}</text>
+              <text class="arrow">→</text>
+              <text class="address">{{item.endAddress}}</text>
+              <text class="owner-tag" wx:if="{{item.isOwner}}">发起者</text>
+            </view>
+            <view class="trip-meta">{{item.departureTimeText}}</view>
+            <view class="trip-status">{{item.statusText}}</view>
+          </view>
+        </view>
+      </block>
+      <block wx:else>
+        <view class="empty-tip">暂无历史订单</view>
+      </block>
     </view>
   </block>
 </view>

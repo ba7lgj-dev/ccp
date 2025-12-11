@@ -55,4 +55,12 @@ function getMyActiveTrip() {
   })
 }
 
-module.exports = { publishTrip, getTripHall, getTripDetail, joinTrip, quitTrip, kickMember, getMyActiveTrip }
+function getMyHistoryTrips() {
+  return request({
+    url: `/mp/trip/myHistory`,
+    method: 'GET',
+    hideLoading: true
+  })
+}
+
+module.exports = { publishTrip, getTripHall, getTripDetail, joinTrip, quitTrip, kickMember, getMyActiveTrip, getMyHistoryTrips }

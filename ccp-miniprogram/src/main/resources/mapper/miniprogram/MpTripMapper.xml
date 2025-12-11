@@ -123,4 +123,19 @@
           AND (t.owner_user_id = #{userId} OR m.user_id IS NOT NULL)
           AND t.id != #{tripId}
     </select>
+
+    <select id="selectHistoryTripsByUser" resultMap="TripResult">
+        SELECT t.id, t.school_id, t.campus_id, t.owner_user_id, t.start_gate_id, t.start_location_id, t.start_address,
+               t.end_gate_id, t.end_location_id, t.end_address, t.owner_people_count, t.total_people, t.current_people,
+               t.departure_time, t.require_text, t.status, t.remark, t.create_by, t.create_time, t.update_by, t.update_time
+        FROM ccp_trip t
+        INNER JOIN ccp_trip_member m ON t.id = m.trip_id
+        WHERE m.user_id = #{userId}
+          AND (
+            t.status IN (3, 4, 5)
+            OR (t.status = 2 AND t.departure_time <= #{now})
+          )
+        ORDER BY t.departure_time DESC
+        LIMIT #{limit}
+    </select>
 </mapper>
