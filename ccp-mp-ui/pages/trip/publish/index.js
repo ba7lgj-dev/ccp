@@ -2,6 +2,28 @@ const gateService = require('../../../services/gate.js')
 const locationService = require('../../../services/location.js')
 const tripService = require('../../../services/trip.js')
 const cache = require('../../../utils/cache.js')
+const auth = require('../../../utils/auth.js')
+
+function requireRealAuth(onCancel) {
+  const app = getApp()
+  const userInfo = (app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || {}
+  const status = typeof userInfo.realAuthStatus === 'number' ? userInfo.realAuthStatus : 0
+  if (status === 2) {
+    return true
+  }
+  wx.showModal({
+    title: '温馨提示',
+    content: '使用拼车功能前需要完成实名认证，是否前往实名认证？',
+    success: (res) => {
+      if (res.confirm) {
+        wx.navigateTo({ url: '/pages/me/realAuth/index' })
+      } else if (typeof onCancel === 'function') {
+        onCancel()
+      }
+    }
+  })
+  return false
+}
 
 const OWNER_MAX = 6
 const TOTAL_MAX = 10
@@ -38,9 +60,21 @@ Page({
     totalPeopleOptions: []
   },
   onLoad() {
+    const token = wx.getStorageSync('token') || ''
+    if (!token) {
+      auth.reLogin().then(() => {
+        this.onLoad()
+      }).catch(() => {
+        wx.navigateTo({ url: '/pages/login/index' })
+      })
+      return
+    }
     const campus = wx.getStorageSync('selectedCampus')
     if (!campus) {
       wx.redirectTo({ url: '/pages/campus/select/index' })
+      return
+    }
+    if (!requireRealAuth(() => wx.switchTab({ url: '/pages/me/index' }))) {
       return
     }
     this.setData({ selectedCampus: campus })
