@@ -31,6 +31,12 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException
     {
+        String requestUri = request.getRequestURI();
+        if (requestUri != null && requestUri.startsWith("/mp/"))
+        {
+            chain.doFilter(request, response);
+            return;
+        }
         LoginUser loginUser = tokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
         {

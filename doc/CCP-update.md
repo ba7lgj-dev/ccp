@@ -461,3 +461,8 @@ ccp-core/src/main/java/com/ccp/
 - 前端新增/调整接口调用：/mp/user/realAuth/info、/mp/user/realAuth/apply、/mp/user/schoolAuth/listMine、/mp/user/schoolAuth/apply、/mp/user/schoolAuth/listApproved，用于获取与提交认证。
 - 新增认证页面：pages/verify/realname（实名）与 pages/verify/school（学校认证），tab 页与核心页调用 checkAuthChain 保障“实名通过 + 至少一所学校通过”后方可继续。
 - 拼车首页与我的等核心入口在 onShow 中接入认证链校验，不满足认证将被引导至登录或认证页面。
+
+### Update-Mp-Upload-Auth-Isolation
+- 后端 Security FilterChain 增加 `/mp/**` 直接跳过 `JwtAuthenticationTokenFilter`，避免小程序 token 被后台 TokenService 解析导致 “JWT signature does not match locally computed signature”。
+- 小程序端新增 `/mp/upload/image` 上传接口，使用 MpUserContextHolder 校验登录并返回图片相对路径，支撑学生证等图片上传。
+- Mp 端拦截链要求上传携带 Authorization 头，前端学生证上传处统一附带 `Bearer` token；RealAuth/Avatar 等上传接口保持一致 header 规则。
