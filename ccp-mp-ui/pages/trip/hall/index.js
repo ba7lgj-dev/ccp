@@ -8,7 +8,8 @@ Page({
     selectedCampus: null,
     immediateList: [],
     reserveList: [],
-    loading: false
+    loading: false,
+    refresherTriggered: false
   },
   onShow() {
     const campus = wx.getStorageSync('selectedCampus')
@@ -19,7 +20,17 @@ Page({
     this.setData({ selectedCampus: campus })
     this.loadTripHall()
   },
-  loadTripHall() {
+  onPullDownRefresh() {
+    this.loadTripHall()
+    wx.stopPullDownRefresh()
+  },
+  onRefresherRefresh() {
+    this.setData({ refresherTriggered: true })
+    this.loadTripHall(() => {
+      this.setData({ refresherTriggered: false })
+    })
+  },
+  loadTripHall(done) {
     const campus = this.data.selectedCampus
     if (!campus) return
     this.setData({ loading: true })
@@ -42,6 +53,9 @@ Page({
       wx.showToast({ title: '加载大厅失败', icon: 'none' })
     }).finally(() => {
       this.setData({ loading: false })
+      if (typeof done === 'function') {
+        done()
+      }
     })
   },
   formatTripItem(item) {
@@ -79,7 +93,7 @@ Page({
   onTapTrip(e) {
     const id = e.currentTarget.dataset.id
     if (id) {
-      wx.showToast({ title: '详情页开发中', icon: 'none' })
+      wx.navigateTo({ url: `/pages/trip/detail/index?tripId=${id}` })
     }
   }
 })

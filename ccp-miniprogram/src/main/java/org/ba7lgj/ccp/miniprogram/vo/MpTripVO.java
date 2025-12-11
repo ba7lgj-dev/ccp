@@ -14,8 +14,10 @@ public class MpTripVO {
     private Integer currentPeople;
     private Integer totalPeople;
     private Integer ownerPeopleCount;
+    private Integer joinPeopleCount;
     private String requireText;
     private Integer status;
+    private Long targetUserId;
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -43,8 +45,12 @@ public class MpTripVO {
     public void setTotalPeople(Integer totalPeople) { this.totalPeople = totalPeople; }
     public Integer getOwnerPeopleCount() { return ownerPeopleCount; }
     public void setOwnerPeopleCount(Integer ownerPeopleCount) { this.ownerPeopleCount = ownerPeopleCount; }
+    public Integer getJoinPeopleCount() { return joinPeopleCount; }
+    public void setJoinPeopleCount(Integer joinPeopleCount) { this.joinPeopleCount = joinPeopleCount; }
     public String getRequireText() { return requireText; }
     public void setRequireText(String requireText) { this.requireText = requireText; }
     public Integer getStatus() { return status; }
     public void setStatus(Integer status) { this.status = status; }
+    public Long getTargetUserId() { return targetUserId; }
+    public void setTargetUserId(Long targetUserId) { this.targetUserId = targetUserId; }
 }

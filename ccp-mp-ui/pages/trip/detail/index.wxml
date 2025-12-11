@@ -1,0 +1,70 @@
+<view class="page" wx:if="{{detail}}">
+  <view class="card status-card">
+    <view class="status-row">
+      <text class="status-tag status-{{detail.status}}">{{detail.statusText}}</text>
+      <text class="people">{{detail.currentPeople || 0}} / {{detail.totalPeople}} 人</text>
+    </view>
+    <view class="address-row">
+      <text class="start">{{detail.startAddress}}</text>
+      <text class="arrow">→</text>
+      <text class="end">{{detail.endAddress}}</text>
+    </view>
+    <view class="time-row">
+      <text class="time">{{detail.departureTimeDisplay}}</text>
+    </view>
+    <view class="require">{{detail.requireText || '无特殊要求'}}</view>
+  </view>
+
+  <view class="card member-card">
+    <view class="member-header">
+      <text class="title">拼车成员</text>
+      <text class="remain" wx:if="{{detail.remainPeople >= 0 && detail.status === 0}}">还差{{detail.remainPeople}}人</text>
+    </view>
+    <view class="owner">
+      <image class="avatar" src="{{detail.ownerAvatar || '/assets/logo.png'}}" mode="aspectFill"></image>
+      <view class="owner-info">
+        <text class="name">{{detail.ownerNickName || '发起人'}}</text>
+        <text class="role">发起人 · {{detail.ownerPeopleCount}}人</text>
+      </view>
+    </view>
+    <view class="member-list">
+      <block wx:for="{{detail.members}}" wx:key="userId">
+        <view class="member-item">
+          <view class="member-main">
+            <image class="avatar" src="{{item.avatarUrl || '/assets/default-school.png'}}" mode="aspectFill"></image>
+            <view class="info">
+              <text class="name">{{item.nickName || '成员'}}</text>
+              <text class="meta">{{item.role === 1 ? '发起人' : '成员'}} · {{item.joinPeopleCount || 1}}人</text>
+            </view>
+          </view>
+          <button wx:if="{{canKick && item.role !== 1}}" size="mini" type="warn" bindtap="onTapKick" data-user-id="{{item.userId}}">移除</button>
+        </view>
+      </block>
+    </view>
+  </view>
+
+  <view class="card action-card">
+    <block wx:if="{{canJoin}}">
+      <button type="primary" bindtap="onTapJoin">加入拼车</button>
+    </block>
+    <block wx:elif="{{canQuit}}">
+      <button type="warn" bindtap="onTapQuit">退出拼车</button>
+    </block>
+    <block wx:else>
+      <text class="hint">请选择合适的操作</text>
+    </block>
+    <button wx:if="{{detail.currentUserInfo && detail.currentUserInfo.joined}}" class="chat-btn" bindtap="onTapChat">聊天</button>
+  </view>
+
+  <view class="card tip-card">
+    <text class="tip-title">说明</text>
+    <text class="tip-content" wx:if="{{detail.status === 0}}">还差{{detail.remainPeople}}人即可成团</text>
+    <text class="tip-content" wx:elif="{{detail.status === 1}}">待确认：所有成员确认后成团</text>
+    <text class="tip-content" wx:elif="{{detail.status === 2}}">已确认：请按时集合出行</text>
+    <text class="tip-content" wx:elif="{{detail.status === 3}}">已完成：可在订单列表中评价</text>
+    <text class="tip-content" wx:elif="{{detail.status === 4 || detail.status === 5}}">订单已结束</text>
+  </view>
+</view>
+
+<view wx:elif="{{loading}}" class="loading">加载中...</view>
+<view wx:else class="empty">暂无数据</view>
