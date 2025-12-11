@@ -77,8 +77,14 @@ public class MpTripController {
                 return MpResult.error(400, "出发时间格式不正确");
             }
         }
-        tripService.publishTrip(vo);
-        return MpResult.ok();
+        try {
+            tripService.publishTrip(vo);
+            return MpResult.ok();
+        } catch (IllegalArgumentException e) {
+            return MpResult.error(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            return MpResult.error(4001, e.getMessage());
+        }
     }
 
     @GetMapping("/hall")

@@ -34,6 +34,10 @@ public class MpUserRealAuthServiceImpl implements MpUserRealAuthService {
             return null;
         }
         MpUserRealAuthInfoVO vo = new MpUserRealAuthInfoVO();
+        vo.setUserId(user.getId());
+        vo.setNickName(user.getNickName());
+        vo.setAvatarUrl(buildFullUrl(user.getAvatarUrl()));
+        vo.setPhone(user.getPhone());
         vo.setRealName(user.getRealName());
         vo.setIdCardMasked(maskIdCard(user.getIdCardNumber()));
         vo.setFaceImageUrl(buildFullUrl(user.getFaceImageUrl()));
@@ -101,16 +105,13 @@ public class MpUserRealAuthServiceImpl implements MpUserRealAuthService {
         }
         String trimmed = idCardNumber.trim();
         int len = trimmed.length();
-        if (len <= 4) {
-            return "**" + trimmed.charAt(len - 1);
+        if (len <= 8) {
+            return trimmed.substring(0, Math.min(2, len)) + "****";
         }
-        int prefix = Math.min(3, len - 2);
-        int suffix = Math.min(4, len - prefix);
-        String start = trimmed.substring(0, prefix);
-        String end = trimmed.substring(len - suffix);
-        StringBuilder sb = new StringBuilder();
-        sb.append(start);
-        for (int i = 0; i < len - prefix - suffix; i++) {
+        String start = trimmed.substring(0, 4);
+        String end = trimmed.substring(len - 4);
+        StringBuilder sb = new StringBuilder(start);
+        for (int i = 0; i < len - 8; i++) {
             sb.append('*');
         }
         sb.append(end);
