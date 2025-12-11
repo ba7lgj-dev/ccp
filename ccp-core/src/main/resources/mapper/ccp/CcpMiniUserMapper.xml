@@ -27,6 +27,37 @@
         <result property="updateTime" column="update_time"/>
     </resultMap>
 
+    <resultMap id="RealAuthListResult" type="org.ba7lgj.ccp.core.domain.vo.CcpUserRealAuthListVO">
+        <id property="id" column="id" />
+        <result property="nickName" column="nick_name" />
+        <result property="avatarUrl" column="avatar_url" />
+        <result property="phone" column="phone" />
+        <result property="realName" column="real_name" />
+        <result property="idCardNumber" column="id_card_number" />
+        <result property="realAuthStatus" column="real_auth_status" />
+        <result property="realAuthFailReason" column="real_auth_fail_reason" />
+        <result property="realAuthReviewByName" column="reviewer_name" />
+        <result property="realAuthReviewTime" column="real_auth_review_time" />
+        <result property="createTime" column="create_time" />
+    </resultMap>
+
+    <resultMap id="RealAuthDetailResult" type="org.ba7lgj.ccp.core.domain.vo.CcpUserRealAuthDetailVO">
+        <id property="id" column="id" />
+        <result property="nickName" column="nick_name" />
+        <result property="avatarUrl" column="avatar_url" />
+        <result property="phone" column="phone" />
+        <result property="realName" column="real_name" />
+        <result property="idCardNumber" column="id_card_number" />
+        <result property="faceImageUrl" column="face_image_url" />
+        <result property="adminRemark" column="admin_remark" />
+        <result property="realAuthStatus" column="real_auth_status" />
+        <result property="realAuthFailReason" column="real_auth_fail_reason" />
+        <result property="realAuthReviewByName" column="reviewer_name" />
+        <result property="realAuthReviewTime" column="real_auth_review_time" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
     <sql id="Base_Column_List">
         id, open_id, union_id, nick_name, avatar_url, phone, real_name, id_card_name, id_card_number,
         face_image_url, face_verify_result, gender, status, real_auth_status, real_auth_fail_reason,
@@ -69,6 +100,44 @@
             </if>
         </where>
         order by create_time desc
+    </select>
+
+    <select id="selectUserRealAuthList" parameterType="org.ba7lgj.ccp.common.dto.CcpUserRealAuthQueryDTO" resultMap="RealAuthListResult">
+        select u.id, u.nick_name, u.avatar_url, u.phone, u.real_name, u.id_card_number,
+               u.real_auth_status, u.real_auth_fail_reason, u.real_auth_review_time, u.create_time,
+               su.nick_name as reviewer_name
+        from ccp_mini_user u
+        left join sys_user su on su.user_id = u.real_auth_review_by
+        <where>
+            <if test="nickName != null and nickName != ''">
+                and u.nick_name like concat('%', #{nickName}, '%')
+            </if>
+            <if test="phone != null and phone != ''">
+                and u.phone like concat('%', #{phone}, '%')
+            </if>
+            <if test="realName != null and realName != ''">
+                and u.real_name like concat('%', #{realName}, '%')
+            </if>
+            <if test="realAuthStatus != null">
+                and u.real_auth_status = #{realAuthStatus}
+            </if>
+            <if test="beginTime != null and beginTime != ''">
+                and date_format(u.create_time, '%Y-%m-%d') &gt;= #{beginTime}
+            </if>
+            <if test="endTime != null and endTime != ''">
+                and date_format(u.create_time, '%Y-%m-%d') &lt;= #{endTime}
+            </if>
+        </where>
+        order by u.create_time desc
+    </select>
+
+    <select id="selectUserRealAuthDetail" parameterType="long" resultMap="RealAuthDetailResult">
+        select u.id, u.nick_name, u.avatar_url, u.phone, u.real_name, u.id_card_number, u.face_image_url, u.admin_remark,
+               u.real_auth_status, u.real_auth_fail_reason, u.real_auth_review_time, u.create_time, u.update_time,
+               su.nick_name as reviewer_name
+        from ccp_mini_user u
+                 left join sys_user su on su.user_id = u.real_auth_review_by
+        where u.id = #{userId}
     </select>
 
     <update id="updateCcpMiniUser" parameterType="org.ba7lgj.ccp.common.domain.MiniUser">
