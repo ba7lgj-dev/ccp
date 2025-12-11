@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ba7lgj.ccp.miniprogram.mapper.MpTripChatMapper">
+    <resultMap id="MpTripChatResult" type="org.ba7lgj.ccp.miniprogram.domain.MpTripChat">
+        <id column="id" property="id" />
+        <result column="trip_id" property="tripId" />
+        <result column="sender_user_id" property="senderUserId" />
+        <result column="content_type" property="contentType" />
+        <result column="message_type" property="messageType" />
+        <result column="content" property="content" />
+        <result column="is_deleted" property="isDeleted" />
+        <result column="send_time" property="sendTime" />
+        <result column="remark" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+    </resultMap>
+
+    <select id="selectByTripWithPaging" resultMap="MpTripChatResult">
+        SELECT
+            id, trip_id, sender_user_id, content_type, message_type, content,
+            is_deleted, send_time, remark, create_by, create_time, update_by, update_time
+        FROM ccp_trip_chat
+        WHERE trip_id = #{tripId}
+          AND is_deleted = 0
+        <if test="lastId != null">
+            AND id &lt; #{lastId}
+        </if>
+        ORDER BY id DESC
+        LIMIT #{pageSize}
+    </select>
+
+    <insert id="insertChat" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpTripChat" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ccp_trip_chat
+        (trip_id, sender_user_id, content_type, message_type, content, is_deleted, send_time, remark, create_by, create_time, update_by, update_time)
+        VALUES
+        (#{tripId}, #{senderUserId}, #{contentType}, #{messageType}, #{content}, #{isDeleted}, #{sendTime}, #{remark}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+    </insert>
+
+    <select id="countOlderMessages" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip_chat
+        WHERE trip_id = #{tripId}
+          AND is_deleted = 0
+          AND id &lt; #{id}
+    </select>
+
+    <select id="selectLatestByTripIds" resultMap="MpTripChatResult">
+        SELECT c.*
+        FROM ccp_trip_chat c
+        INNER JOIN (
+            SELECT trip_id, MAX(id) AS max_id
+            FROM ccp_trip_chat
+            WHERE trip_id IN
+            <foreach collection="tripIds" item="tripId" open="(" separator="," close=")">
+                #{tripId}
+            </foreach>
+              AND is_deleted = 0
+            GROUP BY trip_id
+        ) t ON c.trip_id = t.trip_id AND c.id = t.max_id
+    </select>
+
+    <select id="countUnreadByTripIds" resultType="org.ba7lgj.ccp.miniprogram.vo.MpTripUnreadCountDTO">
+        SELECT c.trip_id AS tripId, COUNT(1) AS unreadCount
+        FROM ccp_trip_chat c
+        LEFT JOIN ccp_trip_chat_read r ON c.id = r.chat_id AND r.user_id = #{userId}
+        WHERE c.trip_id IN
+        <foreach collection="tripIds" item="tripId" open="(" separator="," close=")">
+            #{tripId}
+        </foreach>
+          AND c.is_deleted = 0
+          AND r.id IS NULL
+        GROUP BY c.trip_id
+    </select>
+</mapper>
