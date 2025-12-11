@@ -37,6 +37,13 @@
 - 调整或新增前端文件：pages/me/index.* 重构、“编辑个人资料”页面 pages/me/profile/edit/*，占位页面 pages/me/emergency-contact、pages/me/routes、pages/order/list 等。
 - “我的”页面现可展示用户资料、跳转到资料编辑、支持更换头像与退出登录，未对数据库结构做出调整，继续使用现有表 ccp_mini_user。
 
+### Update-RealAuth-AdminFlow
+- 新增后台实名认证审核接口 Controller：CcpUserRealAuthController，提供 /ccp/userRealAuth/list、/ccp/userRealAuth/{userId}、/ccp/userRealAuth/approve、/ccp/userRealAuth/reject 四个路径，受 RuoYi 权限控制。
+- 核心 Service 扩展：新增 CcpUserRealAuthService（列表、详情、审核通过、审核拒绝），在审核操作中校验待审核状态并写入审核人、审核时间与备注。
+- Mapper 增强：CcpMiniUserMapper 追加实名列表与详情查询及对应 XML SQL，实现昵称/手机号/姓名/状态/时间筛选与审核人昵称关联。
+- 管理端前端页面：ruoyi-ui/src/views/ccp/user/realAuth/index.vue 新增实名审核列表、详情抽屉与通过/拒绝弹窗，调用新增 API 文件 ruoyi-ui/src/api/ccp/userRealAuth.js。
+- 菜单与权限：新增“实名认证审核”菜单及权限标识 ccp:userRealAuth:list/query/approve/reject，挂载于小程序管理模块。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 
