@@ -449,3 +449,9 @@ ccp-core/src/main/java/com/ccp/
 - 全量梳理小程序端使用 http.js 的接口 path，显式添加 /mp/xxx 前缀（学校/校区/校门、拼车、用户资料等），避免 BASE_URL 拆分后访问 404。
 - 新增 utils/url.js 提供 buildImageUrl，针对后端返回的相对图片路径统一拼接 BASE_URL，绝对路径透传。
 - 核对并处理用户头像、学校 logo、拼车详情成员头像等展示场景，在 setData 前调用 buildImageUrl，确保图片地址可直接访问。
+
+### Update-SchoolAuth-AdminReview
+- 新增学校学生认证后台审核模块：领域模型 CcpUserSchoolAuth、Mapper XML 与 Service 支持按校区负责人过滤。
+- ruoyi-admin 新增 CcpUserSchoolAuthController，支持列表查询、详情查看及通过/拒绝审核，自动记录审核人与时间。
+- ruoyi-ui 新增页面 src/views/ccp/schoolAuth/index.vue 及接口封装 src/api/ccp/schoolAuth.js，提供查询筛选、详情查看、审核交互。
+- 预置 sys_menu SQL（需按实际 parent_id 调整）新增“学校学生认证”菜单与审核按钮权限，供管理员或校区管理员分配使用。

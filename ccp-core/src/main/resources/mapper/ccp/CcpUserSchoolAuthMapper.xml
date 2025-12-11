@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.core.mapper.CcpUserSchoolAuthMapper">
+
+    <resultMap id="CcpUserSchoolAuthResult" type="org.ba7lgj.ccp.core.domain.CcpUserSchoolAuth">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="school_id" property="schoolId" />
+        <result column="campus_id" property="campusId" />
+        <result column="student_no" property="studentNo" />
+        <result column="student_name" property="studentName" />
+        <result column="student_card_image_url" property="studentCardImageUrl" />
+        <result column="extra_image_url" property="extraImageUrl" />
+        <result column="status" property="status" />
+        <result column="fail_reason" property="failReason" />
+        <result column="submit_time" property="submitTime" />
+        <result column="review_time" property="reviewTime" />
+        <result column="review_by" property="reviewBy" />
+        <result column="expire_time" property="expireTime" />
+        <result column="remark" property="remark" />
+        <result column="create_by" property="createBy" />
+        <result column="create_time" property="createTime" />
+        <result column="update_by" property="updateBy" />
+        <result column="update_time" property="updateTime" />
+        <result column="school_name" property="schoolName" />
+        <result column="school_short_name" property="schoolShortName" />
+        <result column="campus_name" property="campusName" />
+        <result column="city_name" property="cityName" />
+        <result column="user_nick_name" property="userNickName" />
+        <result column="user_phone" property="userPhone" />
+        <result column="user_open_id" property="userOpenId" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        cusa.id, cusa.user_id, cusa.school_id, cusa.campus_id, cusa.student_no, cusa.student_name,
+        cusa.student_card_image_url, cusa.extra_image_url, cusa.status, cusa.fail_reason, cusa.submit_time,
+        cusa.review_time, cusa.review_by, cusa.expire_time, cusa.remark, cusa.create_by, cusa.create_time,
+        cusa.update_by, cusa.update_time,
+        cs.school_name, cs.school_short_name, csc.campus_name, city.name AS city_name, mu.nick_name AS user_nick_name,
+        mu.phone AS user_phone, mu.open_id AS user_open_id
+    </sql>
+
+    <select id="selectCcpUserSchoolAuthList" parameterType="org.ba7lgj.ccp.core.domain.CcpUserSchoolAuth" resultMap="CcpUserSchoolAuthResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_user_school_auth cusa
+            LEFT JOIN ccp_school cs ON cs.id = cusa.school_id
+            LEFT JOIN ccp_school_campus csc ON csc.id = cusa.campus_id
+            LEFT JOIN ccp_city city ON city.id = cs.city_id
+            LEFT JOIN ccp_mini_user mu ON mu.id = cusa.user_id
+        WHERE 1 = 1
+        <if test="schoolId != null"> AND cusa.school_id = #{schoolId}</if>
+        <if test="campusId != null"> AND cusa.campus_id = #{campusId}</if>
+        <if test="status != null"> AND cusa.status = #{status}</if>
+        <if test="schoolName != null and schoolName != ''"> AND cs.school_name LIKE CONCAT('%', #{schoolName}, '%')</if>
+        <if test="campusName != null and campusName != ''"> AND csc.campus_name LIKE CONCAT('%', #{campusName}, '%')</if>
+        <if test="studentNo != null and studentNo != ''"> AND cusa.student_no LIKE CONCAT('%', #{studentNo}, '%')</if>
+        <if test="studentName != null and studentName != ''"> AND cusa.student_name LIKE CONCAT('%', #{studentName}, '%')</if>
+        <if test="userId != null"> AND cusa.user_id = #{userId}</if>
+        <if test="beginSubmitTime != null"> AND cusa.submit_time &gt;= #{beginSubmitTime}</if>
+        <if test="endSubmitTime != null"> AND cusa.submit_time &lt;= #{endSubmitTime}</if>
+        <if test="managerUserId != null">
+            AND EXISTS (
+            SELECT 1 FROM ccp_school_campus c2
+            WHERE c2.school_id = cusa.school_id
+              AND c2.manager_user_id = #{managerUserId}
+            )
+        </if>
+    </select>
+
+    <select id="selectCcpUserSchoolAuthById" resultMap="CcpUserSchoolAuthResult">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM ccp_user_school_auth cusa
+            LEFT JOIN ccp_school cs ON cs.id = cusa.school_id
+            LEFT JOIN ccp_school_campus csc ON csc.id = cusa.campus_id
+            LEFT JOIN ccp_city city ON city.id = cs.city_id
+            LEFT JOIN ccp_mini_user mu ON mu.id = cusa.user_id
+        WHERE cusa.id = #{id}
+        <if test="managerUserId != null">
+            AND EXISTS (
+            SELECT 1 FROM ccp_school_campus c2
+            WHERE c2.school_id = cusa.school_id
+              AND c2.manager_user_id = #{managerUserId}
+            )
+        </if>
+    </select>
+
+    <insert id="insertCcpUserSchoolAuth" parameterType="org.ba7lgj.ccp.core.domain.CcpUserSchoolAuth">
+        INSERT INTO ccp_user_school_auth (
+            user_id, school_id, campus_id, student_no, student_name, student_card_image_url, extra_image_url,
+            status, fail_reason, submit_time, review_time, review_by, expire_time, remark, create_by, create_time,
+            update_by, update_time
+        ) VALUES (
+            #{userId}, #{schoolId}, #{campusId}, #{studentNo}, #{studentName}, #{studentCardImageUrl}, #{extraImageUrl},
+            #{status}, #{failReason}, #{submitTime}, #{reviewTime}, #{reviewBy}, #{expireTime}, #{remark},
+            #{createBy}, #{createTime}, #{updateBy}, #{updateTime}
+        )
+    </insert>
+
+    <update id="updateCcpUserSchoolAuth" parameterType="org.ba7lgj.ccp.core.domain.CcpUserSchoolAuth">
+        UPDATE ccp_user_school_auth
+        <set>
+            <if test="status != null"> status = #{status},</if>
+            <if test="failReason != null"> fail_reason = #{failReason},</if>
+            <if test="reviewBy != null"> review_by = #{reviewBy},</if>
+            <if test="reviewTime != null"> review_time = #{reviewTime},</if>
+            <if test="expireTime != null"> expire_time = #{expireTime},</if>
+            <if test="remark != null"> remark = #{remark},</if>
+            <if test="updateBy != null"> update_by = #{updateBy},</if>
+            <if test="updateTime != null"> update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+</mapper>
