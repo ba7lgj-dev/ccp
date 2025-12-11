@@ -13,5 +13,7 @@ public interface CcpTripMemberAdminService {
 
     List<CcpTripMemberVO> selectMemberList(CcpTripMemberQuery query);
 
+    List<CcpTripMemberVO> selectMemberListByTrip(CcpTripMemberQuery query);
+
     int markNoShow(CcpTripMemberNoShowDTO dto);
 }

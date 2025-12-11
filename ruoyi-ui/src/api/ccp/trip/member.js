@@ -8,6 +8,14 @@ export function listTripMember(query) {
   })
 }
 
+export function listTripMemberByTrip(query) {
+  return request({
+    url: '/ccp/trip/member/listByTrip',
+    method: 'get',
+    params: query
+  })
+}
+
 export function markNoShow(data) {
   return request({
     url: '/ccp/trip/member/markNoShow',

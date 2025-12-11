@@ -34,6 +34,17 @@ public class CcpTripMemberAdminController extends BaseController {
         return R.ok(getDataTable(list));
     }
 
+    @PreAuthorize("@ss.hasPermi('ccp:tripMember:list')")
+    @GetMapping("/listByTrip")
+    public R<TableDataInfo> listByTrip(CcpTripMemberQuery query) {
+        if (query.getTripId() == null) {
+            return R.error("tripId不能为空");
+        }
+        startPage();
+        List<CcpTripMemberVO> list = ccpTripMemberAdminService.selectMemberListByTrip(query);
+        return R.ok(getDataTable(list));
+    }
+
     @PreAuthorize("@ss.hasPermi('ccp:tripMember:edit')")
     @Log(title = "拼车成员", businessType = BusinessType.UPDATE)
     @PostMapping("/markNoShow")

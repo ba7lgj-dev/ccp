@@ -2,10 +2,24 @@
   <div class="app-container">
     <el-form :model="queryParams" ref="queryForm" size="small" inline label-width="80px">
       <el-form-item label="学校" prop="schoolId">
-        <el-input v-model="queryParams.schoolId" placeholder="学校ID" clearable />
+        <el-select v-model="queryParams.schoolId" placeholder="请选择学校" clearable filterable @change="handleSchoolChange">
+          <el-option
+            v-for="item in schoolOptions"
+            :key="item.id"
+            :label="item.schoolShortName || item.schoolName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="校区" prop="campusId">
-        <el-input v-model="queryParams.campusId" placeholder="校区ID" clearable />
+        <el-select v-model="queryParams.campusId" placeholder="请选择校区" clearable filterable :disabled="!queryParams.schoolId">
+          <el-option
+            v-for="item in campusOptions"
+            :key="item.id"
+            :label="item.campusName"
+            :value="item.id"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="关键词" prop="keyword">
         <el-input v-model="queryParams.keyword" placeholder="起点/终点关键词" clearable />
@@ -25,8 +39,11 @@
     <el-table v-loading="loading" :data="tripList">
       <el-table-column type="index" label="序号" width="60" />
       <el-table-column label="订单ID" prop="id" width="100" />
-      <el-table-column label="学校" prop="schoolName" />
-      <el-table-column label="校区" prop="campusName" />
+      <el-table-column label="学校/校区" min-width="180">
+        <template slot-scope="scope">
+          {{ formatSchoolCampus(scope.row) }}
+        </template>
+      </el-table-column>
       <el-table-column label="发起人" prop="ownerNickName" />
       <el-table-column label="起点" prop="startAddress" />
       <el-table-column label="终点" prop="endAddress" />
@@ -37,6 +54,7 @@
       <el-table-column label="操作" width="180">
         <template slot-scope="scope">
           <el-button size="mini" type="text" icon="el-icon-view" @click="handleDetail(scope.row)">详情</el-button>
+          <el-button size="mini" type="text" icon="el-icon-user" @click="handleViewMembers(scope.row)">查看成员</el-button>
           <el-dropdown v-hasPermi="['ccp:trip:edit']" trigger="click">
             <el-button size="mini" type="text">状态<i class="el-icon-arrow-down el-icon--right"></i></el-button>
             <el-dropdown-menu slot="dropdown">
@@ -67,14 +85,28 @@
         <el-descriptions-item label="人数">{{ detail.currentPeople }}/{{ detail.totalPeople }}</el-descriptions-item>
       </el-descriptions>
     </el-dialog>
+
+    <el-drawer
+      :visible.sync="memberDrawerVisible"
+      size="70%"
+      :title="memberDrawerTitle"
+      direction="rtl"
+      append-to-body
+    >
+      <trip-member-list ref="memberList" :trip-id="currentTripId" :visible="memberDrawerVisible" />
+    </el-drawer>
   </div>
 </template>
 
 <script>
 import { listTrip, getTrip, changeTripStatus, exportTrip } from '@/api/ccp/trip/trip'
+import { listSchool } from '@/api/ccp/school'
+import { listCampus } from '@/api/ccp/campus'
+import TripMemberList from '../member/index.vue'
 
 export default {
   name: 'CcpTripAdmin',
+  components: { TripMemberList },
   data() {
     return {
       loading: false,
@@ -82,6 +114,11 @@ export default {
       tripList: [],
       detailOpen: false,
       detail: null,
+      schoolOptions: [],
+      campusOptions: [],
+      memberDrawerVisible: false,
+      memberDrawerTitle: '成员列表',
+      currentTripId: null,
       queryParams: {
         pageNum: 1,
         pageSize: 10,
@@ -92,6 +129,7 @@ export default {
     }
   },
   created() {
+    this.fetchSchools()
     this.getList()
   },
   methods: {
@@ -105,12 +143,34 @@ export default {
         this.loading = false
       })
     },
+    fetchSchools() {
+      listSchool({ pageNum: 1, pageSize: 999 }).then(res => {
+        this.schoolOptions = res.data.rows || []
+      })
+    },
+    fetchCampuses(schoolId) {
+      if (!schoolId) {
+        this.campusOptions = []
+        return
+      }
+      listCampus({ schoolId: schoolId, pageNum: 1, pageSize: 999 }).then(res => {
+        this.campusOptions = res.data.rows || []
+      })
+    },
+    handleSchoolChange(value) {
+      this.queryParams.campusId = undefined
+      this.campusOptions = []
+      if (value) {
+        this.fetchCampuses(value)
+      }
+    },
     handleQuery() {
       this.queryParams.pageNum = 1
       this.getList()
     },
     resetQuery() {
       this.$refs.queryForm.resetFields()
+      this.handleSchoolChange(this.queryParams.schoolId)
       this.handleQuery()
     },
     peopleFormatter(row) {
@@ -119,10 +179,26 @@ export default {
       }
       return row.currentPeople
     },
+    formatSchoolCampus(row) {
+      if (row.schoolName || row.campusName) {
+        return `${row.schoolName || ''}${row.schoolName && row.campusName ? ' / ' : ''}${row.campusName || ''}`
+      }
+      return '--'
+    },
     handleDetail(row) {
       getTrip(row.id).then(res => {
         this.detail = res.data
         this.detailOpen = true
+      })
+    },
+    handleViewMembers(row) {
+      this.currentTripId = row.id
+      this.memberDrawerTitle = `成员列表 - 订单ID：${row.id}`
+      this.memberDrawerVisible = true
+      this.$nextTick(() => {
+        if (this.$refs.memberList) {
+          this.$refs.memberList.refresh(row.id)
+        }
       })
     },
     changeStatus(row, status) {
