@@ -9,6 +9,27 @@ function normalizeUserInfo(userInfo) {
   return { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) }
 }
 
+function requireRealAuth(onCancel) {
+  const app = getApp()
+  const userInfo = (app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || {}
+  const status = typeof userInfo.realAuthStatus === 'number' ? userInfo.realAuthStatus : 0
+  if (status === 2) {
+    return true
+  }
+  wx.showModal({
+    title: '温馨提示',
+    content: '使用拼车功能前需要完成实名认证，是否前往实名认证？',
+    success: (res) => {
+      if (res.confirm) {
+        wx.navigateTo({ url: '/pages/me/realAuth/index' })
+      } else if (typeof onCancel === 'function') {
+        onCancel()
+      }
+    }
+  })
+  return false
+}
+
 Page({
   data: {
     userInfo: null,
@@ -49,6 +70,9 @@ Page({
       selectedSchool,
       selectedCampus
     })
+    if (!requireRealAuth(() => wx.switchTab({ url: '/pages/me/index' }))) {
+      return
+    }
     this.loadActiveTrip()
   },
   onGoLogin() {

@@ -24,6 +24,10 @@ App({
       wx.redirectTo({ url: '/pages/login/index' })
       return
     }
+    if (userInfo.realAuthStatus !== 2) {
+      wx.navigateTo({ url: '/pages/me/realAuth/index' })
+      return
+    }
     const selectedSchool = wx.getStorageSync('selectedSchool')
     const selectedCampus = wx.getStorageSync('selectedCampus')
     if (!selectedSchool) {
