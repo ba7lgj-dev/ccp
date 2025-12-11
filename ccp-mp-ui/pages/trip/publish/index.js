@@ -56,5 +56,8 @@ Page({
   },
   onNextStep() {
     wx.showToast({ title: '后续功能待实现', icon: 'none' })
+  },
+  onGoHome() {
+    wx.switchTab({ url: '/pages/index/index' })
   }
 })
