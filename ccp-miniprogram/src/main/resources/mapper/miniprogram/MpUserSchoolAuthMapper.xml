@@ -24,7 +24,7 @@
     <sql id="Base_Column_List">
         cusa.id, cusa.user_id, cusa.school_id, cusa.campus_id, cusa.student_no, cusa.student_name,
         cusa.student_card_image_url, cusa.extra_image_url, cusa.status, cusa.fail_reason, cusa.submit_time,
-        cusa.review_time, cusa.review_by, cs.school_name, cs.school_short_name, csc.campus_name, city.name AS city_name
+        cusa.review_time, cusa.review_by, cs.school_name, cs.school_short_name, csc.campus_name, city.city_name AS city_name
     </sql>
 
     <select id="selectByUserId" resultMap="UserSchoolAuthResult">

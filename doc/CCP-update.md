@@ -1,5 +1,11 @@
 校园拼车小程序 CCP 基础工程规范与阶段一功能提示
 
+### Update-IndexHistory-AuthChain
+- 首页新增“我的历史订单”模块，展示最近订单并支持跳转详情，头像昵称从用户资料接口获取且图片链接使用 BASE_URL 拼接。
+- tabBar 文案将“订单”调整为“拼单大厅”，入口与大厅定位保持不变。
+- 后端新增 GET /mp/trip/myHistory 接口，按参与用户返回最近 20 条已结束订单（完成/取消/过期/已确认且结束）。
+- 首页与拼单大厅 tab 页在 onShow 首行调用 App.checkAuthChain，认证未通过自动跳转相关认证页面。
+
 ### 2025-12-11 导航与登录流程调整
 - 修改页面：app.json、app.js、pages/login/index、pages/index/index、pages/me/index、pages/trip/hall/index、pages/trip/publish/index
 - 登录成功后的跳转：先写入 token 与 userInfo 后，按本地 selectedSchool/selectedCampus 判断；缺学校跳转 /pages/school/select/index，缺校区跳转 /pages/campus/select/index，均已选择则 switchTab 到首页 /pages/index/index。
@@ -461,6 +467,11 @@ ccp-core/src/main/java/com/ccp/
 - 前端新增/调整接口调用：/mp/user/realAuth/info、/mp/user/realAuth/apply、/mp/user/schoolAuth/listMine、/mp/user/schoolAuth/apply、/mp/user/schoolAuth/listApproved，用于获取与提交认证。
 - 新增认证页面：pages/verify/realname（实名）与 pages/verify/school（学校认证），tab 页与核心页调用 checkAuthChain 保障“实名通过 + 至少一所学校通过”后方可继续。
 - 拼车首页与我的等核心入口在 onShow 中接入认证链校验，不满足认证将被引导至登录或认证页面。
+
+### Update-Mp-Upload-Auth-Isolation
+- 后端 Security FilterChain 增加 `/mp/**` 直接跳过 `JwtAuthenticationTokenFilter`，避免小程序 token 被后台 TokenService 解析导致 “JWT signature does not match locally computed signature”。
+- 小程序端新增 `/mp/upload/image` 上传接口，使用 MpUserContextHolder 校验登录并返回图片相对路径，支撑学生证等图片上传。
+- Mp 端拦截链要求上传携带 Authorization 头，前端学生证上传处统一附带 `Bearer` token；RealAuth/Avatar 等上传接口保持一致 header 规则。
 第10次更新：行程聊天功能与已读未读实现
 - 新增后端类：org.ba7lgj.ccp.miniprogram.controller.MpTripChatController、org.ba7lgj.ccp.miniprogram.service.MpTripChatService、org.ba7lgj.ccp.miniprogram.service.impl.MpTripChatServiceImpl、org.ba7lgj.ccp.miniprogram.domain.MpTripChat、org.ba7lgj.ccp.miniprogram.domain.MpTripChatRead、org.ba7lgj.ccp.miniprogram.mapper.MpTripChatMapper、org.ba7lgj.ccp.miniprogram.mapper.MpTripChatReadMapper，并补充 MpTripMemberMapper 以支持进行中拼单查询。
 - 新增/更新的 mapper XML：src/main/resources/mapper/miniprogram/MpTripChatMapper.xml 提供聊天分页、最新消息与未读统计查询，MpTripChatReadMapper.xml 提供已读插入与批量标记，MpTripMemberMapper.xml 新增按用户状态取拼单列表。

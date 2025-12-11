@@ -1,6 +1,7 @@
 const schoolAuthService = require('../../../services/schoolAuth.js')
 const schoolService = require('../../../services/school.js')
 const campusService = require('../../../services/campus.js')
+const auth = require('../../../utils/auth.js')
 
 Page({
   data: {
@@ -109,10 +110,12 @@ Page({
       success: (res) => {
         const path = res.tempFilePaths && res.tempFilePaths[0]
         if (!path) return
+        const token = auth.getToken()
         wx.uploadFile({
           url: require('../../../utils/config.js').BASE_URL + '/mp/upload/image',
           filePath: path,
           name: 'file',
+          header: token ? { Authorization: 'Bearer ' + token } : {},
           success: (resp) => {
             try {
               const body = JSON.parse(resp.data)

@@ -128,3 +128,63 @@ page {
   color: #07c160;
   border: 1px solid #07c160;
 }
+
+.history-card .card-title {
+  margin-bottom: 12rpx;
+}
+
+.history-item {
+  padding: 16rpx 0;
+  border-bottom: 1px solid #f4f4f4;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  color: #444;
+  font-size: 26rpx;
+  line-height: 1.5;
+}
+
+.history-row.main {
+  font-weight: 600;
+  color: #111;
+}
+
+.history-row.time {
+  color: #666;
+  margin-top: 4rpx;
+}
+
+.history-row.status {
+  color: #888;
+  margin-top: 4rpx;
+}
+
+.history-row .address {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.owner-tag {
+  background: #e6f7f0;
+  color: #07c160;
+  font-size: 22rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 20rpx;
+}
+
+.empty-hint {
+  display: block;
+  text-align: center;
+  color: #999;
+  font-size: 26rpx;
+  margin-top: 12rpx;
+}

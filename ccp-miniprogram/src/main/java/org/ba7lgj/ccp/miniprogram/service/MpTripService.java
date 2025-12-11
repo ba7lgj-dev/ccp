@@ -5,6 +5,7 @@ import org.ba7lgj.ccp.miniprogram.vo.MpTripVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripMemberVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripMyActiveVO;
+import org.ba7lgj.ccp.miniprogram.vo.MpTripHistoryVO;
 
 public interface MpTripService {
     void publishTrip(MpTripVO vo);
@@ -20,6 +21,8 @@ public interface MpTripService {
     void kickMember(Long tripId, Long targetUserId);
 
     MpTripMyActiveVO getMyActiveTrip();
+
+    List<MpTripHistoryVO> listMyHistoryTrips(Long userId, int limit);
 
     boolean hasActiveTrip(Long userId);
 

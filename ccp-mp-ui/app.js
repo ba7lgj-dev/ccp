@@ -90,6 +90,7 @@ App({
       hasApprovedSchool: false,
       lastAuthFetchTime: 0
     },
-    authRedirectFrom: ''
+    authRedirectFrom: '',
+    indexCache: {}
   }
 })

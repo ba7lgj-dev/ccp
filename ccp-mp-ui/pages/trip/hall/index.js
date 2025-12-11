@@ -37,6 +37,10 @@ Page({
     totalUnread: 0
   },
   onShow() {
+    const appInstance = getApp()
+    if (appInstance && typeof appInstance.checkAuthChain === 'function') {
+      appInstance.checkAuthChain({ from: 'hall', allowAuthPages: false })
+    }
     const token = wx.getStorageSync('token') || ''
     if (!token) {
       auth.reLogin().then(() => {
@@ -79,7 +83,7 @@ Page({
       const now = Date.now()
       const immediate = []
       const reserve = []
-      const parsedList = (list || []).map(item => this.formatTripItem(item))
+      const parsedList = (list || []).map(item => this.formatTripItem(item)).filter(item => this.isOngoingTrip(item, now))
       parsedList.sort((a, b) => a.departureTimestamp - b.departureTimestamp)
       parsedList.forEach(item => {
         const diff = item.departureTimestamp - now

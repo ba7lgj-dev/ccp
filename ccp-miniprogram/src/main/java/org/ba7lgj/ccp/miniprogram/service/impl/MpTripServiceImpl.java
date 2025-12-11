@@ -25,6 +25,7 @@ import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailCurrentUserInfo;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripMemberVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripMyActiveVO;
+import org.ba7lgj.ccp.miniprogram.vo.MpTripHistoryVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -400,6 +401,30 @@ public class MpTripServiceImpl implements MpTripService {
         vo.setStatus(trip.getStatus());
         vo.setStatusText(STATUS_TEXT.get(trip.getStatus()));
         return vo;
+    }
+
+    @Override
+    public List<MpTripHistoryVO> listMyHistoryTrips(Long userId, int limit) {
+        if (userId == null) {
+            throw new IllegalStateException("未获取到用户信息");
+        }
+        int size = limit > 0 ? limit : 20;
+        Date now = new Date();
+        List<MpTrip> trips = tripMapper.selectHistoryTripsByUser(userId, now, size);
+        List<MpTripHistoryVO> result = new ArrayList<>();
+        if (trips != null) {
+            for (MpTrip trip : trips) {
+                MpTripHistoryVO vo = new MpTripHistoryVO();
+                vo.setTripId(trip.getId());
+                vo.setStartAddress(trip.getStartAddress());
+                vo.setEndAddress(trip.getEndAddress());
+                vo.setDepartureTime(trip.getDepartureTime());
+                vo.setStatus(trip.getStatus());
+                vo.setIsOwner(userId.equals(trip.getOwnerUserId()));
+                result.add(vo);
+            }
+        }
+        return result;
     }
 
     @Override
