@@ -25,6 +25,12 @@
 - 立即订单自动过期机制：departureTime+10 分钟失效并标记 status=5，过期判断在 service 内封装。
 - 不新增数据库字段，全部变更在业务逻辑层完成。
 
+### Update-0009 小程序个人资料与头像上传（2025-12-12）
+- 新增小程序端用户资料查询与修改接口（/mp/user/profile、/mp/user/avatar），新增小程序上传头像接口（/mp/upload/avatar）。
+- 调整或新增后端文件：MpUserProfileController、MpUploadController、MpUserProfileService、MpUserProfileServiceImpl，以及 ccp_mini_user 对应 Mapper 与实体复用更新。
+- 调整或新增前端文件：pages/me/index.* 重构、“编辑个人资料”页面 pages/me/profile/edit/*，占位页面 pages/me/emergency-contact、pages/me/routes、pages/order/list 等。
+- “我的”页面现可展示用户资料、跳转到资料编辑、支持更换头像与退出登录，未对数据库结构做出调整，继续使用现有表 ccp_mini_user。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 
