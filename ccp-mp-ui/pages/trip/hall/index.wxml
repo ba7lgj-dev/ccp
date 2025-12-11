@@ -3,7 +3,7 @@
     <text class="campus-name">当前校区：{{selectedCampus.campusName}}</text>
     <button size="mini" bindtap="onChangeCampus">切换校区</button>
   </view>
-  <scroll-view scroll-y="true" class="hall-scroll">
+  <scroll-view scroll-y="true" class="hall-scroll" refresher-enabled="true" refresher-triggered="{{refresherTriggered}}" bindrefresherrefresh="onRefresherRefresh">
     <view class="section">
       <text class="section-title">立即拼车</text>
       <block wx:if="{{immediateList.length}}">

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.miniprogram.mapper.MpTripMemberMapper">
+    <resultMap id="TripMemberResult" type="org.ba7lgj.ccp.miniprogram.domain.MpTripMember">
+        <id property="id" column="id" />
+        <result property="tripId" column="trip_id" />
+        <result property="userId" column="user_id" />
+        <result property="role" column="role" />
+        <result property="joinPeopleCount" column="join_people_count" />
+        <result property="status" column="status" />
+        <result property="confirmFlag" column="confirm_flag" />
+        <result property="joinTime" column="join_time" />
+        <result property="quitTime" column="quit_time" />
+        <result property="createTime" column="create_time" />
+        <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <select id="selectByTripIdAndUserId" resultMap="TripMemberResult">
+        SELECT id, trip_id, user_id, role, join_people_count, status, confirm_flag, join_time, quit_time, create_time, update_time
+        FROM ccp_trip_member
+        WHERE trip_id = #{tripId} AND user_id = #{userId}
+    </select>
+
+    <select id="selectByTripId" resultMap="TripMemberResult">
+        SELECT id, trip_id, user_id, role, join_people_count, status, confirm_flag, join_time, quit_time, create_time, update_time
+        FROM ccp_trip_member
+        WHERE trip_id = #{tripId}
+        ORDER BY role ASC, id ASC
+    </select>
+
+    <insert id="insertMember" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpTripMember" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ccp_trip_member (
+            trip_id,
+            user_id,
+            role,
+            join_people_count,
+            status,
+            confirm_flag,
+            join_time,
+            quit_time,
+            create_time,
+            update_time
+        ) VALUES (
+            #{tripId},
+            #{userId},
+            #{role},
+            #{joinPeopleCount},
+            #{status},
+            #{confirmFlag},
+            #{joinTime},
+            #{quitTime},
+            #{createTime},
+            #{updateTime}
+        )
+    </insert>
+
+    <update id="updateMember" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpTripMember">
+        UPDATE ccp_trip_member
+        <set>
+            <if test="role != null">role = #{role},</if>
+            <if test="joinPeopleCount != null">join_people_count = #{joinPeopleCount},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="confirmFlag != null">confirm_flag = #{confirmFlag},</if>
+            <if test="joinTime != null">join_time = #{joinTime},</if>
+            <if test="quitTime != null">quit_time = #{quitTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="countActiveTripJoined" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip_member m
+        INNER JOIN ccp_trip t ON m.trip_id = t.id
+        WHERE m.user_id = #{userId}
+          AND m.status = 1
+          AND t.status IN (0, 1, 2)
+    </select>
+
+    <update id="updateStatusByTrip">
+        UPDATE ccp_trip_member
+        SET status = #{status}, update_time = #{updateTime}
+        WHERE trip_id = #{tripId}
+    </update>
+</mapper>

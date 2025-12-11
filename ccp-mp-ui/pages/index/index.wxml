@@ -24,6 +24,19 @@
       </view>
     </view>
 
+    <view class="card active-card" wx:if="{{activeTrip}}" bindtap="onTapActiveTrip">
+      <text class="card-title">你有一个进行中的拼车</text>
+      <view class="active-row">
+        <text class="start">{{activeTrip.startAddress}}</text>
+        <text class="arrow">→</text>
+        <text class="end">{{activeTrip.endAddress}}</text>
+      </view>
+      <view class="active-meta">
+        <text class="status">{{activeTrip.statusText}}</text>
+        <text class="time">{{activeTrip.departureTimeDisplay}}</text>
+      </view>
+    </view>
+
     <view class="card">
       <text class="card-title">当前选择</text>
       <view class="selection-row">
