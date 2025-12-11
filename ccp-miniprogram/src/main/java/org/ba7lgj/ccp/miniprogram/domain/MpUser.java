@@ -21,6 +21,8 @@ public class MpUser {
     private Long realAuthReviewBy;
     private Date realAuthReviewTime;
     private String adminRemark;
+    private Long currentSchoolId;
+    private Long currentCampusId;
     private Date lastActiveTime;
     private Integer onlineStatus;
     private Date createTime;
@@ -168,6 +170,22 @@ public class MpUser {
 
     public void setAdminRemark(String adminRemark) {
         this.adminRemark = adminRemark;
+    }
+
+    public Long getCurrentSchoolId() {
+        return currentSchoolId;
+    }
+
+    public void setCurrentSchoolId(Long currentSchoolId) {
+        this.currentSchoolId = currentSchoolId;
+    }
+
+    public Long getCurrentCampusId() {
+        return currentCampusId;
+    }
+
+    public void setCurrentCampusId(Long currentCampusId) {
+        this.currentCampusId = currentCampusId;
     }
 
     public Date getLastActiveTime() {
