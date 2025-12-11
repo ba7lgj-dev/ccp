@@ -6,6 +6,16 @@
 - 主流程：登录 → 选择学校（缓存优先）→ 选择校区（缓存优先，未选学校则守卫重定向）→ 返回首页 tab（如仍在发布页可通过首页入口或“返回首页”按钮切换）→ 我的页可查看/变更学校校区。
 - tabBar：新增首页、订单（大厅占位）、我的三大入口，配置于 app.json，tab 之间使用 switchTab 互跳，非 tab 页面保持 navigateTo/redirectTo。
 
+### Update-0008 拼车发布与大厅核心功能完善（2025-12-12）
+- 修改页面：ccp-mp-ui/pages/trip/publish/index.js、index.wxml、index.wxss；ccp-mp-ui/pages/trip/hall/index.js、index.wxml、index.wxss。
+- 新增前端服务：ccp-mp-ui/services/location.js、trip.js；缓存扩展 utils/cache.js 增加地点缓存。
+- 新增/增强接口：
+  - 新增 GET /mp/location/listByCampus（MpLocationController/MpLocationService/MpLocationMapper）。
+  - 新增 POST /mp/trip/publish、GET /mp/trip/hall（MpTripController/MpTripService/MpTripMapper）。
+- 拼车发布页面新增起终点多模式选择（校门/地点/手输）、立即/预约出发时间选择、人数与要求填写，提交后调用 /mp/trip/publish 成功跳转大厅。
+- 拼车大厅按当前校区拉取 /mp/trip/hall，并按时间拆分立即拼车与预约拼车列表，展示起终点、时间与人数摘要，卡片点击预留详情跳转。
+- 确认未新建重复页面或接口路径，均在既有目录与统一路由下扩展实现。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 
@@ -368,3 +378,11 @@ ccp-core/src/main/java/com/ccp/
 - 手机号登录停用：相关绑定接口暂不开放，仅 code 登录。
 - 旧 token 体系彻底移除，统一返回 JWT，拦截器不再接受 `mock-token-*`。
 - 已验证模块能编译通过，启动及登录流程可正常跑通。
+
+## Update-0007 修复拼车发布写库字段（2025-xx-xx）
+- 问题原因：MpTripMapper.xml 插入语句缺少 school_id 与 owner_user_id，实体类字段缺失，导致 ccp_trip 非空列未赋值；同时发布逻辑未补充 schoolId、ownerUserId、currentPeople 等默认值。
+- 实体类修复：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/domain/MpTrip.java` 补全 schoolId、ownerUserId、remark、createBy、updateBy 等字段及 Getter/Setter。
+- Mapper 修复：`ccp-miniprogram/src/main/resources/mapper/miniprogram/MpTripMapper.xml` 重新定义 insertTrip，按表结构完整写入 school_id、campus_id、owner_user_id、current_people 等列，create_time/update_time 使用 NOW()；同步补充 resultMap 字段映射。
+- Service 修复：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/service/impl/MpTripServiceImpl.java` 发布时根据 campusId 查询 schoolId、读取登录 userId 为 ownerUserId，currentPeople=ownerPeopleCount，status=0。
+- Controller 校验：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/controller/MpTripController.java` 发布接口校验登录、校区、起终点、人数与出发时间合法性后调用 service。
+- 其他：`MpCampusMapper` 增加按 id 查询以获取 schoolId，确保发布流程依赖数据完整；发布流程现已可以写入数据库必填字段。

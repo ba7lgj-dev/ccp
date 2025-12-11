@@ -7,4 +7,6 @@ import org.ba7lgj.ccp.miniprogram.domain.MpCampus;
 @Mapper
 public interface MpCampusMapper {
     List<MpCampus> selectEnabledCampusBySchool(Long schoolId);
+
+    MpCampus selectCampusById(Long id);
 }

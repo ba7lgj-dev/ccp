@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.miniprogram.mapper.MpLocationMapper">
+    <select id="selectEnabledByCampus" resultType="org.ba7lgj.ccp.miniprogram.domain.MpLocation">
+        SELECT id, campus_id, location_name, location_type, latitude, longitude, status, create_time, update_time
+        FROM ccp_location
+        WHERE campus_id = #{campusId} AND status = 1
+        ORDER BY location_name ASC
+    </select>
+</mapper>
