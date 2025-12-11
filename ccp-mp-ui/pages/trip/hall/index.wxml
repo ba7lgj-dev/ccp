@@ -1,21 +1,57 @@
-<view class="page">
-  <view class="header">
-    <text class="title">订单 / 拼车大厅</text>
-    <text class="desc">功能开发中，敬请期待。</text>
+<view class="trip-hall-page">
+  <view class="campus-bar">
+    <text class="campus-name">当前校区：{{selectedCampus.campusName}}</text>
+    <button size="mini" bindtap="onChangeCampus">切换校区</button>
   </view>
+  <scroll-view scroll-y="true" class="hall-scroll">
+    <view class="section">
+      <text class="section-title">立即拼车</text>
+      <block wx:if="{{immediateList.length}}">
+        <block wx:for="{{immediateList}}" wx:key="id">
+          <view class="trip-card" bindtap="onTapTrip" data-id="{{item.id}}">
+            <view class="addresses">
+              <text class="start">{{item.startAddress}}</text>
+              <text class="arrow">→</text>
+              <text class="end">{{item.endAddress}}</text>
+            </view>
+            <view class="meta">
+              <text class="time">{{item.departureTimeFormat}}</text>
+              <text class="people">{{item.currentPeople || item.ownerPeopleCount || 1}} / {{item.totalPeople}} 人</text>
+            </view>
+            <view class="tags">
+              <text class="tag">{{item.requireText ? item.requireText.slice(0,20) : '无特殊要求'}}</text>
+            </view>
+          </view>
+        </block>
+      </block>
+      <block wx:else>
+        <view class="empty">当前暂无立即拼车</view>
+      </block>
+    </view>
 
-  <block wx:if="{{!hasToken}}">
-    <view class="card">
-      <text class="card-title">未登录</text>
-      <text class="card-desc">登录后才能查看行程或发布拼车</text>
-      <button type="primary" bindtap="onGoLogin">去登录</button>
+    <view class="section">
+      <text class="section-title">预约拼车</text>
+      <block wx:if="{{reserveList.length}}">
+        <block wx:for="{{reserveList}}" wx:key="id">
+          <view class="trip-card" bindtap="onTapTrip" data-id="{{item.id}}">
+            <view class="addresses">
+              <text class="start">{{item.startAddress}}</text>
+              <text class="arrow">→</text>
+              <text class="end">{{item.endAddress}}</text>
+            </view>
+            <view class="meta">
+              <text class="time">{{item.departureTimeFormat}}</text>
+              <text class="people">{{item.currentPeople || item.ownerPeopleCount || 1}} / {{item.totalPeople}} 人</text>
+            </view>
+            <view class="tags">
+              <text class="tag">{{item.requireText ? item.requireText.slice(0,20) : '无特殊要求'}}</text>
+            </view>
+          </view>
+        </block>
+      </block>
+      <block wx:else>
+        <view class="empty">暂无预约拼车</view>
+      </block>
     </view>
-  </block>
-  <block wx:else>
-    <view class="card">
-      <text class="placeholder">功能开发中</text>
-      <text class="card-desc">后续将在此展示我的订单或拼车大厅</text>
-      <button class="ghost" bindtap="onGoPublish">去发布拼车</button>
-    </view>
-  </block>
+  </scroll-view>
 </view>

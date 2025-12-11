@@ -1,57 +1,14 @@
-page {
-  background: #f7f8fa;
-  min-height: 100vh;
-  padding: 24rpx;
-  box-sizing: border-box;
-}
-
-.header {
-  margin-bottom: 24rpx;
-}
-
-.title {
-  font-size: 34rpx;
-  font-weight: 600;
-  color: #111;
-  display: block;
-}
-
-.desc {
-  font-size: 26rpx;
-  color: #777;
-  margin-top: 6rpx;
-  display: block;
-}
-
-.card {
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  box-shadow: 0 6rpx 18rpx rgba(17, 31, 44, 0.05);
-}
-
-.card-title {
-  font-size: 30rpx;
-  font-weight: 600;
-  color: #111;
-}
-
-.card-desc {
-  font-size: 26rpx;
-  color: #777;
-  margin: 12rpx 0 20rpx;
-  display: block;
-}
-
-.placeholder {
-  font-size: 32rpx;
-  font-weight: 600;
-  color: #07c160;
-  display: block;
-}
-
-.ghost {
-  color: #07c160;
-  border: 1px solid #07c160;
-  margin-top: 10rpx;
-}
+.trip-hall-page { min-height: 100vh; background: #f7f7f7; padding: 20rpx; box-sizing: border-box; }
+.campus-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx; }
+.campus-name { font-size: 30rpx; font-weight: 600; }
+.hall-scroll { height: calc(100vh - 120rpx); }
+.section { margin-bottom: 24rpx; }
+.section-title { font-size: 28rpx; font-weight: 600; margin-bottom: 12rpx; display: block; }
+.trip-card { background: #ffffff; border-radius: 12rpx; padding: 16rpx; margin-bottom: 12rpx; box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.04); }
+.addresses { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: #111; }
+.start, .end { max-width: 260rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.arrow { color: #999; }
+.meta { display: flex; justify-content: space-between; margin-top: 12rpx; font-size: 24rpx; color: #555; }
+.tags { margin-top: 10rpx; }
+.tag { display: inline-block; padding: 6rpx 12rpx; background: #f0f5ff; color: #3c6ff0; border-radius: 8rpx; font-size: 22rpx; }
+.empty { padding: 20rpx; text-align: center; color: #888; background: #fff; border-radius: 12rpx; }
