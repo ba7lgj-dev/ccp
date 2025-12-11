@@ -47,7 +47,9 @@ function request(options) {
           return
         }
         wx.showToast({ title: body.msg || '请求失败', icon: 'none' })
-        reject(new Error(body.msg || 'request error'))
+        const error = new Error(body.msg || 'request error')
+        error.code = body.code
+        reject(error)
       },
       fail: (err) => {
         wx.showToast({ title: '网络异常，请稍后重试', icon: 'none' })

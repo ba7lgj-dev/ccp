@@ -69,6 +69,9 @@ public class MpTripServiceImpl implements MpTripService {
         if (userId == null) {
             throw new IllegalStateException("未获取到用户信息");
         }
+        if (hasActiveTrip(userId)) {
+            throw new IllegalStateException("你当前已有进行中的拼车，请先完成或退出后再发起新的拼车");
+        }
         Date now = new Date();
         boolean immediateFlag = Boolean.TRUE.equals(vo.getImmediate());
         Date departureTime = now;
@@ -235,10 +238,7 @@ public class MpTripServiceImpl implements MpTripService {
         currentUserInfo.setJoined(joined);
         currentUserInfo.setMemberStatus(currentMember != null ? currentMember.getStatus() : null);
         boolean activeFull = vo.getRemainPeople() != null && vo.getRemainPeople() <= 0;
-        boolean hasOtherActive = userId != null && tripMemberMapper.countActiveTripJoined(userId) > 0;
-        if (joined && hasOtherActive) {
-            hasOtherActive = tripMemberMapper.countActiveTripJoined(userId) > 1;
-        }
+        boolean hasOtherActive = userId != null && hasActiveTripExcludeCurrent(userId, tripId);
         boolean canJoin = trip.getStatus() != null && trip.getStatus() == 0 && !activeFull && !joined && !isOwner && !hasOtherActive;
         boolean canQuit = trip.getStatus() != null && trip.getStatus() == 0 && joined && !isOwner;
         boolean canKick = trip.getStatus() != null && trip.getStatus() == 0 && isOwner;
@@ -275,9 +275,8 @@ public class MpTripServiceImpl implements MpTripService {
         if (member != null && Objects.equals(member.getStatus(), 1)) {
             return;
         }
-        int activeCount = tripMemberMapper.countActiveTripJoined(userId);
-        if ((member == null && activeCount > 0) || (member != null && activeCount > 1)) {
-            throw new IllegalStateException("您已参加其它进行中的拼车");
+        if (hasActiveTripExcludeCurrent(userId, tripId)) {
+            throw new IllegalStateException("你当前已在其他拼车中，不能加入新的拼车");
         }
         if (trip.getCurrentPeople() + joinPeopleCount > trip.getTotalPeople()) {
             throw new IllegalStateException("人数已满");
@@ -395,6 +394,25 @@ public class MpTripServiceImpl implements MpTripService {
         vo.setStatus(trip.getStatus());
         vo.setStatusText(STATUS_TEXT.get(trip.getStatus()));
         return vo;
+    }
+
+    @Override
+    public boolean hasActiveTrip(Long userId) {
+        if (userId == null) {
+            return false;
+        }
+        return tripMapper.countActiveTripByUser(userId) > 0;
+    }
+
+    @Override
+    public boolean hasActiveTripExcludeCurrent(Long userId, Long tripId) {
+        if (userId == null) {
+            return false;
+        }
+        if (tripId == null) {
+            return hasActiveTrip(userId);
+        }
+        return tripMapper.countActiveTripByUserExcludeTrip(userId, tripId) > 0;
     }
 
     private Date parseDepartureTime(String departureTime) {

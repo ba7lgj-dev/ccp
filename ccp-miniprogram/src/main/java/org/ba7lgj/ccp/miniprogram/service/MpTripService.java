@@ -20,4 +20,8 @@ public interface MpTripService {
     void kickMember(Long tripId, Long targetUserId);
 
     MpTripMyActiveVO getMyActiveTrip();
+
+    boolean hasActiveTrip(Long userId);
+
+    boolean hasActiveTripExcludeCurrent(Long userId, Long tripId);
 }

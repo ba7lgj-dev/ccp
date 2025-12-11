@@ -46,6 +46,9 @@ public class MpTripController {
         if (vo.getTotalPeople() == null || vo.getTotalPeople() < vo.getOwnerPeopleCount()) {
             return MpResult.error(400, "总人数必须大于或等于我方人数");
         }
+        if (tripService.hasActiveTrip(userId)) {
+            return MpResult.error(4002, "你当前已有进行中的拼车，请先完成或退出后再发起新的拼车");
+        }
         boolean immediate = Boolean.TRUE.equals(vo.getImmediate());
         if (!immediate) {
             if (!StringUtils.hasText(vo.getDepartureTime())) {
@@ -88,6 +91,10 @@ public class MpTripController {
     public MpResult<Void> join(@RequestBody MpTripVO vo) {
         if (vo == null || vo.getId() == null || vo.getJoinPeopleCount() == null) {
             return MpResult.error(400, "参数不完整");
+        }
+        Long userId = MpUserContextHolder.getUserId();
+        if (tripService.hasActiveTripExcludeCurrent(userId, vo.getId())) {
+            return MpResult.error(4002, "你当前已在其他拼车中，不能加入新的拼车");
         }
         try {
             tripService.joinTrip(vo.getId(), vo.getJoinPeopleCount());

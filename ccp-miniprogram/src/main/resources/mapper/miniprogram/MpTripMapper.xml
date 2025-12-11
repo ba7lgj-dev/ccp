@@ -106,4 +106,21 @@
           AND t.status IN (0, 1, 2)
         ORDER BY t.departure_time ASC
     </select>
+
+    <select id="countActiveTripByUser" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip t
+        LEFT JOIN ccp_trip_member m ON t.id = m.trip_id AND m.user_id = #{userId} AND m.status = 1
+        WHERE t.status IN (0, 1, 2)
+          AND (t.owner_user_id = #{userId} OR m.user_id IS NOT NULL)
+    </select>
+
+    <select id="countActiveTripByUserExcludeTrip" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip t
+        LEFT JOIN ccp_trip_member m ON t.id = m.trip_id AND m.user_id = #{userId} AND m.status = 1
+        WHERE t.status IN (0, 1, 2)
+          AND (t.owner_user_id = #{userId} OR m.user_id IS NOT NULL)
+          AND t.id != #{tripId}
+    </select>
 </mapper>

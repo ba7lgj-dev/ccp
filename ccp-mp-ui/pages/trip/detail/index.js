@@ -70,6 +70,10 @@ Page({
             wx.showToast({ title: '已加入', icon: 'success' })
             this.loadDetail()
           }).catch((err) => {
+            if (err && err.code === 4002) {
+              wx.showToast({ title: '你当前已在其他拼车中，不能加入新的拼车', icon: 'none' })
+              return
+            }
             wx.showToast({ title: err.message || '加入失败', icon: 'none' })
           })
         }

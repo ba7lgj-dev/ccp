@@ -403,13 +403,9 @@ ccp-core/src/main/java/com/ccp/
 - 成员操作规则：仅招募中可加入/退出/踢人；加入需人数未满且无其他进行中订单；退出/踢人会扣减当前人数，发起人退出即取消订单并批量更新成员状态。
 - 首页快捷入口：若当前用户有进行中的拼单，首页展示快捷卡片可一键进入详情。
 - 聊天功能：页面仅提供按钮提示“聊天功能开发中”，后端未实现聊天接口。
-### Update-Admin-Carpool-Skeleton（2025-12-20）
-- 新增后台拼车模块初始占位：
-  - 控制器：CcpTripAdminController（/ccp/trip/trip）、CcpTripMemberAdminController（/ccp/trip/member），提供列表、详情、状态变更与成员爽约标记等接口骨架。
-  - 服务层：CcpTripAdminService、CcpTripMemberAdminService 及对应实现，当前返回示例数据/空列表，便于后续接入真实 Mapper。
-  - DTO/VO：新增管理端查询、状态变更、成员标记等数据模型，放置于 ccp-common 模块下。
-- 前端管理页面：
-  - ruoyi-ui/src/views/ccp/trip/trip/index.vue：后台拼车订单列表、详情弹窗、状态操作与导出入口。
-  - ruoyi-ui/src/views/ccp/trip/member/index.vue：拼车成员列表与爽约标记操作。
-  - 对应 API 封装：ruoyi-ui/src/api/ccp/trip/trip.js、ruoyi-ui/src/api/ccp/trip/member.js。
-- 说明：当前仅提供后台联调占位与页面结构，未对小程序端接口行为做破坏性调整，后续可按业务完善 Mapper 与实际查询逻辑。
+
+### Update-Active-Trip-Limit
+- 新增规则：同一用户在进行中拼车（status 0/1/2）中的数量≤1，禁止同时发起或加入多单。
+- 修改后端：MpTripController 发布/加入接口增加 4002 校验提示；MpTripService 新增 hasActiveTrip/hasActiveTripExcludeCurrent，MpTripServiceImpl 发布、加入及详情可加判定；MpTripMapper 及 XML 新增 active 计数查询。
+- 前端提示：发布页、订单详情页加入按钮针对 4002 错误码展示“已有进行中拼车”提示；首页快捷入口逻辑可直接依赖唯一进行中订单。
+- 数据库：未改动表结构，仅增加业务校验逻辑。

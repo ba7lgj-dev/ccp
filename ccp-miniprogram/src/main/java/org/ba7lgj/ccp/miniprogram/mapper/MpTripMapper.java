@@ -19,5 +19,9 @@ public interface MpTripMapper {
     int updateTripCurrentPeople(@Param("id") Long id, @Param("currentPeople") Integer currentPeople, @Param("updateTime") Date updateTime);
 
     List<MpTrip> selectActiveTripsByUser(@Param("userId") Long userId);
+
+    int countActiveTripByUser(@Param("userId") Long userId);
+
+    int countActiveTripByUserExcludeTrip(@Param("userId") Long userId, @Param("tripId") Long tripId);
 }
 }
