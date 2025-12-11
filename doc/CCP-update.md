@@ -395,3 +395,14 @@ ccp-core/src/main/java/com/ccp/
 - Service 修复：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/service/impl/MpTripServiceImpl.java` 发布时根据 campusId 查询 schoolId、读取登录 userId 为 ownerUserId，currentPeople=ownerPeopleCount，status=0。
 - Controller 校验：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/controller/MpTripController.java` 发布接口校验登录、校区、起终点、人数与出发时间合法性后调用 service。
 - 其他：`MpCampusMapper` 增加按 id 查询以获取 schoolId，确保发布流程依赖数据完整；发布流程现已可以写入数据库必填字段。
+
+### Update-Admin-Carpool-Skeleton（2025-12-20）
+- 新增后台拼车模块初始占位：
+  - 控制器：CcpTripAdminController（/ccp/trip/trip）、CcpTripMemberAdminController（/ccp/trip/member），提供列表、详情、状态变更与成员爽约标记等接口骨架。
+  - 服务层：CcpTripAdminService、CcpTripMemberAdminService 及对应实现，当前返回示例数据/空列表，便于后续接入真实 Mapper。
+  - DTO/VO：新增管理端查询、状态变更、成员标记等数据模型，放置于 ccp-common 模块下。
+- 前端管理页面：
+  - ruoyi-ui/src/views/ccp/trip/trip/index.vue：后台拼车订单列表、详情弹窗、状态操作与导出入口。
+  - ruoyi-ui/src/views/ccp/trip/member/index.vue：拼车成员列表与爽约标记操作。
+  - 对应 API 封装：ruoyi-ui/src/api/ccp/trip/trip.js、ruoyi-ui/src/api/ccp/trip/member.js。
+- 说明：当前仅提供后台联调占位与页面结构，未对小程序端接口行为做破坏性调整，后续可按业务完善 Mapper 与实际查询逻辑。
