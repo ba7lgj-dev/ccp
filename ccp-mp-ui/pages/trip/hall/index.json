@@ -1,3 +1,4 @@
 {
-  "navigationBarTitleText": "订单 / 大厅"
+  "navigationBarTitleText": "订单 / 大厅",
+  "enablePullDownRefresh": true
 }

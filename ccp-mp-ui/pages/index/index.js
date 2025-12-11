@@ -1,11 +1,13 @@
 const app = getApp()
+const tripService = require('../../services/trip.js')
 
 Page({
   data: {
     userInfo: null,
     selectedSchool: null,
     selectedCampus: null,
-    loginRequired: false
+    loginRequired: false,
+    activeTrip: null
   },
   onShow() {
     const token = wx.getStorageSync('token') || null
@@ -39,6 +41,7 @@ Page({
       selectedSchool,
       selectedCampus
     })
+    this.loadActiveTrip()
   },
   onGoLogin() {
     wx.navigateTo({ url: '/pages/login/index' })
@@ -48,5 +51,17 @@ Page({
   },
   onGoHall() {
     wx.switchTab({ url: '/pages/trip/hall/index' })
+  },
+  loadActiveTrip() {
+    tripService.getMyActiveTrip().then((vo) => {
+      this.setData({ activeTrip: vo || null })
+    }).catch(() => {
+      this.setData({ activeTrip: null })
+    })
+  },
+  onTapActiveTrip() {
+    if (this.data.activeTrip && this.data.activeTrip.tripId) {
+      wx.navigateTo({ url: `/pages/trip/detail/index?tripId=${this.data.activeTrip.tripId}` })
+    }
   }
 })

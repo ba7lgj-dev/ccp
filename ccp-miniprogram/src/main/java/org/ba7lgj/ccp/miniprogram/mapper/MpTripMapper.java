@@ -13,4 +13,11 @@ public interface MpTripMapper {
     List<MpTrip> selectHallTrips(@Param("campusId") Long campusId, @Param("minTime") String minTime);
 
     int updateTripStatus(@Param("id") Long id, @Param("status") Integer status, @Param("updateTime") Date updateTime);
+
+    MpTrip selectById(@Param("id") Long id);
+
+    int updateTripCurrentPeople(@Param("id") Long id, @Param("currentPeople") Integer currentPeople, @Param("updateTime") Date updateTime);
+
+    List<MpTrip> selectActiveTripsByUser(@Param("userId") Long userId);
+}
 }

@@ -395,3 +395,11 @@ ccp-core/src/main/java/com/ccp/
 - Service 修复：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/service/impl/MpTripServiceImpl.java` 发布时根据 campusId 查询 schoolId、读取登录 userId 为 ownerUserId，currentPeople=ownerPeopleCount，status=0。
 - Controller 校验：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/controller/MpTripController.java` 发布接口校验登录、校区、起终点、人数与出发时间合法性后调用 service。
 - 其他：`MpCampusMapper` 增加按 id 查询以获取 schoolId，确保发布流程依赖数据完整；发布流程现已可以写入数据库必填字段。
+
+### Update-Pindan-Detail
+- 修改文件：MpTripController、MpTripService/MpTripServiceImpl、MpTripMapper/MpTripMemberMapper（含 XML）、MpTripVO 新增字段、MpTripDetailVO 等 VO、新增 MpTripMember 实体；前端 pages/trip/detail、pages/trip/hall、pages/index 及 services/trip.js、app.json。
+- 新增接口：/mp/trip/detail、/mp/trip/join、/mp/trip/quit、/mp/trip/kick、/mp/trip/myActive。
+- 订单详情页：展示起终点、时间、人数字段、成员列表，支持加入/退出/发起人移除成员，结束状态自动提示返回，预留聊天按钮。
+- 成员操作规则：仅招募中可加入/退出/踢人；加入需人数未满且无其他进行中订单；退出/踢人会扣减当前人数，发起人退出即取消订单并批量更新成员状态。
+- 首页快捷入口：若当前用户有进行中的拼单，首页展示快捷卡片可一键进入详情。
+- 聊天功能：页面仅提供按钮提示“聊天功能开发中”，后端未实现聊天接口。
