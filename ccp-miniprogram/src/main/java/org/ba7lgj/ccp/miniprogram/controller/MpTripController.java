@@ -7,6 +7,8 @@ import java.util.List;
 import org.ba7lgj.ccp.miniprogram.context.MpUserContextHolder;
 import org.ba7lgj.ccp.miniprogram.service.MpTripService;
 import org.ba7lgj.ccp.miniprogram.vo.MpResult;
+import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
+import org.ba7lgj.ccp.miniprogram.vo.MpTripMyActiveVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
@@ -44,6 +46,9 @@ public class MpTripController {
         if (vo.getTotalPeople() == null || vo.getTotalPeople() < vo.getOwnerPeopleCount()) {
             return MpResult.error(400, "总人数必须大于或等于我方人数");
         }
+        if (tripService.hasActiveTrip(userId)) {
+            return MpResult.error(4002, "你当前已有进行中的拼车，请先完成或退出后再发起新的拼车");
+        }
         boolean immediate = Boolean.TRUE.equals(vo.getImmediate());
         if (!immediate) {
             if (!StringUtils.hasText(vo.getDepartureTime())) {
@@ -71,6 +76,70 @@ public class MpTripController {
     public MpResult<List<MpTripVO>> hall(@RequestParam("campusId") Long campusId) {
         List<MpTripVO> list = tripService.hallList(campusId);
         return MpResult.ok(list);
+    }
+
+    @GetMapping("/detail")
+    public MpResult<MpTripDetailVO> detail(@RequestParam("tripId") Long tripId) {
+        MpTripDetailVO detail = tripService.getTripDetail(tripId);
+        if (detail == null) {
+            return MpResult.error(404, "拼单不存在");
+        }
+        return MpResult.ok(detail);
+    }
+
+    @PostMapping("/join")
+    public MpResult<Void> join(@RequestBody MpTripVO vo) {
+        if (vo == null || vo.getId() == null || vo.getJoinPeopleCount() == null) {
+            return MpResult.error(400, "参数不完整");
+        }
+        Long userId = MpUserContextHolder.getUserId();
+        if (tripService.hasActiveTripExcludeCurrent(userId, vo.getId())) {
+            return MpResult.error(4002, "你当前已在其他拼车中，不能加入新的拼车");
+        }
+        try {
+            tripService.joinTrip(vo.getId(), vo.getJoinPeopleCount());
+        } catch (IllegalArgumentException e) {
+            return MpResult.error(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            return MpResult.error(4001, e.getMessage());
+        }
+        return MpResult.ok();
+    }
+
+    @PostMapping("/quit")
+    public MpResult<Void> quit(@RequestBody MpTripVO vo) {
+        if (vo == null || vo.getId() == null) {
+            return MpResult.error(400, "参数不完整");
+        }
+        try {
+            tripService.quitTrip(vo.getId());
+        } catch (IllegalArgumentException e) {
+            return MpResult.error(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            return MpResult.error(4001, e.getMessage());
+        }
+        return MpResult.ok();
+    }
+
+    @PostMapping("/kick")
+    public MpResult<Void> kick(@RequestBody MpTripVO vo) {
+        if (vo == null || vo.getId() == null || vo.getTargetUserId() == null) {
+            return MpResult.error(400, "参数不完整");
+        }
+        try {
+            tripService.kickMember(vo.getId(), vo.getTargetUserId());
+        } catch (IllegalArgumentException e) {
+            return MpResult.error(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            return MpResult.error(4001, e.getMessage());
+        }
+        return MpResult.ok();
+    }
+
+    @GetMapping("/myActive")
+    public MpResult<MpTripMyActiveVO> myActive() {
+        MpTripMyActiveVO vo = tripService.getMyActiveTrip();
+        return MpResult.ok(vo);
     }
 
     private boolean isValidEndpoint(Long gateId, Long locationId, String address) {

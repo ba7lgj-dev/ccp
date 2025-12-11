@@ -75,9 +75,52 @@
         ORDER BY departure_time ASC
     </select>
 
+    <select id="selectById" resultMap="TripResult">
+        SELECT id, school_id, campus_id, owner_user_id, start_gate_id, start_location_id, start_address, end_gate_id, end_location_id,
+               end_address, owner_people_count, total_people, current_people, departure_time, require_text, status, remark, create_by,
+               create_time, update_by, update_time
+        FROM ccp_trip
+        WHERE id = #{id}
+    </select>
+
     <update id="updateTripStatus">
         UPDATE ccp_trip
         SET status = #{status}, update_time = #{updateTime}
         WHERE id = #{id}
     </update>
+
+    <update id="updateTripCurrentPeople">
+        UPDATE ccp_trip
+        SET current_people = #{currentPeople}, update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectActiveTripsByUser" resultMap="TripResult">
+        SELECT t.id, t.school_id, t.campus_id, t.owner_user_id, t.start_gate_id, t.start_location_id, t.start_address, t.end_gate_id,
+               t.end_location_id, t.end_address, t.owner_people_count, t.total_people, t.current_people, t.departure_time,
+               t.require_text, t.status, t.remark, t.create_by, t.create_time, t.update_by, t.update_time
+        FROM ccp_trip t
+        INNER JOIN ccp_trip_member m ON t.id = m.trip_id
+        WHERE m.user_id = #{userId}
+          AND m.status = 1
+          AND t.status IN (0, 1, 2)
+        ORDER BY t.departure_time ASC
+    </select>
+
+    <select id="countActiveTripByUser" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip t
+        LEFT JOIN ccp_trip_member m ON t.id = m.trip_id AND m.user_id = #{userId} AND m.status = 1
+        WHERE t.status IN (0, 1, 2)
+          AND (t.owner_user_id = #{userId} OR m.user_id IS NOT NULL)
+    </select>
+
+    <select id="countActiveTripByUserExcludeTrip" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip t
+        LEFT JOIN ccp_trip_member m ON t.id = m.trip_id AND m.user_id = #{userId} AND m.status = 1
+        WHERE t.status IN (0, 1, 2)
+          AND (t.owner_user_id = #{userId} OR m.user_id IS NOT NULL)
+          AND t.id != #{tripId}
+    </select>
 </mapper>

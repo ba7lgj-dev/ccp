@@ -104,6 +104,20 @@ page {
   gap: 16rpx;
 }
 
+.active-card .active-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #111;
+  margin: 12rpx 0;
+}
+
+.active-card .arrow { color: #999; }
+.active-meta { display: flex; justify-content: space-between; color: #666; font-size: 26rpx; }
+.active-meta .status { color: #07c160; }
+
 .primary-btn {
   background: #07c160;
   color: #fff;

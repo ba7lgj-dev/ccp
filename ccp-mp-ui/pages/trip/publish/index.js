@@ -341,6 +341,10 @@ Page({
         wx.redirectTo({ url: '/pages/trip/hall/index' })
       }, 400)
     }).catch((err) => {
+      if (err && err.code === 4002) {
+        wx.showToast({ title: '你当前已有进行中的拼车，请先完成或退出后再发起新的拼车', icon: 'none' })
+        return
+      }
       const msg = (err && err.message) || '发布失败'
       wx.showToast({ title: msg, icon: 'none' })
     })
