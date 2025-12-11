@@ -18,4 +18,6 @@ public interface MpTripMemberMapper {
     int countActiveTripJoined(@Param("userId") Long userId);
 
     int updateStatusByTrip(@Param("tripId") Long tripId, @Param("status") Integer status, @Param("updateTime") java.util.Date updateTime);
+
+    List<Long> selectTripIdsByUserAndStatus(@Param("userId") Long userId, @Param("statuses") List<Integer> statuses);
 }

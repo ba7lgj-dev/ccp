@@ -1,0 +1,54 @@
+<view class="chat-page">
+  <view class="trip-bar">
+    <view class="trip-main">
+      <view class="addresses">
+        <text class="addr">{{tripInfo.startAddress || '起点未获取'}}</text>
+        <text class="arrow">→</text>
+        <text class="addr">{{tripInfo.endAddress || '终点未获取'}}</text>
+      </view>
+      <view class="meta">
+        <text class="time">{{tripInfo.departureTime}}</text>
+        <text class="campus" wx:if="{{tripInfo.campusName}}">{{tripInfo.campusName}}</text>
+      </view>
+    </view>
+    <text class="sub-tip">仅拼单成员可聊天，请文明发言</text>
+  </view>
+
+  <view class="chat-container">
+    <scroll-view scroll-y="true" class="message-scroll" bindscrolltoupper="onReachTop" upper-threshold="40" scroll-into-view="{{scrollIntoView}}" scroll-with-animation="true">
+      <block wx:if="{{!messages.length && !loading}}">
+        <view class="empty">暂无消息，快来打个招呼吧～</view>
+      </block>
+      <block wx:for="{{messages}}" wx:key="id">
+        <view wx:if="{{item.showDivider}}" class="time-divider" id="msg-{{item.id}}-divider">{{item.dividerText}}</view>
+        <view wx:if="{{item.contentType != 1 || item.messageType != 0}}" class="system-msg" id="msg-{{item.id}}">
+          <text>{{item.content}}</text>
+        </view>
+        <view wx:elif="{{item.mine}}" class="message-row mine" id="msg-{{item.id}}">
+          <view class="spacer"></view>
+          <view class="bubble-area">
+            <view class="bubble mine-bubble">{{item.content}}</view>
+            <text class="time-text">{{item.timeText}}</text>
+          </view>
+          <image class="avatar" src="{{item.senderAvatarUrl || '/assets/logo.png'}}" mode="aspectFill"></image>
+        </view>
+        <view wx:else class="message-row" id="msg-{{item.id}}">
+          <image class="avatar" src="{{item.senderAvatarUrl || '/assets/logo.png'}}" mode="aspectFill"></image>
+          <view class="bubble-area">
+            <text class="nickname">{{item.senderNickName || '成员'}}</text>
+            <view class="bubble">{{item.content}}</view>
+            <text class="time-text">{{item.timeText}}</text>
+          </view>
+          <view class="spacer"></view>
+        </view>
+      </block>
+      <view wx:if="{{loading}}" class="loading">加载中...</view>
+    </scroll-view>
+  </view>
+
+  <view class="input-bar">
+    <view class="input-placeholder"></view>
+    <textarea class="input-area" placeholder="说点什么..." value="{{inputValue}}" maxlength="500" auto-height="true" cursor-spacing="12" bindinput="onInput"></textarea>
+    <button class="send-btn" type="primary" loading="{{sending}}" disabled="{{sending || !inputValue}}" bindtap="onSend">{{sending ? '发送中' : '发送'}}</button>
+  </view>
+</view>

@@ -1,4 +1,5 @@
 const tripService = require('../../../services/trip.js')
+const chatService = require('../../../services/chatService.js')
 const auth = require('../../../utils/auth.js')
 
 function requireRealAuth(onCancel) {
@@ -31,7 +32,9 @@ Page({
     immediateList: [],
     reserveList: [],
     loading: false,
-    refresherTriggered: false
+    refresherTriggered: false,
+    unreadMap: {},
+    totalUnread: 0
   },
   onShow() {
     const token = wx.getStorageSync('token') || ''
@@ -54,10 +57,12 @@ Page({
       this.setData({ immediateList: [], reserveList: [] })
       return
     }
+    this.loadUnreadSummary()
     this.loadTripHall()
   },
   onPullDownRefresh() {
     this.loadTripHall()
+    this.loadUnreadSummary()
     wx.stopPullDownRefresh()
   },
   onRefresherRefresh() {
@@ -84,7 +89,7 @@ Page({
           reserve.push(item)
         }
       })
-      this.setData({ immediateList: immediate, reserveList: reserve })
+      this.setData({ immediateList: this.injectUnread(immediate), reserveList: this.injectUnread(reserve) })
     }).catch(() => {
       wx.showToast({ title: '加载大厅失败', icon: 'none' })
     }).finally(() => {
@@ -103,7 +108,8 @@ Page({
     return Object.assign({}, item, {
       departureTimestamp,
       departureTimeFormat: timeText,
-      requireText: item.requireText || '无特殊要求'
+      requireText: item.requireText || '无特殊要求',
+      unreadCount: (this.data.unreadMap && this.data.unreadMap[item.id]) || 0
     })
   },
   formatFriendlyTime(timestamp) {
@@ -131,5 +137,39 @@ Page({
     if (id) {
       wx.navigateTo({ url: `/pages/trip/detail/index?tripId=${id}` })
     }
+  },
+  loadUnreadSummary() {
+    chatService.getUnreadSummary().then((summary) => {
+      const map = {}
+      let total = 0
+      if (summary && Array.isArray(summary.items)) {
+        summary.items.forEach((item) => {
+          map[item.tripId] = item.unreadCount || 0
+          total += item.unreadCount || 0
+        })
+      }
+      this.setData({ unreadMap: map, totalUnread: total }, () => {
+        this.applyTabBadge()
+        this.refreshUnreadOnList()
+      })
+    }).catch(() => {})
+  },
+  applyTabBadge() {
+    const total = this.data.totalUnread || 0
+    if (total > 0) {
+      wx.setTabBarBadge({ index: 1, text: total > 99 ? '99+' : `${total}` })
+    } else {
+      wx.removeTabBarBadge({ index: 1 }).catch(() => {})
+    }
+  },
+  refreshUnreadOnList() {
+    this.setData({
+      immediateList: this.injectUnread(this.data.immediateList),
+      reserveList: this.injectUnread(this.data.reserveList)
+    })
+  },
+  injectUnread(list) {
+    const map = this.data.unreadMap || {}
+    return (list || []).map(item => Object.assign({}, item, { unreadCount: map[item.id] || 0 }))
   }
 })
