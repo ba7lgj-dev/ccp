@@ -9,6 +9,7 @@
       <block wx:if="{{immediateList.length}}">
         <block wx:for="{{immediateList}}" wx:key="id">
           <view class="trip-card" bindtap="onTapTrip" data-id="{{item.id}}">
+            <view class="unread-badge" wx:if="{{item.unreadCount}}">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view>
             <view class="addresses">
               <text class="start">{{item.startAddress}}</text>
               <text class="arrow">→</text>
@@ -34,6 +35,7 @@
       <block wx:if="{{reserveList.length}}">
         <block wx:for="{{reserveList}}" wx:key="id">
           <view class="trip-card" bindtap="onTapTrip" data-id="{{item.id}}">
+            <view class="unread-badge" wx:if="{{item.unreadCount}}">{{item.unreadCount > 99 ? '99+' : item.unreadCount}}</view>
             <view class="addresses">
               <text class="start">{{item.startAddress}}</text>
               <text class="arrow">→</text>

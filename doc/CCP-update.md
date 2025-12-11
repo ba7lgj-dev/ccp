@@ -466,3 +466,10 @@ ccp-core/src/main/java/com/ccp/
 - 后端 Security FilterChain 增加 `/mp/**` 直接跳过 `JwtAuthenticationTokenFilter`，避免小程序 token 被后台 TokenService 解析导致 “JWT signature does not match locally computed signature”。
 - 小程序端新增 `/mp/upload/image` 上传接口，使用 MpUserContextHolder 校验登录并返回图片相对路径，支撑学生证等图片上传。
 - Mp 端拦截链要求上传携带 Authorization 头，前端学生证上传处统一附带 `Bearer` token；RealAuth/Avatar 等上传接口保持一致 header 规则。
+第10次更新：行程聊天功能与已读未读实现
+- 新增后端类：org.ba7lgj.ccp.miniprogram.controller.MpTripChatController、org.ba7lgj.ccp.miniprogram.service.MpTripChatService、org.ba7lgj.ccp.miniprogram.service.impl.MpTripChatServiceImpl、org.ba7lgj.ccp.miniprogram.domain.MpTripChat、org.ba7lgj.ccp.miniprogram.domain.MpTripChatRead、org.ba7lgj.ccp.miniprogram.mapper.MpTripChatMapper、org.ba7lgj.ccp.miniprogram.mapper.MpTripChatReadMapper，并补充 MpTripMemberMapper 以支持进行中拼单查询。
+- 新增/更新的 mapper XML：src/main/resources/mapper/miniprogram/MpTripChatMapper.xml 提供聊天分页、最新消息与未读统计查询，MpTripChatReadMapper.xml 提供已读插入与批量标记，MpTripMemberMapper.xml 新增按用户状态取拼单列表。
+- 新增 VO/异常：MpTripChatMessageVO、MpTripChatListVO、MpTripChatUnreadItemVO、MpTripChatUnreadSummaryVO、MpTripUnreadCountDTO、MpServiceException，满足统一返回与错误码处理。
+- 核心接口：/mp/trip/chat/list（分页拉取并自动写入已读）、/mp/trip/chat/send（成员发送文本消息，结束单限制 code=4005）、/mp/trip/chat/markRead（按 lastChatId 批量标记已读）、/mp/trip/chat/unreadSummary（进行中拼单未读汇总+最新消息预览）。
+- 小程序前端：新增 pages/trip/chat/index.* 实现聊天 UI、分页加载、时间分割、发送与已读同步；新增 services/chatService.js 封装聊天接口；pages/trip/detail/index.* 增加“返回大厅/进入聊天”按钮并按成员资格校验；pages/trip/hall/index.* 接入未读汇总，卡片与 tabBar 显示红点/数字徽标。
+- 已读/未读说明：拉取列表、发送消息后自动写入 ccp_trip_chat_read；markRead 接口支持一次性清除指定拼单的历史未读。未实现的轮询刷新保留扩展口后续迭代。

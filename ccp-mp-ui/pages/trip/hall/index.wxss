@@ -4,11 +4,12 @@
 .hall-scroll { height: calc(100vh - 120rpx); }
 .section { margin-bottom: 24rpx; }
 .section-title { font-size: 28rpx; font-weight: 600; margin-bottom: 12rpx; display: block; }
-.trip-card { background: #ffffff; border-radius: 12rpx; padding: 16rpx; margin-bottom: 12rpx; box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.04); }
+.trip-card { background: #ffffff; border-radius: 12rpx; padding: 16rpx; margin-bottom: 12rpx; box-shadow: 0 4rpx 10rpx rgba(0,0,0,0.04); position: relative; }
 .addresses { display: flex; align-items: center; gap: 8rpx; font-size: 28rpx; color: #111; }
 .start, .end { max-width: 260rpx; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .arrow { color: #999; }
 .meta { display: flex; justify-content: space-between; margin-top: 12rpx; font-size: 24rpx; color: #555; }
 .tags { margin-top: 10rpx; }
 .tag { display: inline-block; padding: 6rpx 12rpx; background: #f0f5ff; color: #3c6ff0; border-radius: 8rpx; font-size: 22rpx; }
+.unread-badge { position: absolute; right: 12rpx; top: 12rpx; min-width: 36rpx; padding: 4rpx 8rpx; background: #ff4d4f; color: #fff; border-radius: 999rpx; font-size: 22rpx; text-align: center; }
 .empty { padding: 20rpx; text-align: center; color: #888; background: #fff; border-radius: 12rpx; }
