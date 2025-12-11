@@ -378,3 +378,11 @@ ccp-core/src/main/java/com/ccp/
 - 手机号登录停用：相关绑定接口暂不开放，仅 code 登录。
 - 旧 token 体系彻底移除，统一返回 JWT，拦截器不再接受 `mock-token-*`。
 - 已验证模块能编译通过，启动及登录流程可正常跑通。
+
+## Update-0007 修复拼车发布写库字段（2025-xx-xx）
+- 问题原因：MpTripMapper.xml 插入语句缺少 school_id 与 owner_user_id，实体类字段缺失，导致 ccp_trip 非空列未赋值；同时发布逻辑未补充 schoolId、ownerUserId、currentPeople 等默认值。
+- 实体类修复：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/domain/MpTrip.java` 补全 schoolId、ownerUserId、remark、createBy、updateBy 等字段及 Getter/Setter。
+- Mapper 修复：`ccp-miniprogram/src/main/resources/mapper/miniprogram/MpTripMapper.xml` 重新定义 insertTrip，按表结构完整写入 school_id、campus_id、owner_user_id、current_people 等列，create_time/update_time 使用 NOW()；同步补充 resultMap 字段映射。
+- Service 修复：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/service/impl/MpTripServiceImpl.java` 发布时根据 campusId 查询 schoolId、读取登录 userId 为 ownerUserId，currentPeople=ownerPeopleCount，status=0。
+- Controller 校验：`ccp-miniprogram/src/main/java/org/ba7lgj/ccp/miniprogram/controller/MpTripController.java` 发布接口校验登录、校区、起终点、人数与出发时间合法性后调用 service。
+- 其他：`MpCampusMapper` 增加按 id 查询以获取 schoolId，确保发布流程依赖数据完整；发布流程现已可以写入数据库必填字段。

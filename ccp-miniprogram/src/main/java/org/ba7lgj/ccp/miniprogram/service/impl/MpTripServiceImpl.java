@@ -5,7 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.ba7lgj.ccp.miniprogram.context.MpUserContextHolder;
+import org.ba7lgj.ccp.miniprogram.domain.MpCampus;
 import org.ba7lgj.ccp.miniprogram.domain.MpTrip;
+import org.ba7lgj.ccp.miniprogram.mapper.MpCampusMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpTripMapper;
 import org.ba7lgj.ccp.miniprogram.service.MpTripService;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripVO;
@@ -20,10 +23,23 @@ public class MpTripServiceImpl implements MpTripService {
     @Autowired
     private MpTripMapper tripMapper;
 
+    @Autowired
+    private MpCampusMapper campusMapper;
+
     @Override
     public void publishTrip(MpTripVO vo) {
+        MpCampus campus = campusMapper.selectCampusById(vo.getCampusId());
+        if (campus == null) {
+            throw new IllegalArgumentException("校区不存在");
+        }
+        Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            throw new IllegalStateException("未获取到用户信息");
+        }
         MpTrip trip = new MpTrip();
+        trip.setSchoolId(campus.getSchoolId());
         trip.setCampusId(vo.getCampusId());
+        trip.setOwnerUserId(userId);
         trip.setStartGateId(vo.getStartGateId());
         trip.setStartLocationId(vo.getStartLocationId());
         trip.setStartAddress(vo.getStartAddress());
@@ -35,8 +51,6 @@ public class MpTripServiceImpl implements MpTripService {
         trip.setCurrentPeople(vo.getOwnerPeopleCount());
         trip.setRequireText(vo.getRequireText());
         trip.setStatus(0);
-        trip.setCreateTime(new Date());
-        trip.setUpdateTime(new Date());
         if (StringUtils.hasText(vo.getDepartureTime())) {
             try {
                 Date dep = new SimpleDateFormat(DATE_PATTERN).parse(vo.getDepartureTime());

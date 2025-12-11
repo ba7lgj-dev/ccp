@@ -14,4 +14,8 @@
     <select id="selectEnabledCampusBySchool" parameterType="long" resultMap="CampusResult">
         SELECT * FROM ccp_school_campus WHERE school_id = #{schoolId} AND status = 1 ORDER BY campus_name ASC
     </select>
+
+    <select id="selectCampusById" parameterType="long" resultMap="CampusResult">
+        SELECT * FROM ccp_school_campus WHERE id = #{id}
+    </select>
 </mapper>
