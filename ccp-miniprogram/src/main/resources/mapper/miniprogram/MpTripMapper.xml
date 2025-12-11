@@ -36,8 +36,8 @@
             end_gate_id,
             end_location_id,
             end_address,
-            owner_people_count,
             total_people,
+            owner_people_count,
             current_people,
             departure_time,
             require_text,
@@ -55,8 +55,8 @@
             #{endGateId},
             #{endLocationId},
             #{endAddress},
-            #{ownerPeopleCount},
             #{totalPeople},
+            #{ownerPeopleCount},
             #{currentPeople},
             #{departureTime},
             #{requireText},
@@ -74,4 +74,10 @@
         WHERE campus_id = #{campusId} AND status = 0 AND departure_time >= #{minTime}
         ORDER BY departure_time ASC
     </select>
+
+    <update id="updateTripStatus">
+        UPDATE ccp_trip
+        SET status = #{status}, update_time = #{updateTime}
+        WHERE id = #{id}
+    </update>
 </mapper>
