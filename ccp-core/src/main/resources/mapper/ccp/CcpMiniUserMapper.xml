@@ -118,10 +118,10 @@
     </select>
 
     <select id="selectUserTagStats" parameterType="long" resultType="org.ba7lgj.ccp.core.domain.vo.MiniUserTagStatVO">
-        select tag, total_count
+        select tag, tag_count as total_count
         from ccp_user_tag_stats
         where user_id = #{userId}
-        order by total_count desc
+        order by tag_count desc
         limit 20
     </select>
 
