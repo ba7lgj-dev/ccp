@@ -175,16 +175,5 @@ Page({
   injectUnread(list) {
     const map = this.data.unreadMap || {}
     return (list || []).map(item => Object.assign({}, item, { unreadCount: map[item.id] || 0 }))
-  },
-  isOngoingTrip(item, now = Date.now()) {
-    if (!item) return false
-    const endedStatuses = [3, 4, 5]
-    if (endedStatuses.includes(item.status)) {
-      return false
-    }
-    if (item.departureTimestamp && item.departureTimestamp < now - IMMEDIATE_AFTER_MINUTES) {
-      return false
-    }
-    return true
   }
 })

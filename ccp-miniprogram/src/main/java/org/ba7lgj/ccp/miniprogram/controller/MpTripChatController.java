@@ -7,6 +7,7 @@ import org.ba7lgj.ccp.miniprogram.vo.MpResult;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripChatListVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripChatMessageVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripChatUnreadSummaryVO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,15 +24,23 @@ public class MpTripChatController {
 
     @GetMapping("/list")
     public MpResult<MpTripChatListVO> list(@RequestParam("tripId") Long tripId,
-                                           @RequestParam(value = "lastId", required = false) Long lastId,
+                                           @RequestParam(value = "lastId", required = false) String lastId,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         Long userId = MpUserContextHolder.getUserId();
         if (userId == null) {
             return MpResult.error(4001, "未登录或token无效");
         }
         int size = pageSize == null ? 20 : pageSize;
+        Long lastIdVal = null;
+        if (StringUtils.isNotBlank(lastId) && !"null".equalsIgnoreCase(lastId)) {
+            try {
+                lastIdVal = Long.valueOf(lastId);
+            } catch (NumberFormatException e) {
+                return MpResult.error(400, "lastId参数格式错误");
+            }
+        }
         try {
-            MpTripChatListVO vo = tripChatService.listMessages(userId, tripId, lastId, size);
+            MpTripChatListVO vo = tripChatService.listMessages(userId, tripId, lastIdVal, size);
             return MpResult.ok(vo);
         } catch (MpServiceException e) {
             return MpResult.error(e.getCode(), e.getMessage());
