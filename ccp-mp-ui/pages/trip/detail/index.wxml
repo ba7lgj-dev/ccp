@@ -53,7 +53,10 @@
     <block wx:else>
       <text class="hint">请选择合适的操作</text>
     </block>
-    <button wx:if="{{detail.currentUserInfo && detail.currentUserInfo.joined}}" class="chat-btn" bindtap="onTapChat">聊天</button>
+    <view class="chat-entry">
+      <button class="ghost-btn" bindtap="onTapBackHall">返回大厅</button>
+      <button class="chat-btn" type="primary" bindtap="onTapChat" disabled="{{!canChat}}">进入聊天</button>
+    </view>
   </view>
 
   <view class="card tip-card">

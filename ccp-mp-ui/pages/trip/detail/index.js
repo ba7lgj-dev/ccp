@@ -8,7 +8,8 @@ Page({
     detail: null,
     canJoin: false,
     canQuit: false,
-    canKick: false
+    canKick: false,
+    canChat: false
   },
   onLoad(options) {
     const tripId = options && options.tripId ? Number(options.tripId) : null
@@ -58,7 +59,8 @@ Page({
         detail: normalizedDetail,
         canJoin: detail.currentUserInfo && detail.currentUserInfo.canJoin,
         canQuit: detail.currentUserInfo && detail.currentUserInfo.canQuit,
-        canKick: detail.currentUserInfo && detail.currentUserInfo.canKick
+        canKick: detail.currentUserInfo && detail.currentUserInfo.canKick,
+        canChat: detail.currentUserInfo && detail.currentUserInfo.joined
       })
     }).catch(() => {
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -124,6 +126,13 @@ Page({
     })
   },
   onTapChat() {
-    wx.showToast({ title: '聊天功能开发中', icon: 'none' })
+    if (!this.data.canChat) {
+      wx.showToast({ title: '加入拼单后才能进入聊天', icon: 'none' })
+      return
+    }
+    wx.navigateTo({ url: `/pages/trip/chat/index?tripId=${this.data.tripId}` })
+  },
+  onTapBackHall() {
+    wx.switchTab({ url: '/pages/trip/hall/index' })
   }
 })

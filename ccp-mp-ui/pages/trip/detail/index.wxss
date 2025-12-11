@@ -68,7 +68,10 @@ page {
 
 .action-card button { margin-top: 8rpx; }
 .hint { color: #999; font-size: 24rpx; }
-.chat-btn { margin-top: 12rpx; background: #fff; color: #07c160; border: 1px solid #07c160; }
+.chat-entry { display: flex; gap: 16rpx; margin-top: 16rpx; }
+.ghost-btn { flex: 1; background: #fff; color: #07c160; border: 1px solid #07c160; }
+.chat-btn { flex: 1; border-radius: 12rpx; }
+.chat-btn[disabled] { background: #cdd5df; color: #fff; border: none; }
 
 .tip-title { font-size: 28rpx; font-weight: 600; color: #111; }
 .tip-content { display: block; margin-top: 8rpx; color: #666; font-size: 26rpx; }
