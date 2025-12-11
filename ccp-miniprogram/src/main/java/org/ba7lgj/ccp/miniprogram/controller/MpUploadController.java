@@ -46,4 +46,26 @@ public class MpUploadController {
             return MpResult.error(500, "上传失败：" + ex.getMessage());
         }
     }
+
+    @PostMapping("/realAuthImage")
+    public MpResult<Map<String, String>> uploadRealAuthImage(@RequestParam("file") MultipartFile file) {
+        Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            return MpResult.error(4001, "token invalid");
+        }
+        if (file == null || file.isEmpty()) {
+            return MpResult.error(400, "文件不能为空");
+        }
+        if (file.getSize() > 5 * 1024 * 1024L) {
+            return MpResult.error(400, "图片大小不能超过5MB");
+        }
+        try {
+            String path = FileUploadUtils.upload(RuoYiConfig.getUploadPath(), file, MimeTypeUtils.IMAGE_EXTENSION, true);
+            Map<String, String> data = new HashMap<>();
+            data.put("path", path);
+            return MpResult.ok(data);
+        } catch (Exception ex) {
+            return MpResult.error(500, "上传失败：" + ex.getMessage());
+        }
+    }
 }

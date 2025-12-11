@@ -1,5 +1,6 @@
 const auth = require('../../utils/auth.js')
 const userService = require('../../services/user.js')
+const realAuthService = require('../../services/realAuth.js')
 const { buildImageUrl } = require('../../utils/url.js')
 
 function normalizeUserInfo(userInfo) {
@@ -33,6 +34,7 @@ Page({
       campusName: (selectedCampus && selectedCampus.campusName) || ''
     })
     this.fetchProfile()
+    this.fetchRealAuthInfo()
   },
   handleNotLogin() {
     this.setData({
@@ -75,6 +77,28 @@ Page({
       this.setData({ loading: false })
     })
   },
+  fetchRealAuthInfo() {
+    realAuthService.getRealAuthInfo().then((data) => {
+      if (!data) return
+      const current = this.data.userInfo || {}
+      const merged = Object.assign({}, current, {
+        realAuthStatus: typeof data.realAuthStatus === 'number' ? data.realAuthStatus : current.realAuthStatus,
+        realAuthFailReason: data.realAuthFailReason || '',
+        realName: data.realName || current.realName || ''
+      })
+      if (data.faceImageUrl) {
+        merged.faceImageUrl = buildImageUrl(data.faceImageUrl)
+      }
+      wx.setStorageSync('userInfo', merged)
+      const app = getApp()
+      if (app && app.globalData) {
+        app.globalData.userInfo = merged
+      }
+      this.setData({ userInfo: merged })
+    }).catch(() => {
+      // ignore
+    })
+  },
   goEditProfile() {
     wx.navigateTo({ url: '/pages/me/profile/edit/index' })
   },
@@ -96,6 +120,9 @@ Page({
   },
   goRoutes() {
     wx.navigateTo({ url: '/pages/me/routes/index' })
+  },
+  goRealAuth() {
+    wx.navigateTo({ url: '/pages/me/realAuth/index' })
   },
   goOrders() {
     wx.navigateTo({ url: '/pages/order/list/index' })

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import org.ba7lgj.ccp.miniprogram.context.MpUserContextHolder;
 import org.ba7lgj.ccp.miniprogram.service.MpTripService;
+import org.ba7lgj.ccp.miniprogram.service.MpUserRealAuthService;
 import org.ba7lgj.ccp.miniprogram.vo.MpResult;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripMyActiveVO;
@@ -25,11 +26,19 @@ public class MpTripController {
     @Autowired
     private MpTripService tripService;
 
+    @Autowired
+    private MpUserRealAuthService userRealAuthService;
+
     @PostMapping("/publish")
     public MpResult<Void> publish(@RequestBody MpTripVO vo) {
         Long userId = MpUserContextHolder.getUserId();
         if (userId == null) {
             return MpResult.error(4001, "未登录或token无效");
+        }
+        try {
+            userRealAuthService.ensureApproved(userId);
+        } catch (IllegalStateException e) {
+            return MpResult.error(4003, "请先完成实名认证后再发布拼车");
         }
         if (vo == null || vo.getCampusId() == null) {
             return MpResult.error(400, "校区不能为空");
@@ -93,6 +102,14 @@ public class MpTripController {
             return MpResult.error(400, "参数不完整");
         }
         Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            return MpResult.error(4001, "未登录或token无效");
+        }
+        try {
+            userRealAuthService.ensureApproved(userId);
+        } catch (IllegalStateException e) {
+            return MpResult.error(4003, "请先完成实名认证后再加入拼车");
+        }
         if (tripService.hasActiveTripExcludeCurrent(userId, vo.getId())) {
             return MpResult.error(4002, "你当前已在其他拼车中，不能加入新的拼车");
         }

@@ -37,6 +37,12 @@
 - 调整或新增前端文件：pages/me/index.* 重构、“编辑个人资料”页面 pages/me/profile/edit/*，占位页面 pages/me/emergency-contact、pages/me/routes、pages/order/list 等。
 - “我的”页面现可展示用户资料、跳转到资料编辑、支持更换头像与退出登录，未对数据库结构做出调整，继续使用现有表 ccp_mini_user。
 
+### Update-RealAuth-Flow（2025-12-13）
+- 登录接口 /mp/login 返回增加实名相关字段（userId、realAuthStatus、realName、realAuthFailReason 等），并补全头像等资源 URL。
+- 新增/调整实名认证接口：GET /mp/user/realAuth/info、POST /mp/user/realAuth/apply、POST /mp/upload/realAuthImage；仅未认证或审核不通过状态允许提交，提交后置为待审核。
+- 拼车发布与加入接口增加实名校验（realAuthStatus 必须为 2），未通过实名认证返回 code 4003 提示先完成实名认证。
+- 小程序端新增 pages/me/realAuth 页面，登录及首页/大厅/发布页增加实名拦截；“我的”页新增实名认证入口并可刷新审核状态。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 

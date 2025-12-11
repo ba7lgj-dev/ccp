@@ -1,4 +1,26 @@
 const tripService = require('../../../services/trip.js')
+const auth = require('../../../utils/auth.js')
+
+function requireRealAuth(onCancel) {
+  const app = getApp()
+  const userInfo = (app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || {}
+  const status = typeof userInfo.realAuthStatus === 'number' ? userInfo.realAuthStatus : 0
+  if (status === 2) {
+    return true
+  }
+  wx.showModal({
+    title: '温馨提示',
+    content: '使用拼车功能前需要完成实名认证，是否前往实名认证？',
+    success: (res) => {
+      if (res.confirm) {
+        wx.navigateTo({ url: '/pages/me/realAuth/index' })
+      } else if (typeof onCancel === 'function') {
+        onCancel()
+      }
+    }
+  })
+  return false
+}
 
 const IMMEDIATE_BEFORE_MINUTES = 10 * 60 * 1000
 const IMMEDIATE_AFTER_MINUTES = 30 * 60 * 1000
@@ -12,12 +34,26 @@ Page({
     refresherTriggered: false
   },
   onShow() {
+    const token = wx.getStorageSync('token') || ''
+    if (!token) {
+      auth.reLogin().then(() => {
+        this.onShow()
+      }).catch(() => {
+        wx.showToast({ title: '请先登录后查看', icon: 'none' })
+        wx.navigateTo({ url: '/pages/login/index' })
+      })
+      return
+    }
     const campus = wx.getStorageSync('selectedCampus')
     if (!campus) {
       wx.redirectTo({ url: '/pages/campus/select/index' })
       return
     }
     this.setData({ selectedCampus: campus })
+    if (!requireRealAuth(() => wx.switchTab({ url: '/pages/me/index' }))) {
+      this.setData({ immediateList: [], reserveList: [] })
+      return
+    }
     this.loadTripHall()
   },
   onPullDownRefresh() {
