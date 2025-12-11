@@ -5,6 +5,7 @@
     "pages/trip/hall/index",
     "pages/trip/detail/index",
     "pages/me/index",
+    "pages/me/realAuth/index",
     "pages/me/profile/edit/index",
     "pages/me/emergency-contact/index",
     "pages/me/routes/index",
