@@ -45,6 +45,10 @@ public class MiniUser implements Serializable {
     private Date realAuthReviewTime;
     /** 管理员备注 */
     private String adminRemark;
+    /** 当前绑定学校ID */
+    private Long currentSchoolId;
+    /** 当前绑定校区ID */
+    private Long currentCampusId;
     /** 最近活跃时间 */
     private Date lastActiveTime;
     /** 在线状态 */
@@ -202,6 +206,22 @@ public class MiniUser implements Serializable {
         this.adminRemark = adminRemark;
     }
 
+    public Long getCurrentSchoolId() {
+        return currentSchoolId;
+    }
+
+    public void setCurrentSchoolId(Long currentSchoolId) {
+        this.currentSchoolId = currentSchoolId;
+    }
+
+    public Long getCurrentCampusId() {
+        return currentCampusId;
+    }
+
+    public void setCurrentCampusId(Long currentCampusId) {
+        this.currentCampusId = currentCampusId;
+    }
+
     public Date getLastActiveTime() {
         return lastActiveTime;
     }
@@ -273,6 +293,8 @@ public class MiniUser implements Serializable {
                 && java.util.Objects.equals(realAuthReviewBy, miniUser.realAuthReviewBy)
                 && java.util.Objects.equals(realAuthReviewTime, miniUser.realAuthReviewTime)
                 && java.util.Objects.equals(adminRemark, miniUser.adminRemark)
+                && java.util.Objects.equals(currentSchoolId, miniUser.currentSchoolId)
+                && java.util.Objects.equals(currentCampusId, miniUser.currentCampusId)
                 && java.util.Objects.equals(lastActiveTime, miniUser.lastActiveTime)
                 && java.util.Objects.equals(onlineStatus, miniUser.onlineStatus)
                 && java.util.Objects.equals(createTime, miniUser.createTime)
@@ -283,7 +305,8 @@ public class MiniUser implements Serializable {
     public int hashCode() {
         return java.util.Objects.hash(id, openId, unionId, nickName, avatarUrl, phone, realName, idCardName, idCardNumber,
                 faceImageUrl, faceVerifyResult, gender, status, realAuthStatus, realAuthFailReason, realAuthReviewBy,
-                realAuthReviewTime, adminRemark, lastActiveTime, onlineStatus, createTime, updateTime);
+                realAuthReviewTime, adminRemark, currentSchoolId, currentCampusId, lastActiveTime, onlineStatus,
+                createTime, updateTime);
     }
 
     @Override
