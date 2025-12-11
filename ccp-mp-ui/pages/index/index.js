@@ -1,5 +1,13 @@
 const app = getApp()
 const tripService = require('../../services/trip.js')
+const { buildImageUrl } = require('../../utils/url.js')
+
+function normalizeUserInfo(userInfo) {
+  if (!userInfo || typeof userInfo !== 'object') {
+    return null
+  }
+  return { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) }
+}
 
 Page({
   data: {
@@ -30,7 +38,7 @@ Page({
       wx.redirectTo({ url: '/pages/campus/select/index' })
       return
     }
-    const userInfo = (app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || null
+    const userInfo = normalizeUserInfo((app && app.globalData && app.globalData.userInfo) || wx.getStorageSync('userInfo') || null)
     if (app && app.globalData) {
       app.globalData.selectedSchool = selectedSchool
       app.globalData.selectedCampus = selectedCampus

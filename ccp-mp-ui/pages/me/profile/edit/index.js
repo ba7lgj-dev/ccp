@@ -1,6 +1,7 @@
 const auth = require('../../../../utils/auth.js')
 const userService = require('../../../../services/user.js')
 const { BASE_URL } = require('../../../../utils/http.js')
+const { buildImageUrl } = require('../../../../utils/url.js')
 
 Page({
   data: {
@@ -22,7 +23,7 @@ Page({
       return
     }
     this.setData({
-      avatarUrl: storedUser.avatarUrl || '',
+      avatarUrl: buildImageUrl(storedUser.avatarUrl),
       nickName: storedUser.nickName || '',
       gender: storedUser.gender != null ? storedUser.gender : 0,
       realName: storedUser.realName || ''
@@ -83,7 +84,7 @@ Page({
     const token = wx.getStorageSync('token') || ''
     wx.showLoading({ title: '上传中', mask: true })
     wx.uploadFile({
-      url: `${BASE_URL}/upload/avatar`,
+      url: `${BASE_URL}/mp/upload/avatar`,
       filePath,
       name: 'file',
       header: token ? { Authorization: 'Bearer ' + token } : {},
@@ -111,9 +112,10 @@ Page({
     })
   },
   updateAvatarUrl(url) {
+    const avatarUrl = buildImageUrl(url)
     userService.updateAvatar({ avatarUrl: url }).then((data) => {
-      const profile = data || {}
-      const newAvatar = profile.avatarUrl || url
+      const profile = data ? { ...data, avatarUrl: buildImageUrl(data.avatarUrl) } : {}
+      const newAvatar = profile.avatarUrl || avatarUrl
       this.setData({ avatarUrl: newAvatar })
       wx.setStorageSync('userInfo', profile.id ? profile : { ...wx.getStorageSync('userInfo'), avatarUrl: newAvatar })
       const app = getApp()
@@ -144,16 +146,20 @@ Page({
     this.setData({ saving: true })
     userService.updateProfile(payload).then((data) => {
       if (data) {
-        wx.setStorageSync('userInfo', data)
+        const newProfile = {
+          ...data,
+          avatarUrl: buildImageUrl(data.avatarUrl)
+        }
+        wx.setStorageSync('userInfo', newProfile)
         const app = getApp()
         if (app && app.globalData) {
-          app.globalData.userInfo = data
+          app.globalData.userInfo = newProfile
         }
         this.setData({
-          avatarUrl: data.avatarUrl || this.data.avatarUrl,
-          nickName: data.nickName || nick,
-          gender: data.gender != null ? data.gender : this.data.gender,
-          realName: data.realName || ''
+          avatarUrl: newProfile.avatarUrl || this.data.avatarUrl,
+          nickName: newProfile.nickName || nick,
+          gender: newProfile.gender != null ? newProfile.gender : this.data.gender,
+          realName: newProfile.realName || ''
         })
       }
       wx.showToast({ title: '保存成功', icon: 'success' })
