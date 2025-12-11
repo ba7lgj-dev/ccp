@@ -1,5 +1,13 @@
 const auth = require('../../utils/auth.js')
 const userService = require('../../services/user.js')
+const { buildImageUrl } = require('../../utils/url.js')
+
+function normalizeUserInfo(userInfo) {
+  if (!userInfo || typeof userInfo !== 'object') {
+    return {}
+  }
+  return { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) }
+}
 
 Page({
   data: {
@@ -11,7 +19,7 @@ Page({
   },
   onShow() {
     const token = wx.getStorageSync('token') || ''
-    const storedUser = wx.getStorageSync('userInfo') || {}
+    const storedUser = normalizeUserInfo(wx.getStorageSync('userInfo') || {})
     if (!token) {
       this.handleNotLogin()
       return
@@ -41,7 +49,7 @@ Page({
       if (!data) {
         return
       }
-      const profile = data
+      const profile = normalizeUserInfo(data)
       wx.setStorageSync('userInfo', profile)
       const app = getApp()
       if (app && app.globalData) {

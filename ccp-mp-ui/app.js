@@ -1,9 +1,11 @@
 const auth = require('./utils/auth.js')
+const { buildImageUrl } = require('./utils/url.js')
 
 App({
   onLaunch() {
     const token = wx.getStorageSync('token') || null
     const userInfo = wx.getStorageSync('userInfo') || null
+    const normalizedUser = userInfo ? { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) } : null
     if (!token) {
       auth.login().then((info) => {
         this.setGlobalUser(info)
@@ -14,8 +16,8 @@ App({
       return
     }
     this.globalData.token = token
-    this.globalData.userInfo = userInfo || null
-    this.redirectByUser(userInfo || {})
+    this.globalData.userInfo = normalizedUser
+    this.redirectByUser(normalizedUser || {})
   },
   redirectByUser(userInfo) {
     if (!userInfo || !userInfo.id) {

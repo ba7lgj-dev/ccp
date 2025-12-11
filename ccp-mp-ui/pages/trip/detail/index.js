@@ -1,4 +1,5 @@
 const tripService = require('../../../services/trip.js')
+const { buildImageUrl } = require('../../../utils/url.js')
 
 Page({
   data: {
@@ -45,8 +46,16 @@ Page({
         }, 400)
         return
       }
+      const normalizedDetail = {
+        ...detail,
+        ownerAvatar: buildImageUrl(detail.ownerAvatar),
+        members: (detail.members || []).map(item => ({
+          ...item,
+          avatarUrl: buildImageUrl(item.avatarUrl)
+        }))
+      }
       this.setData({
-        detail,
+        detail: normalizedDetail,
         canJoin: detail.currentUserInfo && detail.currentUserInfo.canJoin,
         canQuit: detail.currentUserInfo && detail.currentUserInfo.canQuit,
         canKick: detail.currentUserInfo && detail.currentUserInfo.canKick

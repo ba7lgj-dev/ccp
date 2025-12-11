@@ -431,3 +431,9 @@ ccp-core/src/main/java/com/ccp/
 - 后端新增 CcpMiniUserController、ICcpMiniUserService、CcpMiniUserServiceImpl，并补充 CcpMiniUserMapper 及 XML 列表、详情、更新、实名审核方法，复用 MiniUser 实体并扩展创建时间查询字段。
 - 前端新增 api/ccp/miniUser.js 与页面逻辑，完成用户信息展示、审核通过/拒绝、状态管理、备注保存和导出文件下载。
 - SQL 增加 sys_menu “小程序管理/微信用户管理” 目录和按钮权限（ccp_mini_user_menu.sql，menu_id 建议 20060-20065，可按需上调避免冲突）。
+
+### Update-BASE-URL-Image-Standard（2025-12-xx）
+- 将 ccp-mp-ui/utils/http.js 中 BASE_URL 调整为纯域名 http://hmj123.fucku.top，统一由各接口 path 自行补齐 /mp 前缀。
+- 全量梳理小程序端使用 http.js 的接口 path，显式添加 /mp/xxx 前缀（学校/校区/校门、拼车、用户资料等），避免 BASE_URL 拆分后访问 404。
+- 新增 utils/url.js 提供 buildImageUrl，针对后端返回的相对图片路径统一拼接 BASE_URL，绝对路径透传。
+- 核对并处理用户头像、学校 logo、拼车详情成员头像等展示场景，在 setData 前调用 buildImageUrl，确保图片地址可直接访问。

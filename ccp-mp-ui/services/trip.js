@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function publishTrip(data) {
   return request({
-    url: `/trip/publish`,
+    url: `/mp/trip/publish`,
     method: 'POST',
     data
   })
@@ -10,7 +10,7 @@ function publishTrip(data) {
 
 function getTripHall(campusId) {
   return request({
-    url: `/trip/hall`,
+    url: `/mp/trip/hall`,
     method: 'GET',
     data: { campusId }
   })
@@ -18,7 +18,7 @@ function getTripHall(campusId) {
 
 function getTripDetail(tripId) {
   return request({
-    url: `/trip/detail`,
+    url: `/mp/trip/detail`,
     method: 'GET',
     data: { tripId }
   })
@@ -26,7 +26,7 @@ function getTripDetail(tripId) {
 
 function joinTrip(tripId, joinPeopleCount) {
   return request({
-    url: `/trip/join`,
+    url: `/mp/trip/join`,
     method: 'POST',
     data: { id: tripId, joinPeopleCount }
   })
@@ -34,7 +34,7 @@ function joinTrip(tripId, joinPeopleCount) {
 
 function quitTrip(tripId) {
   return request({
-    url: `/trip/quit`,
+    url: `/mp/trip/quit`,
     method: 'POST',
     data: { id: tripId }
   })
@@ -42,7 +42,7 @@ function quitTrip(tripId) {
 
 function kickMember(tripId, targetUserId) {
   return request({
-    url: `/trip/kick`,
+    url: `/mp/trip/kick`,
     method: 'POST',
     data: { id: tripId, targetUserId }
   })
@@ -50,7 +50,7 @@ function kickMember(tripId, targetUserId) {
 
 function getMyActiveTrip() {
   return request({
-    url: `/trip/myActive`,
+    url: `/mp/trip/myActive`,
     method: 'GET'
   })
 }

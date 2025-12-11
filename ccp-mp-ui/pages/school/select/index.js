@@ -1,5 +1,6 @@
 const schoolService = require('../../../services/school.js')
 const cache = require('../../../utils/cache.js')
+const { buildImageUrl } = require('../../../utils/url.js')
 
 Page({
   data: {
@@ -19,7 +20,7 @@ Page({
     schoolService.getSchoolList().then((list) => {
       const sorted = (list || []).slice().sort((a, b) => {
         return (a.schoolName || '').localeCompare(b.schoolName || '')
-      })
+      }).map(item => ({ ...item, logoUrl: buildImageUrl(item.logoUrl) }))
       this.setData({ schools: sorted, filteredSchools: sorted })
       cache.setSchoolCache(sorted, 10 * 60 * 1000)
     }).catch(() => {

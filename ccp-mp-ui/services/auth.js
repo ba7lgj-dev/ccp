@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function login(jsCode) {
   return request({
-    url: '/login',
+    url: '/mp/login',
     method: 'POST',
     data: { jsCode }
   })

@@ -1,4 +1,17 @@
-const { request } = require('./http.js')
+const { buildImageUrl } = require('./url.js')
+
+function normalizeUserInfo(userInfo) {
+  if (!userInfo || typeof userInfo !== 'object') {
+    return {}
+  }
+  return {
+    ...userInfo,
+    avatarUrl: buildImageUrl(userInfo.avatarUrl),
+    faceImageUrl: buildImageUrl(userInfo.faceImageUrl),
+    studentCardImageUrl: buildImageUrl(userInfo.studentCardImageUrl),
+    personalImageUrl: buildImageUrl(userInfo.personalImageUrl)
+  }
+}
 
 function setToken(token) {
   wx.setStorageSync('token', token)
@@ -31,7 +44,7 @@ function login() {
             return
           }
           setToken(data.token)
-          const userInfo = data.userInfo || {}
+          const userInfo = normalizeUserInfo(data.userInfo || {})
           wx.setStorageSync('userInfo', userInfo)
           const app = getApp()
           if (app && app.globalData) {
