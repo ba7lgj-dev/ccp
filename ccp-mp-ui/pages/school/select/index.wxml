@@ -1,14 +1,29 @@
 <view class="school-page">
   <view class="search-bar">
-    <input placeholder="搜索学校名称" bindinput="onSearchInput" value="{{searchKeyword}}" confirm-type="search"></input>
+    <input placeholder="搜索已通过认证的学校" bindinput="onSearchInput" value="{{searchKeyword}}" confirm-type="search" />
   </view>
-  <scroll-view class="school-list" scroll-y="true">
-    <view wx:for="{{filteredSchools}}" wx:key="id" class="school-item" bindtap="onSelectSchool" data-id="{{item.id}}">
-      <image class="school-logo" src="{{item.logoUrl || '/assets/default-school.png'}}"></image>
+
+  <block wx:if="{{empty}}">
+    <view class="empty">
+      <text class="empty-text">暂无已通过的学校认证，请先进行学校认证</text>
+      <button class="btn-primary" size="mini" bindtap="onGoAuth">去学校认证</button>
+    </view>
+  </block>
+
+  <scroll-view wx:else class="school-list" scroll-y="true">
+    <view wx:for="{{filteredSchools}}" wx:key="id" class="school-item" bindtap="onSelectSchool" data-id="{{item.schoolId || item.id}}">
       <view class="school-info">
-        <text class="school-name">{{item.schoolName}}</text>
-        <text class="school-city">{{item.cityName}}</text>
+        <view class="space-between">
+          <text class="school-name">{{item.schoolName}}</text>
+          <text class="badge">已认证</text>
+        </view>
+        <text class="school-city">{{item.cityName}} {{item.shortName}}</text>
       </view>
     </view>
+    <block wx:if="{{!filteredSchools.length}}">
+      <view class="empty">
+        <text class="empty-text">未找到匹配的学校，请检查关键词</text>
+      </view>
+    </block>
   </scroll-view>
 </view>

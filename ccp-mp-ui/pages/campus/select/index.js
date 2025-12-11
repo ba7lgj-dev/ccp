@@ -6,35 +6,40 @@ Page({
     selectedSchool: null,
     campusList: []
   },
-  onLoad() {
-    const selectedSchool = wx.getStorageSync('selectedSchool')
+  async onShow() {
+    const app = getApp()
+    if (app && typeof app.checkAuthChain === 'function') {
+      const ok = await app.checkAuthChain({ from: 'campusSelect', allowAuthPages: true })
+      if (!ok) return
+    }
+    const selectedSchool = wx.getStorageSync('selectedSchool') || (getApp().globalData && getApp().globalData.school)
     if (!selectedSchool) {
+      wx.showToast({ title: '请先选择学校', icon: 'none' })
       wx.redirectTo({ url: '/pages/school/select/index' })
       return
     }
     this.setData({ selectedSchool })
-    const app = getApp()
-    if (app && app.globalData) {
-      app.globalData.selectedSchool = selectedSchool
+    const appInstance = getApp()
+    if (appInstance && appInstance.globalData) {
+      appInstance.globalData.school = selectedSchool
     }
     const cached = cache.getCampusCache(selectedSchool.id)
     if (cached) {
       this.setData({ campusList: cached })
-    } else {
-      this.loadCampusList()
+      return
     }
+    this.loadCampusList(selectedSchool.id)
   },
-  loadCampusList() {
-    const school = this.data.selectedSchool
-    campusService.getCampusList(school.id).then((list) => {
+  loadCampusList(schoolId) {
+    campusService.getCampusList(schoolId).then((list) => {
       const result = (list || []).slice().sort((a, b) => {
         return (a.campusName || '').localeCompare(b.campusName || '')
       })
       if (!result.length) {
-        wx.showToast({ title: '该学校暂未录入校区，请联系管理员', icon: 'none' })
+        wx.showToast({ title: '该学校暂无可用校区，请联系管理员', icon: 'none' })
       }
       this.setData({ campusList: result })
-      cache.setCampusCache(school.id, result, 10 * 60 * 1000)
+      cache.setCampusCache(schoolId, result, 10 * 60 * 1000)
     }).catch(() => {
       wx.showToast({ title: '加载校区失败', icon: 'none' })
     })
@@ -49,7 +54,7 @@ Page({
     wx.setStorageSync('selectedCampus', campus)
     const app = getApp()
     if (app && app.globalData) {
-      app.globalData.selectedCampus = campus
+      app.globalData.campus = campus
     }
     wx.redirectTo({ url: '/pages/trip/publish/index' })
   }

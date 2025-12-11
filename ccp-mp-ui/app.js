@@ -7,8 +7,12 @@ App({
     const token = wx.getStorageSync('token') || null
     const userInfo = wx.getStorageSync('userInfo') || null
     const normalizedUser = userInfo ? { ...userInfo, avatarUrl: buildImageUrl(userInfo.avatarUrl) } : null
+    const school = wx.getStorageSync('selectedSchool') || null
+    const campus = wx.getStorageSync('selectedCampus') || null
     this.globalData.token = token
     this.globalData.userInfo = normalizedUser
+    this.globalData.school = school
+    this.globalData.campus = campus
   },
   async checkAuthChain(options = {}) {
     const opts = options || {}
@@ -22,14 +26,14 @@ App({
 
     if (!token) {
       wx.reLaunch({ url: '/pages/login/index' })
-      return
+      return false
     }
     this.globalData.token = token
     if (userInfo) {
       this.globalData.userInfo = userInfo
     }
-    if (isLoginPage) {
-      return
+    if (isLoginPage && opts.allowAuthPages) {
+      return true
     }
 
     const now = Date.now()
@@ -37,8 +41,8 @@ App({
     if (needRefresh) {
       try {
         const [realAuthInfo, schoolAuthList] = await Promise.all([
-          http.request({ url: '/mp/user/realAuth/info', method: 'GET', hideLoading: true }),
-          http.request({ url: '/mp/user/schoolAuth/listMine', method: 'GET', hideLoading: true })
+          http.get('/mp/user/realAuth/info', {}, { hideLoading: true }),
+          http.get('/mp/user/schoolAuth/listMine', {}, { hideLoading: true })
         ])
         const realStatus = realAuthInfo && typeof realAuthInfo.realAuthStatus === 'number' ? realAuthInfo.realAuthStatus : 0
         this.globalData.auth.realAuthStatus = realStatus
@@ -51,26 +55,27 @@ App({
         if (err && err.code === 4001) {
           auth.clearToken()
           wx.reLaunch({ url: '/pages/login/index' })
-          return
+          return false
         }
       }
     }
 
     if (this.globalData.auth.realAuthStatus !== 2) {
       if (isRealAuthPage && opts.allowAuthPages) {
-        return
+        return true
       }
       wx.reLaunch({ url: '/pages/verify/realname/index' })
       this.globalData.authRedirectFrom = opts.from || ''
-      return
+      return false
     }
     if (!this.globalData.auth.hasApprovedSchool) {
       if (isSchoolAuthPage && opts.allowAuthPages) {
-        return
+        return true
       }
       wx.reLaunch({ url: '/pages/verify/school/index' })
-      return
+      return false
     }
+    return true
   },
   setGlobalUser(userInfo) {
     this.globalData.userInfo = userInfo
@@ -82,8 +87,6 @@ App({
   globalData: {
     token: null,
     userInfo: null,
-    selectedSchool: null,
-    selectedCampus: null,
     auth: {
       realAuthStatus: 0,
       schoolAuthList: [],
@@ -91,6 +94,10 @@ App({
       lastAuthFetchTime: 0
     },
     authRedirectFrom: '',
+    school: null,
+    campus: null,
+    currentTrip: null,
+    loadingCount: 0,
     indexCache: {}
   }
 })

@@ -1,51 +1,66 @@
 .login-page {
+  padding: 80rpx 40rpx;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f7f7f7;
 }
 
-.login-content {
-  flex: 1;
+.hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 40rpx;
+  gap: 16rpx;
+  margin-bottom: 48rpx;
 }
 
 .logo {
-  width: 200rpx;
-  height: 200rpx;
-  border-radius: 100rpx;
-  margin-bottom: 40rpx;
-  background-color: #ffffff;
+  width: 160rpx;
+  height: 160rpx;
+  border-radius: 32rpx;
+  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
-.title {
+.app-name {
   font-size: 40rpx;
-  font-weight: 600;
-  color: #333333;
-  margin-bottom: 80rpx;
+  font-weight: 700;
 }
 
-.login-button {
-  width: 80%;
-  height: 88rpx;
-  border-radius: 44rpx;
-  line-height: 88rpx;
-  font-size: 32rpx;
+.subtitle {
+  font-size: 28rpx;
+  color: #6b778c;
 }
 
-.bottom-area {
-  position: fixed;
-  bottom: 40rpx;
-  left: 0;
-  right: 0;
-  text-align: center;
-}
-
-.agreement {
+.hint {
   font-size: 24rpx;
-  color: #999999;
+  color: #f5a623;
+}
+
+.intro {
+  margin-top: 8rpx;
+}
+
+.intro-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.intro-desc {
+  font-size: 26rpx;
+  color: #6b778c;
+}
+
+.login-btn {
+  margin: 24rpx;
+}
+
+.agreements {
+  text-align: center;
+  margin-top: 16rpx;
+  color: #6b778c;
+}
+
+.link {
+  color: #2f86f6;
+  text-decoration: underline;
 }

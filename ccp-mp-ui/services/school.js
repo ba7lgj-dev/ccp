@@ -7,4 +7,11 @@ function getSchoolList() {
   })
 }
 
-module.exports = { getSchoolList }
+function getApprovedSchoolList() {
+  return request({
+    url: '/mp/user/schoolAuth/listApproved',
+    method: 'GET'
+  })
+}
+
+module.exports = { getSchoolList, getApprovedSchoolList }

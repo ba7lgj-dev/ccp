@@ -1,12 +1,16 @@
 <view class="campus-page">
-  <view class="selected-school" wx:if="{{selectedSchool}}">
-    已选择学校：{{selectedSchool.schoolName}}
+  <view class="card header" wx:if="{{selectedSchool}}">
+    <text class="title-md">{{selectedSchool.schoolName}}</text>
+    <text class="text-secondary">{{selectedSchool.cityName || '城市未填写'}}</text>
   </view>
+
   <scroll-view class="campus-list" scroll-y="true">
-    <view wx:if="{{campusList.length === 0}}" class="empty-tip">暂无校区信息</view>
+    <view wx:if="{{!campusList.length}}" class="empty-tip">该学校暂无可用校区，请联系管理员</view>
     <view wx:for="{{campusList}}" wx:key="id" class="campus-item" bindtap="onSelectCampus" data-id="{{item.id}}">
-      <text class="campus-name">{{item.campusName}}</text>
-      <text class="campus-address">{{item.address}}</text>
+      <view class="space-between">
+        <text class="campus-name">{{item.campusName}}</text>
+      </view>
+      <text class="campus-address">{{item.address || '地址未填写'}} </text>
     </view>
   </scroll-view>
 </view>

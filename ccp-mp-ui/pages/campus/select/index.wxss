@@ -1,7 +1,36 @@
-.campus-page {background-color:#f7f7f7; min-height:100vh;}
-.selected-school {padding:24rpx; background-color:#ffffff; font-size:28rpx; color:#333333; margin-bottom:16rpx;}
-.campus-list {padding:0 20rpx 20rpx 20rpx;}
-.campus-item {background-color:#ffffff; margin-top:16rpx; padding:20rpx 24rpx; border-radius:12rpx; box-shadow:0 4rpx 12rpx rgba(0,0,0,0.05);}
-.campus-name {font-size:32rpx; font-weight:600; color:#333333;}
-.campus-address {font-size:24rpx; color:#999999; margin-top:6rpx;}
-.empty-tip {text-align:center; margin-top:80rpx; font-size:26rpx; color:#999999;}
+.campus-page {
+  padding: 20rpx 24rpx;
+}
+
+.header {
+  margin: 0 0 16rpx;
+}
+
+.campus-list {
+  max-height: 80vh;
+}
+
+.campus-item {
+  background: #fff;
+  padding: 20rpx;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  box-shadow: 0 6rpx 16rpx rgba(0, 0, 0, 0.04);
+}
+
+.campus-name {
+  font-size: 30rpx;
+  font-weight: 600;
+}
+
+.campus-address {
+  font-size: 24rpx;
+  color: #6b778c;
+  margin-top: 6rpx;
+}
+
+.empty-tip {
+  text-align: center;
+  color: #6b778c;
+  margin: 120rpx 0;
+}

@@ -143,8 +143,8 @@ Page({
           if (app && app.globalData) {
             app.globalData.token = null
             app.globalData.userInfo = null
-            app.globalData.selectedSchool = null
-            app.globalData.selectedCampus = null
+            app.globalData.school = null
+            app.globalData.campus = null
           }
           this.setData({
             hasToken: false,
