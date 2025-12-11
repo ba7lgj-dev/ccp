@@ -18,6 +18,10 @@ public class MpResult<T> {
         return new MpResult<>(0, "success", data);
     }
 
+    public static <T> MpResult<T> ok() {
+        return new MpResult<>(0, "success", null);
+    }
+
     public static <T> MpResult<T> error(int code, String msg) {
         return new MpResult<>(code, msg, null);
     }

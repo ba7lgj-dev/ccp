@@ -1,7 +1,7 @@
 const auth = require('./auth.js')
 
-const BASE_URL = 'http://localhost:8080/mp'
-
+// const BASE_URL = 'http://localhost:8080/mp'
+const BASE_URL = 'http://hmj123.fucku.top/mp'
 function request(options) {
   const opts = options || {}
   const token = wx.getStorageSync('token')

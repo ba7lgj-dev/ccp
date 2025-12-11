@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function getLocationList(campusId) {
   return request({
-    url: `/mp/location/listByCampus`,
+    url: `/location/listByCampus`,
     method: 'GET',
     data: { campusId }
   })

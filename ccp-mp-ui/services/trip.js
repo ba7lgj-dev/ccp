@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function publishTrip(data) {
   return request({
-    url: `/mp/trip/publish`,
+    url: `/trip/publish`,
     method: 'POST',
     data
   })
@@ -10,7 +10,7 @@ function publishTrip(data) {
 
 function getTripHall(campusId) {
   return request({
-    url: `/mp/trip/hall`,
+    url: `/trip/hall`,
     method: 'GET',
     data: { campusId }
   })

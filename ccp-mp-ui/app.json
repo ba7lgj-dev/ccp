@@ -1,10 +1,11 @@
 {
   "pages": [
-    "pages/login/index",
+
     "pages/index/index",
     "pages/trip/hall/index",
     "pages/me/index",
     "pages/school/select/index",
+    "pages/login/index",
     "pages/campus/select/index",
     "pages/trip/publish/index"
   ],

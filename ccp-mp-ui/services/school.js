@@ -2,7 +2,7 @@ const { request } = require('../utils/http.js')
 
 function getSchoolList() {
   return request({
-    url: '/mp/school/list',
+    url: '/school/list',
     method: 'GET'
   })
 }
