@@ -195,7 +195,7 @@
     </select>
 
     <select id="selectUserBlacklist" parameterType="long" resultType="org.ba7lgj.ccp.core.domain.vo.MiniUserBlacklistVO">
-        select id, status, expire_time
+        select id, status, end_time as expire_time
         from ccp_user_blacklist
         where user_id = #{userId}
         order by create_time desc
