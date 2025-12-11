@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.ba7lgj.ccp.miniprogram.mapper.MpUserSchoolAuthMapper">
+    <resultMap id="UserSchoolAuthResult" type="org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth">
+        <id property="id" column="id" />
+        <result property="userId" column="user_id" />
+        <result property="schoolId" column="school_id" />
+        <result property="campusId" column="campus_id" />
+        <result property="studentNo" column="student_no" />
+        <result property="studentName" column="student_name" />
+        <result property="studentCardImageUrl" column="student_card_image_url" />
+        <result property="extraImageUrl" column="extra_image_url" />
+        <result property="status" column="status" />
+        <result property="failReason" column="fail_reason" />
+        <result property="submitTime" column="submit_time" />
+        <result property="reviewTime" column="review_time" />
+        <result property="reviewBy" column="review_by" />
+        <result property="schoolName" column="school_name" />
+        <result property="schoolShortName" column="school_short_name" />
+        <result property="campusName" column="campus_name" />
+        <result property="cityName" column="city_name" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        cusa.id, cusa.user_id, cusa.school_id, cusa.campus_id, cusa.student_no, cusa.student_name,
+        cusa.student_card_image_url, cusa.extra_image_url, cusa.status, cusa.fail_reason, cusa.submit_time,
+        cusa.review_time, cusa.review_by, cs.school_name, cs.school_short_name, csc.campus_name, city.name AS city_name
+    </sql>
+
+    <select id="selectByUserId" resultMap="UserSchoolAuthResult">
+        SELECT <include refid="Base_Column_List" />
+        FROM ccp_user_school_auth cusa
+            LEFT JOIN ccp_school cs ON cs.id = cusa.school_id
+            LEFT JOIN ccp_school_campus csc ON csc.id = cusa.campus_id
+            LEFT JOIN ccp_city city ON city.id = cs.city_id
+        WHERE cusa.user_id = #{userId}
+        ORDER BY cusa.submit_time DESC, cusa.id DESC
+    </select>
+
+    <select id="selectByUserAndSchool" resultMap="UserSchoolAuthResult">
+        SELECT <include refid="Base_Column_List" />
+        FROM ccp_user_school_auth cusa
+            LEFT JOIN ccp_school cs ON cs.id = cusa.school_id
+            LEFT JOIN ccp_school_campus csc ON csc.id = cusa.campus_id
+            LEFT JOIN ccp_city city ON city.id = cs.city_id
+        WHERE cusa.user_id = #{userId}
+          AND cusa.school_id = #{schoolId}
+        LIMIT 1
+    </select>
+
+    <insert id="insert" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO ccp_user_school_auth(
+            user_id, school_id, campus_id, student_no, student_name, student_card_image_url, extra_image_url,
+            status, fail_reason, submit_time, review_time, review_by, create_time, update_time
+        ) VALUES (
+            #{userId}, #{schoolId}, #{campusId}, #{studentNo}, #{studentName}, #{studentCardImageUrl}, #{extraImageUrl},
+            #{status}, #{failReason}, #{submitTime}, #{reviewTime}, #{reviewBy}, NOW(), NOW()
+        )
+    </insert>
+
+    <update id="update" parameterType="org.ba7lgj.ccp.miniprogram.domain.MpUserSchoolAuth">
+        UPDATE ccp_user_school_auth
+        <set>
+            <if test="campusId != null">campus_id = #{campusId},</if>
+            <if test="studentNo != null">student_no = #{studentNo},</if>
+            <if test="studentName != null">student_name = #{studentName},</if>
+            <if test="studentCardImageUrl != null">student_card_image_url = #{studentCardImageUrl},</if>
+            <if test="extraImageUrl != null">extra_image_url = #{extraImageUrl},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="failReason != null">fail_reason = #{failReason},</if>
+            <if test="submitTime != null">submit_time = #{submitTime},</if>
+            <if test="reviewTime != null">review_time = #{reviewTime},</if>
+            <if test="reviewBy != null">review_by = #{reviewBy},</if>
+            update_time = NOW()
+        </set>
+        WHERE id = #{id}
+    </update>
+
+    <select id="selectApprovedByUser" resultMap="UserSchoolAuthResult">
+        SELECT <include refid="Base_Column_List" />
+        FROM ccp_user_school_auth cusa
+            LEFT JOIN ccp_school cs ON cs.id = cusa.school_id
+            LEFT JOIN ccp_school_campus csc ON csc.id = cusa.campus_id
+            LEFT JOIN ccp_city city ON city.id = cs.city_id
+        WHERE cusa.user_id = #{userId}
+          AND cusa.status = 2
+    </select>
+</mapper>

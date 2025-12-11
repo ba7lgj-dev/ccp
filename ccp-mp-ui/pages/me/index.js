@@ -19,6 +19,10 @@ Page({
     hasToken: false
   },
   onShow() {
+    const appInstance = getApp()
+    if (appInstance && typeof appInstance.checkAuthChain === 'function') {
+      appInstance.checkAuthChain({ from: 'me', allowAuthPages: false })
+    }
     const token = wx.getStorageSync('token') || ''
     const storedUser = normalizeUserInfo(wx.getStorageSync('userInfo') || {})
     if (!token) {

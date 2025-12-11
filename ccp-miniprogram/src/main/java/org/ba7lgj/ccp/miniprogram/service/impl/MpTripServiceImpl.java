@@ -15,12 +15,11 @@ import org.ba7lgj.ccp.miniprogram.domain.MpCampus;
 import org.ba7lgj.ccp.miniprogram.domain.MpTrip;
 import org.ba7lgj.ccp.miniprogram.domain.MpTripMember;
 import org.ba7lgj.ccp.miniprogram.domain.MpUser;
-import org.ba7lgj.ccp.miniprogram.domain.MpUserCampusAuth;
 import org.ba7lgj.ccp.miniprogram.mapper.MpTripMemberMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpCampusMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpTripMapper;
 import org.ba7lgj.ccp.miniprogram.mapper.MpUserMapper;
-import org.ba7lgj.ccp.miniprogram.mapper.MpUserCampusAuthMapper;
+import org.ba7lgj.ccp.miniprogram.service.MpUserSchoolAuthService;
 import org.ba7lgj.ccp.miniprogram.service.MpTripService;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailCurrentUserInfo;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripDetailVO;
@@ -62,7 +61,7 @@ public class MpTripServiceImpl implements MpTripService {
     private MpUserMapper userMapper;
 
     @Autowired
-    private MpUserCampusAuthMapper userCampusAuthMapper;
+    private MpUserSchoolAuthService userSchoolAuthService;
 
     @Override
     public void publishTrip(MpTripVO vo) {
@@ -465,10 +464,14 @@ public class MpTripServiceImpl implements MpTripService {
         if (campusId == null) {
             throw new IllegalStateException("校区信息缺失");
         }
-        MpUserCampusAuth auth = userCampusAuthMapper.selectByUserAndCampus(userId, campusId);
-        if (auth == null || auth.getStatus() == null || auth.getStatus() != 2) {
-            throw new IllegalStateException("该校区尚未通过学生认证，无法发布拼车");
+        MpCampus campus = campusMapper.selectCampusById(campusId);
+        if (campus == null) {
+            throw new IllegalStateException("校区不存在");
         }
+        if (!Objects.equals(campus.getStatus(), 1)) {
+            throw new IllegalStateException("校区不可用");
+        }
+        userSchoolAuthService.ensureSchoolApproved(userId, campus.getSchoolId());
     }
 
     private Integer calculateRemainMinutes(MpTrip trip) {

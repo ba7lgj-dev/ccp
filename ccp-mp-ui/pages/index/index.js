@@ -39,8 +39,12 @@ Page({
     activeTrip: null
   },
   onShow() {
+    const appInstance = getApp()
+    if (appInstance && typeof appInstance.checkAuthChain === 'function') {
+      appInstance.checkAuthChain({ from: 'index', allowAuthPages: false })
+    }
     const token = wx.getStorageSync('token') || null
-    if (!token) {
+    if (!token || (appInstance && appInstance.globalData && (appInstance.globalData.auth.realAuthStatus !== 2 || !appInstance.globalData.auth.hasApprovedSchool))) {
       this.setData({
         loginRequired: true,
         userInfo: null,
