@@ -9,6 +9,7 @@ public class MpTripVO {
     private Long endGateId;
     private Long endLocationId;
     private String endAddress;
+    private Boolean immediate;
     private String departureTime;
     private Integer currentPeople;
     private Integer totalPeople;
@@ -32,6 +33,8 @@ public class MpTripVO {
     public void setEndLocationId(Long endLocationId) { this.endLocationId = endLocationId; }
     public String getEndAddress() { return endAddress; }
     public void setEndAddress(String endAddress) { this.endAddress = endAddress; }
+    public Boolean getImmediate() { return immediate; }
+    public void setImmediate(Boolean immediate) { this.immediate = immediate; }
     public String getDepartureTime() { return departureTime; }
     public void setDepartureTime(String departureTime) { this.departureTime = departureTime; }
     public Integer getCurrentPeople() { return currentPeople; }

@@ -16,6 +16,15 @@
 - 拼车大厅按当前校区拉取 /mp/trip/hall，并按时间拆分立即拼车与预约拼车列表，展示起终点、时间与人数摘要，卡片点击预留详情跳转。
 - 确认未新建重复页面或接口路径，均在既有目录与统一路由下扩展实现。
 
+### Update-ImmediateTrip-LogicRefactor
+- 新增立即出行定义与10分钟生命周期，发布即刻出发不再校验前端时间字段，后台自动赋值 departureTime。
+- 新增预约订单差值<=5分钟自动转换为立即出行逻辑（后台统一处理），保持 status=0 且有效期10分钟。
+- 修改 controller、service、mapper 原有文件内逻辑，路径保持不变（MpTripController、MpTripServiceImpl、MpTripMapper/XML）。
+- MpTripVO 新增 immediate 字段，用于标记立即出行单；实体保持不变，仅逻辑层使用即时标记。
+- 大厅排序规则：立即出行优先且按剩余有效期升序，预约单按 departureTime 升序。
+- 立即订单自动过期机制：departureTime+10 分钟失效并标记 status=5，过期判断在 service 内封装。
+- 不新增数据库字段，全部变更在业务逻辑层完成。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 

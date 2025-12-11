@@ -44,11 +44,20 @@ public class MpTripController {
         if (vo.getTotalPeople() == null || vo.getTotalPeople() < vo.getOwnerPeopleCount()) {
             return MpResult.error(400, "总人数必须大于或等于我方人数");
         }
-        if (StringUtils.hasText(vo.getDepartureTime())) {
+        boolean immediate = Boolean.TRUE.equals(vo.getImmediate());
+        if (!immediate) {
+            if (!StringUtils.hasText(vo.getDepartureTime())) {
+                return MpResult.error(400, "预约出发时间不能为空");
+            }
             try {
                 Date dep = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(vo.getDepartureTime());
-                if (dep.before(new Date())) {
+                Date now = new Date();
+                if (dep.before(now)) {
                     return MpResult.error(400, "出发时间不能早于当前时间");
+                }
+                long diffMinutes = (dep.getTime() - now.getTime()) / (60 * 1000);
+                if (diffMinutes <= 5) {
+                    vo.setImmediate(true);
                 }
             } catch (ParseException e) {
                 return MpResult.error(400, "出发时间格式不正确");
