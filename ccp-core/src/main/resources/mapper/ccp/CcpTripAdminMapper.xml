@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.core.mapper.CcpTripAdminMapper">
+
+    <select id="selectTripList" parameterType="org.ba7lgj.ccp.common.dto.trip.CcpTripAdminQuery"
+            resultType="org.ba7lgj.ccp.common.vo.trip.CcpTripAdminVO">
+        SELECT t.id,
+               s.school_name  AS schoolName,
+               c.campus_name  AS campusName,
+               u.nick_name    AS ownerNickName,
+               t.start_address AS startAddress,
+               t.end_address   AS endAddress,
+               DATE_FORMAT(t.departure_time, '%Y-%m-%d %H:%i:%s') AS departureTime,
+               t.status,
+               CASE t.status
+                   WHEN 0 THEN '招募中'
+                   WHEN 1 THEN '待确认'
+                   WHEN 2 THEN '已确认'
+                   WHEN 3 THEN '已完成'
+                   WHEN 4 THEN '已取消'
+                   WHEN 5 THEN '已过期'
+                   ELSE '' END AS statusLabel,
+               t.current_people AS currentPeople,
+               t.total_people   AS totalPeople,
+               DATE_FORMAT(t.create_time, '%Y-%m-%d %H:%i:%s') AS createTime
+        FROM ccp_trip t
+                 LEFT JOIN ccp_school s ON s.id = t.school_id
+                 LEFT JOIN ccp_school_campus c ON c.id = t.campus_id
+                 LEFT JOIN ccp_mini_user u ON u.id = t.owner_user_id
+        <where>
+            <if test="schoolId != null">
+                AND t.school_id = #{schoolId}
+            </if>
+            <if test="campusId != null">
+                AND t.campus_id = #{campusId}
+            </if>
+            <if test="ownerUserId != null">
+                AND t.owner_user_id = #{ownerUserId}
+            </if>
+            <if test="status != null">
+                AND t.status = #{status}
+            </if>
+            <if test="beginDepartureTime != null and beginDepartureTime != ''">
+                AND t.departure_time &gt;= #{beginDepartureTime}
+            </if>
+            <if test="endDepartureTime != null and endDepartureTime != ''">
+                AND t.departure_time &lt;= #{endDepartureTime}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (t.start_address LIKE CONCAT('%', #{keyword}, '%') OR t.end_address LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY t.create_time DESC
+    </select>
+
+    <select id="selectTripDetailById" resultType="org.ba7lgj.ccp.common.vo.trip.CcpTripAdminDetailVO">
+        SELECT t.id,
+               s.school_name  AS schoolName,
+               c.campus_name  AS campusName,
+               u.nick_name    AS ownerNickName,
+               u.avatar_url   AS ownerAvatar,
+               u.phone        AS ownerPhone,
+               t.start_address AS startAddress,
+               t.end_address   AS endAddress,
+               DATE_FORMAT(t.departure_time, '%Y-%m-%d %H:%i:%s') AS departureTime,
+               t.status,
+               t.current_people AS currentPeople,
+               t.total_people   AS totalPeople,
+               ms.memberCount,
+               ms.finishedCount,
+               ms.noShowCount
+        FROM ccp_trip t
+                 LEFT JOIN ccp_school s ON s.id = t.school_id
+                 LEFT JOIN ccp_school_campus c ON c.id = t.campus_id
+                 LEFT JOIN ccp_mini_user u ON u.id = t.owner_user_id
+                 LEFT JOIN (
+            SELECT trip_id,
+                   COUNT(*)                                           AS memberCount,
+                   SUM(CASE WHEN status = 4 THEN 1 ELSE 0 END)        AS finishedCount,
+                   SUM(CASE WHEN status = 5 THEN 1 ELSE 0 END)        AS noShowCount
+            FROM ccp_trip_member
+            GROUP BY trip_id
+        ) ms ON ms.trip_id = t.id
+        WHERE t.id = #{id}
+    </select>
+
+    <update id="updateTripStatus">
+        UPDATE ccp_trip
+        SET status      = #{status},
+            remark      = #{remark},
+            update_time = NOW()
+        WHERE id = #{id}
+    </update>
+</mapper>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="org.ba7lgj.ccp.core.mapper.CcpTripMemberAdminMapper">
+
+    <select id="selectMemberList" parameterType="org.ba7lgj.ccp.common.dto.trip.CcpTripMemberQuery"
+            resultType="org.ba7lgj.ccp.common.vo.trip.CcpTripMemberVO">
+        SELECT m.id          AS memberId,
+               m.trip_id     AS tripId,
+               m.user_id     AS userId,
+               u.nick_name   AS nickName,
+               u.phone       AS phone,
+               CASE m.role WHEN 1 THEN '发起人' ELSE '成员' END AS roleLabel,
+               m.join_people_count AS joinPeopleCount,
+               CASE m.status
+                   WHEN 1 THEN '已加入'
+                   WHEN 2 THEN '已退出'
+                   WHEN 3 THEN '被踢'
+                   WHEN 4 THEN '已完成'
+                   WHEN 5 THEN '爽约'
+                   ELSE '' END AS memberStatusLabel,
+               CASE m.confirm_flag WHEN 1 THEN '已确认' ELSE '未确认' END AS confirmFlagLabel,
+               DATE_FORMAT(m.join_time, '%Y-%m-%d %H:%i:%s') AS joinTime,
+               DATE_FORMAT(m.quit_time, '%Y-%m-%d %H:%i:%s') AS quitTime
+        FROM ccp_trip_member m
+                 LEFT JOIN ccp_mini_user u ON u.id = m.user_id
+        <where>
+            <if test="tripId != null">
+                AND m.trip_id = #{tripId}
+            </if>
+            <if test="userId != null">
+                AND m.user_id = #{userId}
+            </if>
+            <if test="phone != null and phone != ''">
+                AND u.phone LIKE CONCAT('%', #{phone}, '%')
+            </if>
+            <if test="nickName != null and nickName != ''">
+                AND u.nick_name LIKE CONCAT('%', #{nickName}, '%')
+            </if>
+            <if test="role != null">
+                AND m.role = #{role}
+            </if>
+            <if test="memberStatus != null">
+                AND m.status = #{memberStatus}
+            </if>
+            <if test="beginJoinTime != null and beginJoinTime != ''">
+                AND m.join_time &gt;= #{beginJoinTime}
+            </if>
+            <if test="endJoinTime != null and endJoinTime != ''">
+                AND m.join_time &lt;= #{endJoinTime}
+            </if>
+        </where>
+        ORDER BY m.join_time DESC
+    </select>
+
+    <update id="markNoShow">
+        UPDATE ccp_trip_member
+        SET status      = 5,
+            remark      = #{remark},
+            quit_time   = IFNULL(quit_time, NOW()),
+            update_time = NOW()
+        WHERE id = #{memberId}
+    </update>
+</mapper>
