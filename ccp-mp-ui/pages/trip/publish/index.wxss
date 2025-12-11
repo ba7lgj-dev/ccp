@@ -1,8 +1,16 @@
-.publish-page {background-color:#f7f7f7; min-height:100vh; padding:20rpx 24rpx 120rpx 24rpx; box-sizing:border-box;}
-.campus-info {background-color:#ffffff; padding:20rpx 24rpx; border-radius:12rpx; font-size:28rpx; color:#333333; margin-bottom:20rpx;}
-.picker-block {background-color:#ffffff; padding:20rpx 24rpx; border-radius:12rpx; margin-bottom:20rpx;}
-.picker-display {display:flex; flex-direction:row; align-items:center; justify-content:space-between;}
-.picker-label {font-size:28rpx; color:#333333;}
-.picker-value {font-size:28rpx; color:#666666;}
-.next-button {position:fixed; left:24rpx; right:24rpx; bottom:40rpx; height:88rpx; border-radius:44rpx; background-color:#07c160; color:#ffffff; line-height:88rpx; text-align:center; font-size:32rpx;}
-.home-button {position:fixed; left:24rpx; right:24rpx; bottom:140rpx; height:80rpx; border-radius:40rpx; border:1px solid #07c160; color:#07c160; background-color:#ffffff; line-height:80rpx; text-align:center; font-size:30rpx;}
+.trip-publish-page { min-height: 100vh; background: #f7f7f7; padding: 20rpx; padding-bottom: 120rpx; box-sizing: border-box; }
+.campus-info { margin: 20rpx 0; padding: 20rpx; background: #ffffff; border-radius: 12rpx; display: flex; justify-content: space-between; align-items: center; }
+.route-template { margin: 0 0 20rpx 0; display: flex; gap: 16rpx; }
+.btn-user-route, .btn-preset-route { flex: 1; background: #ffffff; border-radius: 12rpx; border: 1px solid #e5e5e5; }
+.block { margin: 20rpx 0; padding: 20rpx; background: #ffffff; border-radius: 12rpx; }
+.block-title { font-size: 28rpx; font-weight: 600; margin-bottom: 16rpx; display: block; }
+.type-group { display: flex; gap: 24rpx; margin-bottom: 16rpx; }
+.type-option { display: flex; align-items: center; font-size: 26rpx; color: #333; }
+.picker-wrapper { margin-top: 10rpx; }
+.picker-display { padding: 20rpx; background: #f7f7f7; border-radius: 12rpx; color: #333; }
+.reserve-picker { display: flex; gap: 16rpx; }
+.hint { margin-top: 12rpx; color: #888; font-size: 24rpx; }
+.row { display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-top: 16rpx; }
+.require-text { width: 100%; min-height: 160rpx; border-radius: 8rpx; padding: 12rpx 16rpx; background: #f7f7f7; box-sizing: border-box; }
+.submit-btn { position: fixed; left: 40rpx; right: 40rpx; bottom: 40rpx; height: 88rpx; border-radius: 44rpx; font-size: 32rpx; }
+.switch-campus { margin-left: 16rpx; }

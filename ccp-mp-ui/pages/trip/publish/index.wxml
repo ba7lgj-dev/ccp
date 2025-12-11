@@ -1,23 +1,112 @@
-<view class="publish-page">
+<view class="trip-publish-page">
   <view class="campus-info">
     <text>当前校区：{{selectedCampus.campusName}}</text>
+    <button class="switch-campus" size="mini" bindtap="onSwitchCampus">切换校区</button>
   </view>
-  <view class="picker-block">
-    <picker mode="selector" range="{{gateNames}}" bindchange="onStartGateChange">
-      <view class="picker-display">
-        <text class="picker-label">起点校门</text>
-        <text class="picker-value">{{startGateIndex >= 0 ? gateNames[startGateIndex] : '请选择'}}</text>
-      </view>
-    </picker>
+
+  <view class="route-template">
+    <button class="btn-user-route" bindtap="onSelectUserRoute">选择常用路线</button>
+    <button class="btn-preset-route" bindtap="onSelectPresetRoute">选择校区常用路线</button>
   </view>
-  <view class="picker-block">
-    <picker mode="selector" range="{{gateNames}}" bindchange="onEndGateChange">
-      <view class="picker-display">
-        <text class="picker-label">终点校门</text>
-        <text class="picker-value">{{endGateIndex >= 0 ? gateNames[endGateIndex] : '请选择'}}</text>
-      </view>
-    </picker>
+
+  <view class="block">
+    <text class="block-title">起点</text>
+    <radio-group class="type-group" bindchange="onStartTypeChange">
+      <label class="type-option">
+        <radio value="gate" checked="{{startType==='gate'}}" />校门
+      </label>
+      <label class="type-option">
+        <radio value="location" checked="{{startType==='location'}}" />校外地点
+      </label>
+      <label class="type-option">
+        <radio value="manual" checked="{{startType==='manual'}}" />手动输入
+      </label>
+    </radio-group>
+    <view wx:if="{{startType==='gate'}}" class="picker-wrapper">
+      <picker mode="selector" range="{{gateNames}}" bindchange="onStartGateChange">
+        <view class="picker-display">{{form.startGateName || '请选择校门'}}</view>
+      </picker>
+    </view>
+    <view wx:elif="{{startType==='location'}}" class="picker-wrapper">
+      <picker mode="selector" range="{{locationNames}}" bindchange="onStartLocationChange">
+        <view class="picker-display">{{form.startLocationName || '请选择地点'}}</view>
+      </picker>
+    </view>
+    <view wx:elif="{{startType==='manual'}}" class="picker-wrapper">
+      <input placeholder="请输入起点详细地址" value="{{form.startAddress}}" bindinput="onStartAddressInput" />
+    </view>
   </view>
-  <button class="next-button" bindtap="onNextStep">下一步</button>
-  <button class="home-button" bindtap="onGoHome">返回首页</button>
+
+  <view class="block">
+    <text class="block-title">终点</text>
+    <radio-group class="type-group" bindchange="onEndTypeChange">
+      <label class="type-option">
+        <radio value="gate" checked="{{endType==='gate'}}" />校门
+      </label>
+      <label class="type-option">
+        <radio value="location" checked="{{endType==='location'}}" />校外地点
+      </label>
+      <label class="type-option">
+        <radio value="manual" checked="{{endType==='manual'}}" />手动输入
+      </label>
+    </radio-group>
+    <view wx:if="{{endType==='gate'}}" class="picker-wrapper">
+      <picker mode="selector" range="{{gateNames}}" bindchange="onEndGateChange">
+        <view class="picker-display">{{form.endGateName || '请选择校门'}}</view>
+      </picker>
+    </view>
+    <view wx:elif="{{endType==='location'}}" class="picker-wrapper">
+      <picker mode="selector" range="{{locationNames}}" bindchange="onEndLocationChange">
+        <view class="picker-display">{{form.endLocationName || '请选择地点'}}</view>
+      </picker>
+    </view>
+    <view wx:elif="{{endType==='manual'}}" class="picker-wrapper">
+      <input placeholder="请输入终点详细地址" value="{{form.endAddress}}" bindinput="onEndAddressInput" />
+    </view>
+  </view>
+
+  <view class="block">
+    <text class="block-title">出发时间</text>
+    <radio-group class="type-group" bindchange="onDepartureTypeChange">
+      <label class="type-option">
+        <radio value="immediate" checked="{{form.departureType==='immediate'}}" />立即拼车
+      </label>
+      <label class="type-option">
+        <radio value="reserve" checked="{{form.departureType==='reserve'}}" />预约拼车
+      </label>
+    </radio-group>
+    <view wx:if="{{form.departureType==='immediate'}}" class="hint">立即出发（系统按当前时间处理）</view>
+    <view wx:elif="{{form.departureType==='reserve'}}" class="reserve-picker">
+      <picker mode="date" value="{{form.departureDate}}" bindchange="onDateChange">
+        <view class="picker-display">{{form.departureDate || '选择日期'}}</view>
+      </picker>
+      <picker mode="time" value="{{form.departureTime}}" bindchange="onTimeChange">
+        <view class="picker-display">{{form.departureTime || '选择时间'}}</view>
+      </picker>
+    </view>
+  </view>
+
+  <view class="block">
+    <text class="block-title">人数设置</text>
+    <view class="row">
+      <text>我方人数</text>
+      <picker mode="selector" range="{{ownerPeopleOptions}}" bindchange="onOwnerPeopleChange">
+        <view class="picker-display">{{form.ownerPeopleCount}}人</view>
+      </picker>
+    </view>
+    <view class="row">
+      <text>总人数</text>
+      <picker mode="selector" range="{{totalPeopleOptions}}" bindchange="onTotalPeopleChange">
+        <view class="picker-display">{{form.totalPeople}}人</view>
+      </picker>
+    </view>
+    <view class="hint">总人数必须大于或等于我方人数</view>
+  </view>
+
+  <view class="block">
+    <text class="block-title">对拼车人的要求</text>
+    <textarea class="require-text" placeholder="例如：不抽烟、不带宠物、限女生/限男生等" bindinput="onRequireTextInput" value="{{form.requireText}}" maxlength="500" />
+  </view>
+
+  <button class="submit-btn" type="primary" bindtap="onSubmit">发布拼车</button>
 </view>

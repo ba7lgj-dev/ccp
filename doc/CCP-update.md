@@ -6,6 +6,16 @@
 - 主流程：登录 → 选择学校（缓存优先）→ 选择校区（缓存优先，未选学校则守卫重定向）→ 返回首页 tab（如仍在发布页可通过首页入口或“返回首页”按钮切换）→ 我的页可查看/变更学校校区。
 - tabBar：新增首页、订单（大厅占位）、我的三大入口，配置于 app.json，tab 之间使用 switchTab 互跳，非 tab 页面保持 navigateTo/redirectTo。
 
+### Update-0008 拼车发布与大厅核心功能完善（2025-12-12）
+- 修改页面：ccp-mp-ui/pages/trip/publish/index.js、index.wxml、index.wxss；ccp-mp-ui/pages/trip/hall/index.js、index.wxml、index.wxss。
+- 新增前端服务：ccp-mp-ui/services/location.js、trip.js；缓存扩展 utils/cache.js 增加地点缓存。
+- 新增/增强接口：
+  - 新增 GET /mp/location/listByCampus（MpLocationController/MpLocationService/MpLocationMapper）。
+  - 新增 POST /mp/trip/publish、GET /mp/trip/hall（MpTripController/MpTripService/MpTripMapper）。
+- 拼车发布页面新增起终点多模式选择（校门/地点/手输）、立即/预约出发时间选择、人数与要求填写，提交后调用 /mp/trip/publish 成功跳转大厅。
+- 拼车大厅按当前校区拉取 /mp/trip/hall，并按时间拆分立即拼车与预约拼车列表，展示起终点、时间与人数摘要，卡片点击预留详情跳转。
+- 确认未新建重复页面或接口路径，均在既有目录与统一路由下扩展实现。
+
 ────────────────────────────────
 ## （一）小程序基础规范（全局）
 

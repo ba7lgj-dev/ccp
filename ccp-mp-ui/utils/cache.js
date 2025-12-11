@@ -46,4 +46,20 @@ function getGateCache(campusId) {
   return cache.data
 }
 
-module.exports = { setSchoolCache, getSchoolCache, setCampusCache, getCampusCache, setGateCache, getGateCache }
+function setLocationCache(campusId, list, ttlMillis) {
+  const expire = Date.now() + ttlMillis
+  wx.setStorageSync('locationCache_' + campusId, { data: list, expire })
+}
+
+function getLocationCache(campusId) {
+  const cache = wx.getStorageSync('locationCache_' + campusId)
+  if (!cache || !cache.data) {
+    return null
+  }
+  if (Date.now() > cache.expire) {
+    return null
+  }
+  return cache.data
+}
+
+module.exports = { setSchoolCache, getSchoolCache, setCampusCache, getCampusCache, setGateCache, getGateCache, setLocationCache, getLocationCache }
