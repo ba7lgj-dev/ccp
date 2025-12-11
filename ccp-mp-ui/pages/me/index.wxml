@@ -1,7 +1,7 @@
 <view class="page">
   <scroll-view scroll-y="true" class="scroll">
     <view class="header">
-      <image class="avatar" src="{{userInfo.avatarUrl || '/assets/default-school.png'}}" mode="aspectFill" bindtap="goEditProfile"></image>
+      <image class="avatar" src="{{ userInfo.avatarUrl || '/assets/default-school.png'}}" mode="aspectFill" bindtap="goEditProfile"></image>
       <view class="header-info">
         <view class="nick">{{userInfo.nickName || '未设置昵称'}}</view>
         <view class="status-line">

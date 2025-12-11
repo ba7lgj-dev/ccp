@@ -24,4 +24,4 @@ public interface MpTripMapper {
 
     int countActiveTripByUserExcludeTrip(@Param("userId") Long userId, @Param("tripId") Long tripId);
 }
-}
+
