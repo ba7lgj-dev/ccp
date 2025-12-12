@@ -103,6 +103,19 @@ Page({
       }
     })
   },
+  isOngoingTrip(item, now) {
+    if (!item) return false
+    const status = Number(item.status)
+    if ([3, 4, 5].includes(status)) {
+      return false
+    }
+    const ts = item.departureTimestamp || new Date((item.departureTime || '').replace(/-/g, '/')).getTime()
+    const current = typeof now === 'number' ? now : Date.now()
+    if (ts && !Number.isNaN(ts)) {
+      return ts >= current - IMMEDIATE_AFTER_MINUTES
+    }
+    return true
+  },
   formatTripItem(item) {
     let departureTimestamp = new Date((item.departureTime || '').replace(/-/g, '/')).getTime()
     if (Number.isNaN(departureTimestamp)) {
