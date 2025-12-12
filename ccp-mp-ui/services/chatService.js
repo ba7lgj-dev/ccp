@@ -1,11 +1,17 @@
 const { request } = require('../utils/http.js')
 
-function getMessageList(params) {
+function getMessageList(params, options = {}) {
   const { tripId, lastId, lastMessageId, pageSize } = typeof params === 'object' ? params : { tripId: params, lastId: arguments[1], pageSize: arguments[2] }
+  const data = {}
+  if (tripId !== undefined && tripId !== null) data.tripId = tripId
+  if (lastId) data.lastId = lastId
+  if (lastMessageId) data.lastMessageId = lastMessageId
+  if (pageSize) data.pageSize = pageSize
   return request({
     url: '/mp/trip/chat/list',
     method: 'GET',
-    data: { tripId, lastId, lastMessageId, pageSize }
+    data,
+    hideLoading: options.hideLoading !== undefined ? options.hideLoading : true
   })
 }
 

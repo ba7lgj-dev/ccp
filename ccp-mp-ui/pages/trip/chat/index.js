@@ -89,7 +89,8 @@ Page({
     } else if (loadMore && this.data.messages.length) {
       params.lastId = this.data.messages[0].id
     }
-    chatService.getMessageList(params).then((res) => {
+    const hideLoading = incremental === true || loadMore === true || init === true
+    chatService.getMessageList(params, { hideLoading }).then((res) => {
       const list = Array.isArray(res && res.items) ? res.items : []
       const merged = incremental
         ? this.mergeMessages(this.data.messages.concat(list))
