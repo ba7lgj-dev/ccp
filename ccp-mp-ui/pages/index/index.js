@@ -95,6 +95,15 @@ Page({
   onGoPublish() {
     wx.navigateTo({ url: '/pages/trip/publish/index' })
   },
+  onGoOrders() {
+    wx.navigateTo({ url: '/pages/me/routes/index' })
+  },
+  onSwitchSchool() {
+    wx.navigateTo({ url: '/pages/school/select/index' })
+  },
+  onGoProfile() {
+    wx.switchTab({ url: '/pages/me/index' })
+  },
   onGoHall() {
     wx.switchTab({ url: '/pages/trip/hall/index' })
   },
