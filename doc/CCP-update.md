@@ -497,3 +497,10 @@ ccp-core/src/main/java/com/ccp/
 - 核心接口：/mp/trip/chat/list（分页拉取并自动写入已读）、/mp/trip/chat/send（成员发送文本消息，结束单限制 code=4005）、/mp/trip/chat/markRead（按 lastChatId 批量标记已读）、/mp/trip/chat/unreadSummary（进行中拼单未读汇总+最新消息预览）。
 - 小程序前端：新增 pages/trip/chat/index.* 实现聊天 UI、分页加载、时间分割、发送与已读同步；新增 services/chatService.js 封装聊天接口；pages/trip/detail/index.* 增加“返回大厅/进入聊天”按钮并按成员资格校验；pages/trip/hall/index.* 接入未读汇总，卡片与 tabBar 显示红点/数字徽标。
 - 已读/未读说明：拉取列表、发送消息后自动写入 ccp_trip_chat_read；markRead 接口支持一次性清除指定拼单的历史未读。未实现的轮询刷新保留扩展口后续迭代。
+
+### Update-Location-Admin
+- 后端新增地点实体与管理：`org.ba7lgj.ccp.core.domain.CcpLocation`、`org.ba7lgj.ccp.core.mapper.CcpLocationMapper`（及 XML）、`org.ba7lgj.ccp.core.service.ICcpLocationService`、`org.ba7lgj.ccp.core.service.impl.CcpLocationServiceImpl`、后台控制器 `org.ba7lgj.ccp.admin.controller.CcpLocationController`，支持地点增删改查、状态切换与导出。
+- 前端新增地点管理页面：`ruoyi-ui/src/views/ccp/location/index.vue`，含学校-校区联动筛选、类型/状态过滤、开关停用、坐标复制、图片上传与富文本描述。
+- 接口列表：GET `/ccp/location/list`、GET `/ccp/location/{id}`、POST `/ccp/location`、PUT `/ccp/location`、DELETE `/ccp/location/{ids}`、PUT `/ccp/location/changeStatus`、POST `/ccp/location/export`。
+- 菜单建议：在“校园拼车管理”下新增“地点管理”菜单（路径 `location`，组件 `ccp/location/index`，图标 map/location），并添加按钮权限 `ccp:location:list/add/edit/remove/export` 等，授权给管理员角色。
+- 后续计划：小程序拼车发布端可通过 `/mp/location/listByCampus` 使用 `ccp_location` 中 status=1 的地点作为下拉选项。
