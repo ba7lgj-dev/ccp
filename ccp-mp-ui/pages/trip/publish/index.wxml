@@ -3,11 +3,11 @@
     <text>当前校区：{{selectedCampus.campusName}}</text>
     <button class="switch-campus" size="mini" bindtap="onSwitchCampus">切换校区</button>
   </view>
-
+<!-- 
   <view class="route-template">
     <button class="btn-user-route" bindtap="onSelectUserRoute">选择常用路线</button>
     <button class="btn-preset-route" bindtap="onSelectPresetRoute">选择校区常用路线</button>
-  </view>
+  </view> -->
 
   <view class="block">
     <text class="block-title">起点</text>

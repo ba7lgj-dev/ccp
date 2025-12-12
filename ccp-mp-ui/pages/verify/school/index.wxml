@@ -21,7 +21,7 @@
     <picker mode="selector" range="{{schoolOptions}}" range-key="schoolName" bindchange="onSelectSchool">
       <view class="picker">学校：{{applyForm.schoolName || '请选择学校'}}</view>
     </picker>
-    <picker mode="selector" range="{{campusOptions}}" range-key="name" bindchange="onSelectCampus">
+    <picker mode="selector" range="{{campusOptions}}" range-key="campusName" bindchange="onSelectCampus">
       <view class="picker">校区：{{applyForm.campusName || '请选择校区'}}</view>
     </picker>
     <view class="form-item">
