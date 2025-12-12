@@ -19,5 +19,15 @@ public interface MpTripMemberMapper {
 
     int updateStatusByTrip(@Param("tripId") Long tripId, @Param("status") Integer status, @Param("updateTime") java.util.Date updateTime);
 
+    int resetConfirmFlagByTrip(@Param("tripId") Long tripId, @Param("confirmFlag") Integer confirmFlag,
+        @Param("updateTime") java.util.Date updateTime);
+
+    int updateConfirmFlagForUser(@Param("tripId") Long tripId, @Param("userId") Long userId,
+        @Param("confirmFlag") Integer confirmFlag, @Param("updateTime") java.util.Date updateTime);
+
+    int countActiveMembers(@Param("tripId") Long tripId);
+
+    int countUnconfirmedMembers(@Param("tripId") Long tripId);
+
     List<Long> selectTripIdsByUserAndStatus(@Param("userId") Long userId, @Param("statuses") List<Integer> statuses);
 }

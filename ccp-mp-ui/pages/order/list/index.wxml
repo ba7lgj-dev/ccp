@@ -1,3 +1,29 @@
 <view class="page">
-  <view class="placeholder">订单列表功能稍后开放，敬请期待。</view>
+  <view class="section">
+    <view class="section-title">进行中</view>
+    <block wx:if="{{activeTrip}}">
+      <view class="card" bindtap="goDetail" data-trip-id="{{activeTrip.tripId}}">
+        <view class="title">{{activeTrip.startAddress}} → {{activeTrip.endAddress}}</view>
+        <view class="meta">{{activeTrip.departureTimeDisplay}} · {{activeTrip.statusText}}</view>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty">暂无进行中的订单</view>
+    </block>
+  </view>
+
+  <view class="section">
+    <view class="section-title">历史订单</view>
+    <block wx:if="{{historyTrips.length}}">
+      <block wx:for="{{historyTrips}}" wx:key="tripId">
+        <view class="card" bindtap="goDetail" data-trip-id="{{item.tripId}}">
+          <view class="title">{{item.startAddress}} → {{item.endAddress}}</view>
+          <view class="meta">{{item.departureTime}} · 状态：{{item.status == 3 ? '已完成' : (item.status == 4 ? '已取消' : (item.status == 5 ? '已过期' : '已确认'))}}</view>
+        </view>
+      </block>
+    </block>
+    <block wx:else>
+      <view class="empty">暂无历史订单</view>
+    </block>
+  </view>
 </view>

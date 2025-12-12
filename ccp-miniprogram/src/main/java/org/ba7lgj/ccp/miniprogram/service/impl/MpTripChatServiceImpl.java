@@ -55,22 +55,30 @@ public class MpTripChatServiceImpl implements MpTripChatService {
     private MpUserMapper userMapper;
 
     @Override
-    public MpTripChatListVO listMessages(Long userId, Long tripId, Long lastId, int pageSize) {
+    public MpTripChatListVO listMessages(Long userId, Long tripId, Long lastId, Long lastMessageId, int pageSize) {
         MpTrip trip = ensureTripExists(tripId);
         ensureMember(userId, tripId);
         int size = pageSize <= 0 ? DEFAULT_PAGE_SIZE : Math.min(pageSize, MAX_PAGE_SIZE);
-        List<MpTripChat> chats = tripChatMapper.selectByTripWithPaging(tripId, lastId, size);
+        List<MpTripChat> chats;
+        boolean incremental = lastMessageId != null;
+        if (incremental) {
+            chats = tripChatMapper.selectNewerThan(tripId, lastMessageId, size);
+        } else {
+            chats = tripChatMapper.selectByTripWithPaging(tripId, lastId, size);
+        }
         if (CollectionUtils.isEmpty(chats)) {
             MpTripChatListVO vo = new MpTripChatListVO();
             vo.setItems(Collections.emptyList());
             vo.setHasMore(false);
             return vo;
         }
-        Collections.reverse(chats);
+        if (!incremental) {
+            Collections.reverse(chats);
+        }
         Map<Long, MpUser> userMap = loadUsers(chats);
         List<MpTripChatMessageVO> items = chats.stream().map(chat -> toMessageVO(chat, userId, userMap)).collect(Collectors.toList());
         Long smallestId = chats.get(0).getId();
-        boolean hasMore = chats.size() == size && tripChatMapper.countOlderMessages(tripId, smallestId) > 0;
+        boolean hasMore = !incremental && chats.size() == size && tripChatMapper.countOlderMessages(tripId, smallestId) > 0;
         markAsRead(userId, tripId, chats);
         MpTripChatListVO vo = new MpTripChatListVO();
         vo.setItems(items);

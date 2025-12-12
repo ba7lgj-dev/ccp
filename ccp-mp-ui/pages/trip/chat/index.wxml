@@ -48,7 +48,7 @@
 
   <view class="input-bar">
     <view class="input-placeholder"></view>
-    <textarea class="input-area" placeholder="说点什么..." value="{{inputValue}}" maxlength="500" auto-height="true" cursor-spacing="12" bindinput="onInput"></textarea>
-    <button class="send-btn" type="primary" loading="{{sending}}" disabled="{{sending || !inputValue}}" bindtap="onSend">{{sending ? '发送中' : '发送'}}</button>
+    <textarea class="input-area" placeholder="说点什么..." value="{{inputContent}}" maxlength="500" auto-height="true" cursor-spacing="12" bindinput="onInput" disabled="{{tripStatus == 3 || tripStatus == 4 || tripStatus == 5}}"></textarea>
+    <button class="send-btn" type="primary" loading="{{sending}}" disabled="{{sending || !inputContent || tripStatus == 3 || tripStatus == 4 || tripStatus == 5}}" bindtap="onSend">{{sending ? '发送中' : '发送'}}</button>
   </view>
 </view>

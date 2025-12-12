@@ -105,6 +105,7 @@ public class MpTripServiceImpl implements MpTripService {
         trip.setTotalPeople(vo.getTotalPeople());
         trip.setCurrentPeople(vo.getOwnerPeopleCount());
         trip.setRequireText(vo.getRequireText());
+        trip.setConfirmMode(1);
         trip.setStatus(0);
         trip.setDepartureTime(departureTime);
         tripMapper.insertTrip(trip);
@@ -199,6 +200,9 @@ public class MpTripServiceImpl implements MpTripService {
         vo.setDepartureTime(trip.getDepartureTime() != null ? sdf.format(trip.getDepartureTime()) : null);
         vo.setStatus(trip.getStatus());
         vo.setStatusText(STATUS_TEXT.get(trip.getStatus()));
+        vo.setConfirmMode(trip.getConfirmMode());
+        vo.setConfirmStartTime(trip.getConfirmStartTime() != null ? sdf.format(trip.getConfirmStartTime()) : null);
+        vo.setConfirmedTime(trip.getConfirmedTime() != null ? sdf.format(trip.getConfirmedTime()) : null);
         vo.setTotalPeople(trip.getTotalPeople());
         vo.setOwnerPeopleCount(trip.getOwnerPeopleCount());
         vo.setCurrentPeople(trip.getCurrentPeople());
@@ -251,6 +255,12 @@ public class MpTripServiceImpl implements MpTripService {
         currentUserInfo.setCanJoin(canJoin);
         currentUserInfo.setCanQuit(canQuit);
         currentUserInfo.setCanKick(canKick);
+        currentUserInfo.setConfirmFlag(currentMember != null ? currentMember.getConfirmFlag() : null);
+        boolean waitingConfirm = trip.getStatus() != null && trip.getStatus() == 1;
+        boolean canConfirmStart = isOwner && activeFull && (trip.getStatus() != null && (trip.getStatus() == 0 || trip.getStatus() == 1));
+        currentUserInfo.setCanConfirmStart(canConfirmStart);
+        boolean canConfirm = waitingConfirm && joined && (currentMember == null || currentMember.getConfirmFlag() == null || currentMember.getConfirmFlag() != 1);
+        currentUserInfo.setCanConfirm(canConfirm);
         vo.setCurrentUserInfo(currentUserInfo);
         return vo;
     }
@@ -380,6 +390,61 @@ public class MpTripServiceImpl implements MpTripService {
         int newCurrent = Math.max(0, trip.getCurrentPeople() - target.getJoinPeopleCount());
         tripMapper.updateTripCurrentPeople(tripId, newCurrent, now);
         // TODO: 系统消息通知待实现
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void startConfirm(Long tripId) {
+        Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            throw new IllegalStateException("未登录");
+        }
+        MpTrip trip = tripMapper.selectById(tripId);
+        if (trip == null) {
+            throw new IllegalArgumentException("拼单不存在");
+        }
+        if (!userId.equals(trip.getOwnerUserId())) {
+            throw new IllegalStateException("仅发起人可发起确认");
+        }
+        if (trip.getStatus() != null && trip.getStatus() > 1) {
+            throw new IllegalStateException("当前状态不可确认");
+        }
+        if (trip.getCurrentPeople() == null || trip.getTotalPeople() == null || trip.getCurrentPeople() < trip.getTotalPeople()) {
+            throw new IllegalArgumentException("人数未满，暂不可确认");
+        }
+        Date now = new Date();
+        tripMapper.updateConfirmStart(tripId, 1, now, now);
+        tripMemberMapper.resetConfirmFlagByTrip(tripId, 0, now);
+        tripMemberMapper.updateConfirmFlagForUser(tripId, userId, 1, now);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void confirmTrip(Long tripId) {
+        Long userId = MpUserContextHolder.getUserId();
+        if (userId == null) {
+            throw new IllegalStateException("未登录");
+        }
+        MpTrip trip = tripMapper.selectById(tripId);
+        if (trip == null) {
+            throw new IllegalArgumentException("拼单不存在");
+        }
+        if (trip.getStatus() == null || trip.getStatus() != 1) {
+            throw new IllegalStateException("当前状态不可确认");
+        }
+        MpTripMember member = tripMemberMapper.selectByTripIdAndUserId(tripId, userId);
+        if (member == null || !Objects.equals(member.getStatus(), 1)) {
+            throw new IllegalStateException("仅拼单成员可确认");
+        }
+        if (member.getConfirmFlag() != null && member.getConfirmFlag() == 1) {
+            return;
+        }
+        Date now = new Date();
+        tripMemberMapper.updateConfirmFlagForUser(tripId, userId, 1, now);
+        int remaining = tripMemberMapper.countUnconfirmedMembers(tripId);
+        if (remaining <= 0) {
+            tripMapper.updateConfirmDone(tripId, 2, now, now);
+        }
     }
 
     @Override

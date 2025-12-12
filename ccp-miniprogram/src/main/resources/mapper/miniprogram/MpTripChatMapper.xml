@@ -73,4 +73,16 @@
           AND r.id IS NULL
         GROUP BY c.trip_id
     </select>
+
+    <select id="selectNewerThan" resultMap="MpTripChatResult">
+        SELECT
+            id, trip_id, sender_user_id, content_type, message_type, content,
+            is_deleted, send_time, remark, create_by, create_time, update_by, update_time
+        FROM ccp_trip_chat
+        WHERE trip_id = #{tripId}
+          AND is_deleted = 0
+          AND id &gt; #{lastId}
+        ORDER BY id ASC
+        LIMIT #{pageSize}
+    </select>
 </mapper>

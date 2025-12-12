@@ -44,7 +44,13 @@
   </view>
 
   <view class="card action-card">
-    <block wx:if="{{canJoin}}">
+    <block wx:if="{{canConfirmStart}}">
+      <button type="primary" bindtap="onTapConfirmStart">发起确认</button>
+    </block>
+    <block wx:elif="{{canConfirm}}">
+      <button type="primary" bindtap="onTapConfirmArrived">确认拼车</button>
+    </block>
+    <block wx:elif="{{canJoin}}">
       <button type="primary" bindtap="onTapJoin">加入拼车</button>
     </block>
     <block wx:elif="{{canQuit}}">
@@ -61,7 +67,8 @@
 
   <view class="card tip-card">
     <text class="tip-title">说明</text>
-    <text class="tip-content" wx:if="{{detail.status === 0}}">还差{{detail.remainPeople}}人即可成团</text>
+    <text class="tip-content" wx:if="{{detail.status === 0 && detail.remainPeople > 0}}">还差{{detail.remainPeople}}人即可成团</text>
+    <text class="tip-content" wx:elif="{{detail.status === 0 && detail.remainPeople === 0}}">已满员，等待发起确认</text>
     <text class="tip-content" wx:elif="{{detail.status === 1}}">待确认：所有成员确认后成团</text>
     <text class="tip-content" wx:elif="{{detail.status === 2}}">已确认：请按时集合出行</text>
     <text class="tip-content" wx:elif="{{detail.status === 3}}">已完成：可在订单列表中评价</text>
