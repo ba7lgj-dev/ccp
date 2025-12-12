@@ -30,6 +30,7 @@
       </view>
       <view class="tip" wx:if="{{realAuthStatus == 2}}">实名认证通过后真实姓名和性别不可修改，如需调整请联系客服</view>
       <view class="tip" wx:else>实名认证功能暂未开放，当前仅保存名称，不做身份校验</view>
+      <!-- <view class="tip">实名认证功能暂未开放，当前仅保存名称，不做身份校验</view> -->
     </view>
 
     <view class="actions">

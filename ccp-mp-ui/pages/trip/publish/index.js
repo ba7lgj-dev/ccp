@@ -372,7 +372,10 @@ Page({
     tripService.publishTrip(payload).then(() => {
       wx.showToast({ title: '发布成功', icon: 'success' })
       setTimeout(() => {
-        wx.redirectTo({ url: '/pages/trip/hall/index' })
+
+        wx.switchTab({
+          url: '/pages/trip/hall/index'
+        })
       }, 400)
     }).catch((err) => {
       if (err && err.code === 4002) {
