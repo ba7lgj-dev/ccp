@@ -94,7 +94,8 @@ Page({
         }
       })
       this.setData({ immediateList: this.injectUnread(immediate), reserveList: this.injectUnread(reserve) })
-    }).catch(() => {
+    }).catch((e) => {
+      console.log(e)
       wx.showToast({ title: '加载大厅失败', icon: 'none' })
     }).finally(() => {
       this.setData({ loading: false })

@@ -317,7 +317,7 @@ export default {
         .finally(() => {
           this.auditDialog.loading = false
         })
-    }
+    },
     calcGenderFromIdCard(cardNo) {
       if (!cardNo || cardNo.length < 17) return undefined
       const code = Number(cardNo.charAt(16))
