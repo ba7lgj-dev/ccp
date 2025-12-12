@@ -18,9 +18,9 @@
       <label class="type-option">
         <radio value="location" checked="{{startType==='location'}}" />校外地点
       </label>
-      <label class="type-option">
+      <!-- <label class="type-option">
         <radio value="manual" checked="{{startType==='manual'}}" />手动输入
-      </label>
+      </label> -->
     </radio-group>
     <view wx:if="{{startType==='gate'}}" class="picker-wrapper">
       <picker mode="selector" range="{{gateNames}}" bindchange="onStartGateChange">
@@ -46,9 +46,9 @@
       <label class="type-option">
         <radio value="location" checked="{{endType==='location'}}" />校外地点
       </label>
-      <label class="type-option">
+      <!-- <label class="type-option">
         <radio value="manual" checked="{{endType==='manual'}}" />手动输入
-      </label>
+      </label> -->
     </radio-group>
     <view wx:if="{{endType==='gate'}}" class="picker-wrapper">
       <picker mode="selector" range="{{gateNames}}" bindchange="onEndGateChange">
