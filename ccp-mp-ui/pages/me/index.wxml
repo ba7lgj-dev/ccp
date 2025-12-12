@@ -20,13 +20,13 @@
         </view>
         <text class="arrow">></text>
       </view>
-      <view class="menu-item" bindtap="goEditProfile">
+      <!-- <view class="menu-item" bindtap="goEditProfile">
         <view class="menu-text">
           <view class="title">编辑个人资料</view>
           <view class="sub">头像、昵称、性别等</view>
         </view>
         <text class="arrow">></text>
-      </view>
+      </view> -->
       <view class="menu-item" bindtap="goRealAuth">
         <view class="menu-text">
           <view class="title">实名认证</view>
@@ -45,20 +45,21 @@
         </view>
         <text class="arrow">></text>
       </view>
-      <view class="menu-item" bindtap="goEmergencyContact">
+  
+      <!-- <view class="menu-item" bindtap="goEmergencyContact">
         <view class="menu-text">
           <view class="title">紧急联系人</view>
           <view class="sub">添加家人或朋友电话，提升出行安全</view>
         </view>
         <text class="arrow">></text>
-      </view>
-      <view class="menu-item" bindtap="goRoutes">
+      </view> -->
+      <!-- <view class="menu-item" bindtap="goRoutes">
         <view class="menu-text">
           <view class="title">我的常用路线</view>
           <view class="sub">快速选择经常拼车的路线</view>
         </view>
         <text class="arrow">></text>
-      </view>
+      </view> -->
       <view class="menu-item" bindtap="goOrders">
         <view class="menu-text">
           <view class="title">我的订单</view>

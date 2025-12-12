@@ -317,6 +317,24 @@ export default {
         .finally(() => {
           this.auditDialog.loading = false
         })
+    },
+    calcGenderFromIdCard(cardNo) {
+      if (!cardNo || cardNo.length < 17) return undefined
+      const code = Number(cardNo.charAt(16))
+      if (Number.isNaN(code)) return undefined
+      return code % 2 === 0 ? '女' : '男'
+    },
+    genderText(val) {
+      if (val === 1 || val === '1') return '男'
+      if (val === 2 || val === '2') return '女'
+      return undefined
+    },
+    isGenderMismatch(row) {
+      if (!row) return false
+      const idGender = this.calcGenderFromIdCard(row.idCardNumber)
+      const userGender = this.genderText(row.gender)
+      if (!idGender || !userGender) return false
+      return idGender !== userGender
     }
     calcGenderFromIdCard(cardNo) {
       if (!cardNo || cardNo.length < 17) return undefined

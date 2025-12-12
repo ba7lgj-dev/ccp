@@ -37,18 +37,18 @@ Page({
         wx.showToast({ title: '订单不存在', icon: 'none' })
         return
       }
-      if (detail.needRedirect) {
-        wx.showToast({ title: '订单已结束', icon: 'none' })
-        setTimeout(() => {
-          const pages = getCurrentPages()
-          if (pages.length > 1) {
-            wx.navigateBack({ delta: 1 })
-          } else {
-            wx.switchTab({ url: '/pages/trip/hall/index' })
-          }
-        }, 400)
-        return
-      }
+      // if (detail.needRedirect) {
+      //   wx.showToast({ title: '订单已结束', icon: 'none' })
+      //   setTimeout(() => {
+      //     const pages = getCurrentPages()
+      //     if (pages.length > 1) {
+      //       wx.navigateBack({ delta: 1 })
+      //     } else {
+      //       wx.switchTab({ url: '/pages/trip/hall/index' })
+      //     }
+      //   }, 400)
+      //   return
+      // }
       const normalizedDetail = {
         ...detail,
         ownerAvatar: buildImageUrl(detail.ownerAvatar),
