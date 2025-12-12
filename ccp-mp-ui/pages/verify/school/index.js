@@ -2,7 +2,7 @@ const schoolAuthService = require('../../../services/schoolAuth.js')
 const schoolService = require('../../../services/school.js')
 const campusService = require('../../../services/campus.js')
 const auth = require('../../../utils/auth.js')
-
+const { buildImageUrl } = require('../../../utils/url.js')
 Page({
   data: {
     activeTab: 'mine',
@@ -88,7 +88,7 @@ Page({
     this.setData({
       applyForm: Object.assign({}, this.data.applyForm, {
         campusId: campus.id,
-        campusName: campus.name
+        campusName: campus.campusName
       })
     })
   },
@@ -119,7 +119,7 @@ Page({
           success: (resp) => {
             try {
               const body = JSON.parse(resp.data)
-              const url = body.data && (body.data.path || body.data.url)
+              const url = buildImageUrl(body.data && (body.data.path || body.data.url))
               this.setData({ applyForm: Object.assign({}, this.data.applyForm, { [field]: url || '' }) })
             } catch (e) {
               wx.showToast({ title: '上传失败', icon: 'none' })

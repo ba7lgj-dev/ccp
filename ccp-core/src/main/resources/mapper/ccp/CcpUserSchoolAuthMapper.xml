@@ -36,7 +36,7 @@
         cusa.student_card_image_url, cusa.extra_image_url, cusa.status, cusa.fail_reason, cusa.submit_time,
         cusa.review_time, cusa.review_by, cusa.expire_time, cusa.remark, cusa.create_by, cusa.create_time,
         cusa.update_by, cusa.update_time,
-        cs.school_name, cs.school_short_name, csc.campus_name, city.name AS city_name, mu.nick_name AS user_nick_name,
+        cs.school_name, cs.school_short_name, csc.campus_name, city.city_name AS city_name, mu.nick_name AS user_nick_name,
         mu.phone AS user_phone, mu.open_id AS user_open_id
     </sql>
 
