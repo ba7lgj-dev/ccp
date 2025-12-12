@@ -48,6 +48,22 @@ function kickMember(tripId, targetUserId) {
   })
 }
 
+function startConfirm(tripId) {
+  return request({
+    url: `/mp/trip/confirm/start`,
+    method: 'POST',
+    data: { id: tripId }
+  })
+}
+
+function confirmTrip(tripId) {
+  return request({
+    url: `/mp/trip/confirm/do`,
+    method: 'POST',
+    data: { id: tripId }
+  })
+}
+
 function getMyActiveTrip() {
   return request({
     url: `/mp/trip/myActive`,
@@ -62,4 +78,4 @@ function getMyHistoryTrips() {
   })
 }
 
-module.exports = { publishTrip, getTripHall, getTripDetail, joinTrip, quitTrip, kickMember, getMyActiveTrip, getMyHistoryTrips }
+module.exports = { publishTrip, getTripHall, getTripDetail, joinTrip, quitTrip, kickMember, startConfirm, confirmTrip, getMyActiveTrip, getMyHistoryTrips }

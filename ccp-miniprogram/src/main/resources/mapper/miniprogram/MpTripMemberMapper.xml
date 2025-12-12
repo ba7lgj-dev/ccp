@@ -83,6 +83,34 @@
         WHERE trip_id = #{tripId}
     </update>
 
+    <update id="resetConfirmFlagByTrip">
+        UPDATE ccp_trip_member
+        SET confirm_flag = #{confirmFlag}, update_time = #{updateTime}
+        WHERE trip_id = #{tripId}
+          AND status = 1
+    </update>
+
+    <update id="updateConfirmFlagForUser">
+        UPDATE ccp_trip_member
+        SET confirm_flag = #{confirmFlag}, update_time = #{updateTime}
+        WHERE trip_id = #{tripId} AND user_id = #{userId} AND status = 1
+    </update>
+
+    <select id="countActiveMembers" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip_member
+        WHERE trip_id = #{tripId}
+          AND status = 1
+    </select>
+
+    <select id="countUnconfirmedMembers" resultType="int">
+        SELECT COUNT(1)
+        FROM ccp_trip_member
+        WHERE trip_id = #{tripId}
+          AND status = 1
+          AND (confirm_flag IS NULL OR confirm_flag != 1)
+    </select>
+
     <select id="selectTripIdsByUserAndStatus" resultType="long">
         SELECT trip_id
         FROM ccp_trip_member

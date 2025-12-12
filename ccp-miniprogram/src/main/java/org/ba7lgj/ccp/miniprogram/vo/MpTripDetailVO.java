@@ -16,6 +16,9 @@ public class MpTripDetailVO {
     private String departureTimeDisplay;
     private Integer status;
     private String statusText;
+    private Integer confirmMode;
+    private String confirmStartTime;
+    private String confirmedTime;
     private Integer totalPeople;
     private Integer ownerPeopleCount;
     private Integer currentPeople;
@@ -54,6 +57,12 @@ public class MpTripDetailVO {
     public void setStatus(Integer status) { this.status = status; }
     public String getStatusText() { return statusText; }
     public void setStatusText(String statusText) { this.statusText = statusText; }
+    public Integer getConfirmMode() { return confirmMode; }
+    public void setConfirmMode(Integer confirmMode) { this.confirmMode = confirmMode; }
+    public String getConfirmStartTime() { return confirmStartTime; }
+    public void setConfirmStartTime(String confirmStartTime) { this.confirmStartTime = confirmStartTime; }
+    public String getConfirmedTime() { return confirmedTime; }
+    public void setConfirmedTime(String confirmedTime) { this.confirmedTime = confirmedTime; }
     public Integer getTotalPeople() { return totalPeople; }
     public void setTotalPeople(Integer totalPeople) { this.totalPeople = totalPeople; }
     public Integer getOwnerPeopleCount() { return ownerPeopleCount; }

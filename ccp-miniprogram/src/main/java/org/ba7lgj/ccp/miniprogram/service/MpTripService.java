@@ -20,6 +20,10 @@ public interface MpTripService {
 
     void kickMember(Long tripId, Long targetUserId);
 
+    void startConfirm(Long tripId);
+
+    void confirmTrip(Long tripId);
+
     MpTripMyActiveVO getMyActiveTrip();
 
     List<MpTripHistoryVO> listMyHistoryTrips(Long userId, int limit);

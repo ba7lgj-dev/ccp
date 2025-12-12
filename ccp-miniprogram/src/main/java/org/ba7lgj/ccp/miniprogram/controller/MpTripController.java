@@ -160,6 +160,36 @@ public class MpTripController {
         return MpResult.ok();
     }
 
+    @PostMapping("/confirm/start")
+    public MpResult<Void> startConfirm(@RequestBody MpTripVO vo) {
+        if (vo == null || vo.getId() == null) {
+            return MpResult.error(400, "参数不完整");
+        }
+        try {
+            tripService.startConfirm(vo.getId());
+        } catch (IllegalArgumentException e) {
+            return MpResult.error(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            return MpResult.error(4001, e.getMessage());
+        }
+        return MpResult.ok();
+    }
+
+    @PostMapping("/confirm/do")
+    public MpResult<Void> confirm(@RequestBody MpTripVO vo) {
+        if (vo == null || vo.getId() == null) {
+            return MpResult.error(400, "参数不完整");
+        }
+        try {
+            tripService.confirmTrip(vo.getId());
+        } catch (IllegalArgumentException e) {
+            return MpResult.error(400, e.getMessage());
+        } catch (IllegalStateException e) {
+            return MpResult.error(4001, e.getMessage());
+        }
+        return MpResult.ok();
+    }
+
     @GetMapping("/myActive")
     public MpResult<MpTripMyActiveVO> myActive() {
         MpTripMyActiveVO vo = tripService.getMyActiveTrip();

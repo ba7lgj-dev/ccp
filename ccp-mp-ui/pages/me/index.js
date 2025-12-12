@@ -128,6 +128,9 @@ Page({
   goRealAuth() {
     wx.navigateTo({ url: '/pages/me/realAuth/index' })
   },
+  goSchoolVerify() {
+    wx.navigateTo({ url: '/pages/verify/school/index' })
+  },
   goOrders() {
     wx.navigateTo({ url: '/pages/order/list/index' })
   },

@@ -6,7 +6,7 @@ import org.ba7lgj.ccp.miniprogram.vo.MpTripChatMessageVO;
 import org.ba7lgj.ccp.miniprogram.vo.MpTripChatUnreadSummaryVO;
 
 public interface MpTripChatService {
-    MpTripChatListVO listMessages(Long userId, Long tripId, Long lastId, int pageSize);
+    MpTripChatListVO listMessages(Long userId, Long tripId, Long lastId, Long lastMessageId, int pageSize);
 
     MpTripChatMessageVO sendMessage(Long userId, Long tripId, String content);
 

@@ -16,5 +16,7 @@ public interface MpTripChatMapper {
 
     List<MpTripChat> selectLatestByTripIds(@Param("tripIds") List<Long> tripIds);
 
+    List<MpTripChat> selectNewerThan(@Param("tripId") Long tripId, @Param("lastId") Long lastId, @Param("pageSize") int pageSize);
+
     List<MpTripUnreadCountDTO> countUnreadByTripIds(@Param("tripIds") List<Long> tripIds, @Param("userId") Long userId);
 }

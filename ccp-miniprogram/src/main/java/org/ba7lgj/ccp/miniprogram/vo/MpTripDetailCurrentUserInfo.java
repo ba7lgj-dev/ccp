@@ -7,6 +7,9 @@ public class MpTripDetailCurrentUserInfo {
     private Boolean canJoin;
     private Boolean canQuit;
     private Boolean canKick;
+    private Integer confirmFlag;
+    private Boolean canConfirmStart;
+    private Boolean canConfirm;
 
     public Boolean getJoined() { return joined; }
     public void setJoined(Boolean joined) { this.joined = joined; }
@@ -20,4 +23,10 @@ public class MpTripDetailCurrentUserInfo {
     public void setCanQuit(Boolean canQuit) { this.canQuit = canQuit; }
     public Boolean getCanKick() { return canKick; }
     public void setCanKick(Boolean canKick) { this.canKick = canKick; }
+    public Integer getConfirmFlag() { return confirmFlag; }
+    public void setConfirmFlag(Integer confirmFlag) { this.confirmFlag = confirmFlag; }
+    public Boolean getCanConfirmStart() { return canConfirmStart; }
+    public void setCanConfirmStart(Boolean canConfirmStart) { this.canConfirmStart = canConfirmStart; }
+    public Boolean getCanConfirm() { return canConfirm; }
+    public void setCanConfirm(Boolean canConfirm) { this.canConfirm = canConfirm; }
 }
