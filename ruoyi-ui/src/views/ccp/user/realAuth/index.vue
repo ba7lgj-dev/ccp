@@ -45,6 +45,11 @@
       <el-table-column label="手机号" prop="phone" min-width="120" />
       <el-table-column label="真实姓名" prop="realName" min-width="120" />
       <el-table-column label="身份证号" prop="idCardMasked" min-width="160" />
+      <el-table-column label="性别匹配" width="110" align="center">
+        <template slot-scope="scope">
+          <span :style="{ color: isGenderMismatch(scope.row) ? '#f56c6c' : '#67c23a' }">{{ isGenderMismatch(scope.row) ? '不匹配' : '匹配' }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="实名状态" prop="realAuthStatus" width="130" align="center">
         <template slot-scope="scope">
           <el-tag :type="realAuthTagType(scope.row.realAuthStatus)">{{ realAuthText(scope.row.realAuthStatus) }}</el-tag>
@@ -93,12 +98,15 @@
         </section>
         <section class="detail-section">
           <h4>实名信息</h4>
-          <el-descriptions :column="2" border size="small">
-            <el-descriptions-item label="真实姓名">{{ detailData.realName || '-' }}</el-descriptions-item>
-            <el-descriptions-item label="身份证号">{{ detailData.idCardNumber || '-' }}</el-descriptions-item>
-            <el-descriptions-item label="状态">
-              <el-tag :type="realAuthTagType(detailData.realAuthStatus)">{{ realAuthText(detailData.realAuthStatus) }}</el-tag>
-            </el-descriptions-item>
+      <el-descriptions :column="2" border size="small">
+        <el-descriptions-item label="真实姓名">{{ detailData.realName || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="身份证号">{{ detailData.idCardNumber || '-' }}</el-descriptions-item>
+        <el-descriptions-item label="性别匹配">
+          <span :style="{ color: isGenderMismatch(detailData) ? '#f56c6c' : '#67c23a' }">{{ isGenderMismatch(detailData) ? '不匹配' : '匹配' }}</span>
+        </el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <el-tag :type="realAuthTagType(detailData.realAuthStatus)">{{ realAuthText(detailData.realAuthStatus) }}</el-tag>
+        </el-descriptions-item>
             <el-descriptions-item label="审核人">{{ detailData.realAuthReviewByName || '-' }}</el-descriptions-item>
             <el-descriptions-item label="审核时间">{{ detailData.realAuthReviewTime || '-' }}</el-descriptions-item>
             <el-descriptions-item label="失败原因">{{ detailData.realAuthFailReason || '-' }}</el-descriptions-item>
@@ -267,16 +275,27 @@ export default {
     },
     submitApprove() {
       if (!this.auditDialog.data) return
-      this.auditDialog.loading = true
-      approveUserRealAuth({ id: this.auditDialog.data.id, adminRemark: this.auditDialog.remark })
-        .then(() => {
-          this.$modal.msgSuccess('审核通过')
-          this.auditDialog.visible = false
-          this.getList()
-        })
-        .finally(() => {
-          this.auditDialog.loading = false
-        })
+      const doApprove = () => {
+        this.auditDialog.loading = true
+        approveUserRealAuth({ id: this.auditDialog.data.id, adminRemark: this.auditDialog.remark })
+          .then(() => {
+            this.$modal.msgSuccess('审核通过')
+            this.auditDialog.visible = false
+            this.getList()
+          })
+          .finally(() => {
+            this.auditDialog.loading = false
+          })
+      }
+      if (this.isGenderMismatch(this.auditDialog.data)) {
+        this.$confirm('用户选择的性别与身份证号码推导的性别不一致，建议仔细核查并酌情驳回，是否仍要继续通过？', '提示', { type: 'warning' })
+          .then(() => {
+            doApprove()
+          })
+          .catch(() => {})
+      } else {
+        doApprove()
+      }
     },
     submitReject() {
       if (!this.auditDialog.data) return
@@ -298,6 +317,24 @@ export default {
         .finally(() => {
           this.auditDialog.loading = false
         })
+    }
+    calcGenderFromIdCard(cardNo) {
+      if (!cardNo || cardNo.length < 17) return undefined
+      const code = Number(cardNo.charAt(16))
+      if (Number.isNaN(code)) return undefined
+      return code % 2 === 0 ? '女' : '男'
+    },
+    genderText(val) {
+      if (val === 1 || val === '1') return '男'
+      if (val === 2 || val === '2') return '女'
+      return undefined
+    },
+    isGenderMismatch(row) {
+      if (!row) return false
+      const idGender = this.calcGenderFromIdCard(row.idCardNumber)
+      const userGender = this.genderText(row.gender)
+      if (!idGender || !userGender) return false
+      return idGender !== userGender
     }
   }
 }

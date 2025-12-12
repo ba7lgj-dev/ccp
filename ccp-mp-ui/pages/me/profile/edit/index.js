@@ -9,6 +9,7 @@ Page({
     nickName: '',
     gender: 0,
     realName: '',
+    realAuthStatus: 0,
     saving: false
   },
   onLoad() {
@@ -26,7 +27,8 @@ Page({
       avatarUrl: buildImageUrl(storedUser.avatarUrl),
       nickName: storedUser.nickName || '',
       gender: storedUser.gender != null ? storedUser.gender : 0,
-      realName: storedUser.realName || ''
+      realName: storedUser.realName || '',
+      realAuthStatus: storedUser.realAuthStatus || 0
     })
   },
   onNickInput(e) {
@@ -34,9 +36,11 @@ Page({
   },
   onGenderChange(e) {
     const value = Number(e.detail.value)
+    if (this.data.realAuthStatus === 2) return
     this.setData({ gender: isNaN(value) ? 0 : value })
   },
   onRealNameInput(e) {
+    if (this.data.realAuthStatus === 2) return
     this.setData({ realName: e.detail.value })
   },
   onChangeAvatar() {
@@ -139,9 +143,11 @@ Page({
       return
     }
     const payload = {
-      nickName: nick,
-      gender: this.data.gender,
-      realName: (this.data.realName || '').trim()
+      nickName: nick
+    }
+    if (this.data.realAuthStatus !== 2) {
+      payload.gender = this.data.gender
+      payload.realName = (this.data.realName || '').trim()
     }
     this.setData({ saving: true })
     userService.updateProfile(payload).then((data) => {

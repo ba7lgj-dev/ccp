@@ -9,7 +9,9 @@ Page({
     canJoin: false,
     canQuit: false,
     canKick: false,
-    canChat: false
+    canChat: false,
+    canConfirmStart: false,
+    canConfirm: false
   },
   onLoad(options) {
     const tripId = options && options.tripId ? Number(options.tripId) : null
@@ -60,7 +62,9 @@ Page({
         canJoin: detail.currentUserInfo && detail.currentUserInfo.canJoin,
         canQuit: detail.currentUserInfo && detail.currentUserInfo.canQuit,
         canKick: detail.currentUserInfo && detail.currentUserInfo.canKick,
-        canChat: detail.currentUserInfo && detail.currentUserInfo.joined
+        canChat: detail.currentUserInfo && detail.currentUserInfo.joined,
+        canConfirmStart: detail.currentUserInfo && detail.currentUserInfo.canConfirmStart,
+        canConfirm: detail.currentUserInfo && detail.currentUserInfo.canConfirm
       })
     }).catch(() => {
       wx.showToast({ title: '加载失败', icon: 'none' })
@@ -123,6 +127,30 @@ Page({
           })
         }
       }
+    })
+  },
+  onTapConfirmStart() {
+    wx.showModal({
+      title: '发起确认',
+      content: '确认所有成员已到齐，发起确认流程吗？',
+      success: (res) => {
+        if (res.confirm) {
+          tripService.startConfirm(this.data.tripId).then(() => {
+            wx.showToast({ title: '已发起确认', icon: 'success' })
+            this.loadDetail()
+          }).catch((err) => {
+            wx.showToast({ title: err.message || '操作失败', icon: 'none' })
+          })
+        }
+      }
+    })
+  },
+  onTapConfirmArrived() {
+    tripService.confirmTrip(this.data.tripId).then(() => {
+      wx.showToast({ title: '已确认', icon: 'success' })
+      this.loadDetail()
+    }).catch((err) => {
+      wx.showToast({ title: err.message || '操作失败', icon: 'none' })
     })
   },
   onTapChat() {
