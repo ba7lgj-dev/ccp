@@ -23,6 +23,9 @@ public class MpTrip {
     private String requireText;
 
     private Date departureTime;
+    private Integer confirmMode;
+    private Date confirmStartTime;
+    private Date confirmedTime;
     private Integer status;
 
     private String remark;
@@ -75,6 +78,15 @@ public class MpTrip {
 
     public Date getDepartureTime() { return departureTime; }
     public void setDepartureTime(Date departureTime) { this.departureTime = departureTime; }
+
+    public Integer getConfirmMode() { return confirmMode; }
+    public void setConfirmMode(Integer confirmMode) { this.confirmMode = confirmMode; }
+
+    public Date getConfirmStartTime() { return confirmStartTime; }
+    public void setConfirmStartTime(Date confirmStartTime) { this.confirmStartTime = confirmStartTime; }
+
+    public Date getConfirmedTime() { return confirmedTime; }
+    public void setConfirmedTime(Date confirmedTime) { this.confirmedTime = confirmedTime; }
 
     public Integer getStatus() { return status; }
     public void setStatus(Integer status) { this.status = status; }

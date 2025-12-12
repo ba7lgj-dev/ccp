@@ -3,11 +3,13 @@ const tripService = require('../../../services/trip.js')
 const { buildImageUrl } = require('../../../utils/url.js')
 
 const FIVE_MINUTES = 5 * 60 * 1000
+const POLL_INTERVAL = 3000
 
 Page({
   data: {
-    loading: false,
+    loading: true,
     tripId: null,
+    tripStatus: null,
     tripInfo: {
       startAddress: '',
       endAddress: '',
@@ -16,11 +18,12 @@ Page({
     },
     messages: [],
     pageSize: 20,
-    lastId: null,
+    lastMessageId: null,
     hasMore: true,
     scrollIntoView: '',
-    inputValue: '',
+    inputContent: '',
     sending: false,
+    pollTimer: null,
     firstLoad: true
   },
   onLoad(options) {
@@ -36,12 +39,18 @@ Page({
       app.checkAuthChain({ from: 'tripChat' })
     }
     this.loadTripInfo()
-    this.loadMessages(true)
+    this.initChat()
   },
   onShow() {
     if (!this.data.firstLoad) {
       this.markAllRead()
     }
+  },
+  onHide() {
+    this.clearPoller()
+  },
+  onUnload() {
+    this.clearPoller()
   },
   loadTripInfo() {
     tripService.getTripDetail(this.data.tripId).then((detail) => {
@@ -52,35 +61,68 @@ Page({
         departureTime: detail.departureTimeDisplay || detail.departureTime,
         campusName: detail.campusName
       }
-      this.setData({ tripInfo: info })
+      this.setData({ tripInfo: info, tripStatus: detail.status })
     }).catch(() => {})
   },
-  loadMessages(initial = false) {
-    if (this.data.loading) return
-    if (!initial && !this.data.hasMore) return
-    const prevFirstId = this.data.messages.length ? this.data.messages[0].id : null
-    this.setData({ loading: true })
-    const lastId = initial ? null : this.data.lastId
-    chatService.getMessageList(this.data.tripId, lastId, this.data.pageSize).then((res) => {
+  initChat() {
+    this.loadMessages({ init: true })
+    this.clearPoller()
+    this.data.pollTimer = setInterval(() => {
+      this.loadMessages({ incremental: true })
+    }, POLL_INTERVAL)
+  },
+  clearPoller() {
+    if (this.data.pollTimer) {
+      clearInterval(this.data.pollTimer)
+      this.setData({ pollTimer: null })
+    }
+  },
+  loadMessages(options = {}) {
+    const { init, incremental, loadMore } = options
+    if (init && this.data.loading === false) {
+      this.setData({ loading: true })
+    }
+    if (!init && !incremental && !this.data.hasMore) return
+    const params = { tripId: this.data.tripId, pageSize: this.data.pageSize }
+    if (incremental && this.data.lastMessageId) {
+      params.lastMessageId = this.data.lastMessageId
+    } else if (loadMore && this.data.messages.length) {
+      params.lastId = this.data.messages[0].id
+    }
+    chatService.getMessageList(params).then((res) => {
       const list = Array.isArray(res && res.items) ? res.items : []
-      const merged = initial ? list : list.concat(this.data.messages)
-      const decorated = this.decorateMessages(merged)
-      const latestId = decorated.length ? decorated[decorated.length - 1].id : null
-      const oldestId = decorated.length ? decorated[0].id : null
-      const scrollId = initial ? latestId : (prevFirstId || oldestId)
+      const merged = incremental
+        ? this.mergeMessages(this.data.messages.concat(list))
+        : loadMore
+          ? this.mergeMessages(list.concat(this.data.messages))
+          : this.mergeMessages(list)
+      const latestId = merged.length ? merged[merged.length - 1].id : null
+      const scrollId = incremental ? latestId : (loadMore && this.data.messages.length ? this.data.messages[0].id : latestId)
+      const hasMoreFlag = res && typeof res.hasMore === 'boolean' ? res.hasMore : this.data.hasMore
       this.setData({
-        messages: decorated,
-        lastId: oldestId,
-        hasMore: !!(res && res.hasMore),
+        messages: merged,
+        lastMessageId: latestId,
+        hasMore: hasMoreFlag,
         scrollIntoView: scrollId ? `msg-${scrollId}` : ''
-      }, () => {
-        this.markAllRead()
-      })
+      }, () => this.markAllRead())
     }).catch(() => {
-      wx.showToast({ title: '加载聊天失败', icon: 'none' })
+      if (init) {
+        wx.showToast({ title: '加载聊天失败', icon: 'none' })
+      }
     }).finally(() => {
-      this.setData({ loading: false, firstLoad: false })
+      if (init) {
+        this.setData({ loading: false, firstLoad: false })
+      }
     })
+  },
+  mergeMessages(list) {
+    const map = new Map()
+    list.forEach((item) => {
+      if (!item || item.id == null) return
+      map.set(item.id, item)
+    })
+    const sorted = Array.from(map.values()).sort((a, b) => a.id - b.id)
+    return this.decorateMessages(sorted)
   },
   decorateMessages(list) {
     const sorted = (list || []).slice().sort((a, b) => a.id - b.id)
@@ -127,26 +169,17 @@ Page({
     return `${hh}:${mm}`
   },
   onReachTop() {
-    this.loadMessages(false)
+    this.loadMessages({ loadMore: true })
   },
   onInput(e) {
-    this.setData({ inputValue: e.detail.value })
+    this.setData({ inputContent: e.detail.value })
   },
   onSend() {
-    if (this.data.sending || !this.data.inputValue) return
+    if (this.data.sending || !this.data.inputContent || this.isChatClosed()) return
     this.setData({ sending: true })
-    chatService.sendMessage(this.data.tripId, this.data.inputValue).then((msg) => {
-      const normalized = Object.assign({}, msg, { senderAvatarUrl: buildImageUrl(msg.senderAvatarUrl) })
-      const merged = this.decorateMessages(this.data.messages.concat([normalized]))
-      const latestId = merged.length ? merged[merged.length - 1].id : null
-      this.setData({
-        messages: merged,
-        inputValue: '',
-        scrollIntoView: latestId ? `msg-${latestId}` : '',
-        lastId: merged.length ? merged[0].id : null
-      }, () => {
-        this.markAllRead()
-      })
+    chatService.sendMessage(this.data.tripId, this.data.inputContent).then(() => {
+      this.setData({ inputContent: '' })
+      this.loadMessages({ incremental: true })
     }).catch(() => {
       wx.showToast({ title: '发送失败，请重试', icon: 'none' })
     }).finally(() => {
@@ -157,5 +190,9 @@ Page({
     if (!this.data.messages.length) return
     const lastChatId = this.data.messages[this.data.messages.length - 1].id
     chatService.markRead(this.data.tripId, lastChatId).catch(() => {})
+  },
+  isChatClosed() {
+    const status = this.data.tripStatus
+    return status === 3 || status === 4 || status === 5
   }
 })

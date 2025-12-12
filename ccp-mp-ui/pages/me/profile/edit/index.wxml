@@ -12,22 +12,24 @@
       </view>
       <view class="form-item">
         <view class="label">性别</view>
-        <radio-group class="gender-group" bindchange="onGenderChange">
+        <radio-group class="gender-group" bindchange="onGenderChange" disabled="{{realAuthStatus == 2}}">
           <label class="gender-option">
-            <radio value="0" checked="{{gender === 0}}" />保密
+            <radio value="0" checked="{{gender === 0}}" disabled="{{realAuthStatus == 2}}" />保密
           </label>
           <label class="gender-option">
-            <radio value="1" checked="{{gender === 1}}" />男
+            <radio value="1" checked="{{gender === 1}}" disabled="{{realAuthStatus == 2}}" />男
           </label>
           <label class="gender-option">
-            <radio value="2" checked="{{gender === 2}}" />女
+            <radio value="2" checked="{{gender === 2}}" disabled="{{realAuthStatus == 2}}" />女
           </label>
         </radio-group>
       </view>
       <view class="form-item">
         <view class="label">真实姓名</view>
-        <input class="input" maxlength="30" value="{{realName}}" placeholder="请输入真实姓名" bindinput="onRealNameInput" />
+        <input class="input" maxlength="30" value="{{realName}}" placeholder="请输入真实姓名" bindinput="onRealNameInput" disabled="{{realAuthStatus == 2}}" />
       </view>
+      <view class="tip" wx:if="{{realAuthStatus == 2}}">实名认证通过后真实姓名和性别不可修改，如需调整请联系客服</view>
+      <view class="tip" wx:else>实名认证功能暂未开放，当前仅保存名称，不做身份校验</view>
       <!-- <view class="tip">实名认证功能暂未开放，当前仅保存名称，不做身份校验</view> -->
     </view>
 

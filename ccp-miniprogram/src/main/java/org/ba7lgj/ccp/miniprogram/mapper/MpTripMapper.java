@@ -14,6 +14,12 @@ public interface MpTripMapper {
 
     int updateTripStatus(@Param("id") Long id, @Param("status") Integer status, @Param("updateTime") Date updateTime);
 
+    int updateConfirmStart(@Param("id") Long id, @Param("status") Integer status, @Param("confirmStartTime") Date confirmStartTime,
+        @Param("updateTime") Date updateTime);
+
+    int updateConfirmDone(@Param("id") Long id, @Param("status") Integer status, @Param("confirmedTime") Date confirmedTime,
+        @Param("updateTime") Date updateTime);
+
     MpTrip selectById(@Param("id") Long id);
 
     int updateTripCurrentPeople(@Param("id") Long id, @Param("currentPeople") Integer currentPeople, @Param("updateTime") Date updateTime);

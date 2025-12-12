@@ -25,6 +25,7 @@ public class MpTripChatController {
     @GetMapping("/list")
     public MpResult<MpTripChatListVO> list(@RequestParam("tripId") Long tripId,
                                            @RequestParam(value = "lastId", required = false) String lastId,
+                                           @RequestParam(value = "lastMessageId", required = false) String lastMessageId,
                                            @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         Long userId = MpUserContextHolder.getUserId();
         if (userId == null) {
@@ -39,8 +40,16 @@ public class MpTripChatController {
                 return MpResult.error(400, "lastId参数格式错误");
             }
         }
+        Long lastMessageIdVal = null;
+        if (StringUtils.isNotBlank(lastMessageId) && !"null".equalsIgnoreCase(lastMessageId)) {
+            try {
+                lastMessageIdVal = Long.valueOf(lastMessageId);
+            } catch (NumberFormatException e) {
+                return MpResult.error(400, "lastMessageId参数格式错误");
+            }
+        }
         try {
-            MpTripChatListVO vo = tripChatService.listMessages(userId, tripId, lastIdVal, size);
+            MpTripChatListVO vo = tripChatService.listMessages(userId, tripId, lastIdVal, lastMessageIdVal, size);
             return MpResult.ok(vo);
         } catch (MpServiceException e) {
             return MpResult.error(e.getCode(), e.getMessage());
