@@ -1,66 +1,122 @@
 .login-page {
-  padding: 80rpx 40rpx;
-  display: flex;
-  flex-direction: column;
+  background: #f5f5f5;
   min-height: 100vh;
+  padding: 60rpx 40rpx 80rpx;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  box-sizing: border-box;
 }
 
-.hero {
+.welcome-card {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx;
+  padding: 48rpx 36rpx 40rpx;
+  box-shadow: 0 12rpx 32rpx rgba(0, 0, 0, 0.06);
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16rpx;
-  margin-bottom: 48rpx;
+  box-sizing: border-box;
+}
+
+.logo-wrap {
+  width: 176rpx;
+  height: 176rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #e6f2ff, #f3f8ff);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12rpx;
 }
 
 .logo {
   width: 160rpx;
   height: 160rpx;
-  border-radius: 32rpx;
-  box-shadow: 0 8rpx 24rpx rgba(0, 0, 0, 0.08);
+  border-radius: 36rpx;
 }
 
 .app-name {
   font-size: 40rpx;
   font-weight: 700;
+  color: #222;
 }
 
 .subtitle {
-  font-size: 28rpx;
-  color: #6b778c;
+  font-size: 30rpx;
+  color: #333;
 }
 
-.hint {
-  font-size: 24rpx;
-  color: #f5a623;
+.tagline {
+  font-size: 26rpx;
+  color: #666;
 }
 
-.intro {
-  margin-top: 8rpx;
+.intro-card {
+  width: 100%;
+  background: #f8fbff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  box-sizing: border-box;
+  margin-top: 12rpx;
 }
 
 .intro-title {
-  font-size: 32rpx;
+  display: block;
+  font-size: 30rpx;
   font-weight: 600;
+  color: #222;
   margin-bottom: 8rpx;
 }
 
 .intro-desc {
+  display: block;
   font-size: 26rpx;
-  color: #6b778c;
+  color: #666;
+  line-height: 1.5;
 }
 
 .login-btn {
-  margin: 24rpx;
+  width: 100%;
+  margin-top: 32rpx;
+  border-radius: 32rpx;
+  background: #1677ff;
+  color: #fff;
+  font-weight: 600;
+  height: 96rpx;
+  line-height: 96rpx;
+}
+
+.login-btn[disabled] {
+  opacity: 0.6;
 }
 
 .agreements {
-  text-align: center;
-  margin-top: 16rpx;
-  color: #6b778c;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  font-size: 24rpx;
+  color: #666;
+  margin: 12rpx 0 8rpx;
+}
+
+.agree-text {
+  color: #666;
 }
 
 .link {
-  color: #2f86f6;
+  color: #1677ff;
   text-decoration: underline;
+}
+
+.experience-btn {
+  margin-top: 8rpx;
+  width: 100%;
+  border-radius: 28rpx;
+  color: #1677ff;
+  border-color: #d0e3ff;
 }

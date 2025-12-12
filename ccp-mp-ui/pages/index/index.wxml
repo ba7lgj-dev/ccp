@@ -1,77 +1,109 @@
 <view class="page">
-  <view class="hero">
-    <text class="title">校园拼车 CCP</text>
-    <text class="subtitle">登录后选择学校和校区即可开始拼车</text>
+  <view class="top-header" wx:if="{{!loginRequired}}">
+    <view class="user-touch" bindtap="onGoProfile">
+      <image class="avatar" src="{{(userInfo && userInfo.avatarUrl) || '/assets/logo.png'}}" mode="aspectFill"></image>
+      <view class="user-meta">
+        <text class="greeting">欢迎回来，{{(userInfo && userInfo.nickName) || '同学'}}</text>
+        <text class="sub">请完善资料并保持实名认证</text>
+      </view>
+    </view>
   </view>
 
   <block wx:if="{{loginRequired}}">
-    <view class="card">
-      <text class="card-title">未登录</text>
-      <text class="card-desc">登录后可查看已选学校、发布行程</text>
+    <view class="card card-shadow">
+      <view class="card-title-row">
+        <text class="card-title">未登录</text>
+        <text class="tag weak">需要登录</text>
+      </view>
+      <text class="card-desc">登录后可查看学校、发布行程与聊天</text>
       <button class="primary-btn" type="primary" bindtap="onGoLogin">去登录</button>
     </view>
   </block>
 
   <block wx:else>
-    <view class="card">
-      <text class="card-title">当前账户</text>
-      <view class="user-row">
-        <image class="avatar" src="{{(userInfo && userInfo.avatarUrl) || '/assets/logo.png'}}" mode="aspectFill"></image>
-        <view class="user-info">
-          <text class="nickname">{{(userInfo && userInfo.nickName) || '未设置昵称'}}</text>
-          <text class="uid">ID：{{(userInfo && userInfo.id) || '未知'}}</text>
+    <view class="card card-shadow campus-card">
+      <view class="card-title-row">
+        <view class="title-stack">
+          <text class="card-title">当前学校</text>
+          <text class="card-subtitle">只显示当前学校与校区的行程</text>
+        </view>
+        <button class="mini-switch" size="mini" bindtap="onSwitchSchool">切换</button>
+      </view>
+      <view class="campus-row">
+        <text class="label">学校</text>
+        <text class="value {{!selectedSchool ? 'warning' : ''}}">{{(selectedSchool && selectedSchool.schoolName) || '请先选择学校'}}</text>
+      </view>
+      <view class="campus-row">
+        <text class="label">校区</text>
+        <text class="value {{!selectedCampus ? 'warning' : ''}}">{{(selectedCampus && selectedCampus.campusName) || '请先选择校区'}}</text>
+      </view>
+    </view>
+
+    <view class="card card-shadow quick-card">
+      <view class="card-title-row">
+        <text class="card-title">快速入口</text>
+        <text class="card-subtitle">发布/加入/查看订单</text>
+      </view>
+      <view class="quick-grid">
+        <view class="quick-item" bindtap="onGoPublish">
+          <view class="quick-icon">🚗</view>
+          <text class="quick-text">发布拼车</text>
+        </view>
+        <view class="quick-item" bindtap="onGoHall">
+          <view class="quick-icon">🧭</view>
+          <text class="quick-text">拼单大厅</text>
+        </view>
+        <view class="quick-item" bindtap="onGoOrders">
+          <view class="quick-icon">📄</view>
+          <text class="quick-text">我的订单</text>
         </view>
       </view>
     </view>
 
-    <view class="card active-card" wx:if="{{activeTrip}}" bindtap="onTapActiveTrip">
-      <text class="card-title">你有一个进行中的拼车</text>
-      <view class="active-row">
-        <text class="start">{{activeTrip.startAddress}}</text>
+    <view class="card card-shadow" wx:if="{{activeTrip}}" bindtap="onTapActiveTrip">
+      <view class="card-title-row">
+        <text class="card-title">进行中的行程</text>
+        <text class="status-tag">{{activeTrip.statusText || '进行中'}} </text>
+      </view>
+      <view class="trip-row">
+        <text class="address">{{activeTrip.startAddress}}</text>
         <text class="arrow">→</text>
-        <text class="end">{{activeTrip.endAddress}}</text>
+        <text class="address">{{activeTrip.endAddress}}</text>
       </view>
-      <view class="active-meta">
-        <text class="status">{{activeTrip.statusText}}</text>
-        <text class="time">{{activeTrip.departureTimeDisplay}}</text>
-      </view>
-    </view>
-
-    <view class="card">
-      <text class="card-title">当前选择</text>
-      <view class="selection-row">
-        <text class="label">学校</text>
-        <text class="value">{{(selectedSchool && selectedSchool.schoolName) || '未选择'}}</text>
-      </view>
-      <view class="selection-row">
-        <text class="label">校区</text>
-        <text class="value">{{(selectedCampus && selectedCampus.campusName) || '未选择'}}</text>
+      <view class="trip-meta">
+        <text class="meta">{{activeTrip.departureTimeDisplay}}</text>
+        <text class="meta">{{activeTrip.joinedCount}} / {{activeTrip.totalCount}}人</text>
       </view>
     </view>
 
-    <view class="actions">
-      <button class="primary-btn" type="primary" bindtap="onGoPublish">去发布拼车</button>
-      <button class="ghost-btn" bindtap="onGoHall">前往拼单大厅</button>
-    </view>
-
-    <view class="card history-card">
-      <text class="card-title">我的历史订单</text>
-      <block wx:if="{{myHistoryTrips.length}}">
+    <view class="card card-shadow history-card">
+      <view class="card-title-row">
+        <text class="card-title">最近行程</text>
+        <text class="card-subtitle">最近 3 条订单概览</text>
+      </view>
+      <block wx:if="{{historyLoading}}">
+        <view class="skeleton" wx:for="{{[1,2,3]}}" wx:key="*this"></view>
+      </block>
+      <block wx:elif="{{myHistoryTrips.length}}">
         <block wx:for="{{myHistoryTrips}}" wx:key="tripId">
           <view class="history-item" bindtap="onTapHistoryTrip" data-id="{{item.tripId}}">
-            <view class="history-row main">
+            <view class="history-main">
               <text class="address">{{item.startAddress}}</text>
               <text class="arrow">→</text>
               <text class="address">{{item.endAddress}}</text>
-              <text class="owner-tag" wx:if="{{item.isOwner}}">发起者</text>
             </view>
-            <view class="history-row time">{{item.departureTimeText}}</view>
-            <view class="history-row status">{{item.statusText}}</view>
+            <view class="history-meta">
+              <text class="time">{{item.departureTimeText}}</text>
+              <view class="status-chip">{{item.statusText}}</view>
+            </view>
           </view>
         </block>
       </block>
       <block wx:else>
-        <text class="empty-hint">暂无历史订单</text>
+        <view class="empty">
+          <image class="empty-icon" src="/assets/empty.png" mode="aspectFit"></image>
+          <text class="empty-text">还没有行程，快去发布或加入一个拼车吧</text>
+        </view>
       </block>
     </view>
   </block>

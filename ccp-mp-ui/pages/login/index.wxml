@@ -1,21 +1,26 @@
 <view class="login-page">
-  <view class="hero">
-    <image class="logo" src="/assets/logo.png" mode="aspectFill"></image>
+  <view class="welcome-card">
+    <view class="logo-wrap">
+      <image class="logo" src="/assets/logo.png" mode="aspectFill"></image>
+    </view>
     <text class="app-name">校园拼车 CCP</text>
-    <text class="subtitle">校园拼车 · 安全便捷 · 同校同路</text>
-    <text class="hint">使用前需完成实名认证和学生认证</text>
-  </view>
-
-  <view class="card card--flat intro">
-    <text class="intro-title">便捷出行</text>
-    <text class="intro-desc">同学拼车更安全，授权登录后选择学校与校区即可发布行程。</text>
-  </view>
-
-  <button class="btn-primary login-btn" type="primary" loading="{{loading}}" disabled="{{loading}}" bindtap="onLoginTap">
-    一键登录
-  </button>
-
-  <view class="agreements">
-    <text class="link" bindtap="onTapAgreement">隐私政策</text>
+    <text class="subtitle">同校同路，拼得放心</text>
+    <text class="tagline">校内安全顺路拼车平台</text>
+    <view class="intro-card">
+      <text class="intro-title">便捷出行</text>
+      <text class="intro-desc">授权登录后选择学校与校区即可发布行程，实时掌握拼车状态。</text>
+    </view>
+    <button class="btn-primary login-btn" type="primary" loading="{{loading}}" disabled="{{loading}}" bindtap="onLoginTap">
+      微信一键登录
+    </button>
+    <view class="agreements">
+      <text class="agree-text">登录即代表你同意</text>
+      <text class="link" bindtap="onTapAgreement" data-type="user">《用户协议》</text>
+      <text class="agree-text">和</text>
+      <text class="link" bindtap="onTapAgreement" data-type="privacy">《隐私政策》</text>
+    </view>
+    <button class="ghost-btn experience-btn" plain="true" loading="{{loading}}" disabled="{{loading}}" bindtap="onExperience">
+      暂不登录，立即体验
+    </button>
   </view>
 </view>

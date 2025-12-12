@@ -21,7 +21,7 @@ Page({
         this.redirectByUser(info)
       }
     }).catch((err) => {
-      wx.showToast({ title: err.message || '登录失败', icon: 'none' })
+      wx.showToast({ title: err.message || '登录失败，请稍后再试', icon: 'none' })
     }).finally(() => {
       this.setData({ loading: false })
     })
@@ -48,6 +48,11 @@ Page({
     wx.switchTab({ url: '/pages/index/index' })
   },
   onTapAgreement() {
-    wx.showToast({ title: '隐私协议页面待实现', icon: 'none' })
+    if (this.data.loading) return
+    wx.showToast({ title: '敬请期待', icon: 'none' })
+  },
+  onExperience() {
+    if (this.data.loading) return
+    wx.showToast({ title: '需登录后才能继续使用', icon: 'none' })
   }
 })
